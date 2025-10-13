@@ -1,0 +1,86 @@
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
+
+const WelcomeHeader = ({ userName, onProfilePress }) => {
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.textContainer}>
+          <Text style={styles.logo}>UGive</Text>
+          <Text style={styles.welcomeText}>
+            Welcome, <Text style={styles.userName}>{userName}</Text>!
+          </Text>
+          <Text style={styles.tagline}>
+            Be the difference in{'\n'}someone's world today
+          </Text>
+        </View>
+        
+        <TouchableOpacity
+          style={styles.profileButton}
+          onPress={onProfilePress}
+          activeOpacity={0.8}
+        >
+          <Icon 
+            name="person-outline" 
+            size={moderateScale(28)} 
+            color="#FFFFFF" 
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: wp(6),
+    paddingTop: hp(2),
+    paddingBottom: hp(3),
+  },
+  content: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  textContainer: {
+    flex: 1,
+    paddingRight: wp(4),
+  },
+  logo: {
+    fontSize: isTablet ? moderateScale(56) : moderateScale(48),
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: -1,
+    marginBottom: hp(1),
+  },
+  welcomeText: {
+    fontSize: isTablet ? moderateScale(32) : moderateScale(28),
+    fontWeight: '400',
+    color: '#FFFFFF',
+    marginBottom: hp(1.5),
+  },
+  userName: {
+    color: '#E5B865',
+    fontWeight: '600',
+  },
+  tagline: {
+    fontSize: isTablet ? moderateScale(26) : moderateScale(22),
+    fontWeight: '600',
+    color: '#FFFFFF',
+    lineHeight: isTablet ? moderateScale(36) : moderateScale(30),
+  },
+  profileButton: {
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+});
+
+export default WelcomeHeader;
