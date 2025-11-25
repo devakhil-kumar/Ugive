@@ -51,6 +51,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+<<<<<<< HEAD
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -73,5 +74,7 @@
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
 	</array>
+=======
+>>>>>>> 84877d71bce228c641ef9368ebc65719b41dd13c
 </dict>
 </plist>
