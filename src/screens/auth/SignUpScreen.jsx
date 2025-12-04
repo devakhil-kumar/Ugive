@@ -9,14 +9,15 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
- 
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { MaskedTextInput } from 'react-native-advanced-input-mask';
+import { useNavigation } from '@react-navigation/native';
 
 const SignUpScreen = () => {
+  const navigation = useNavigation();
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [university, setUniversity] = useState(null);
@@ -42,10 +43,12 @@ const SignUpScreen = () => {
       mobile,
       password,
     });
+    // TODO: Add registration logic here
+    // After successful signup, navigate to login or main app
   };
 
   const handleLogin = () => {
-    console.log('Navigate to login');
+    navigation.navigate('Login');
   };
 
   return (
@@ -171,12 +174,12 @@ const SignUpScreen = () => {
               <Text style={styles.signUpButtonText}>Let's go!</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleLogin} style={styles.loginContainer}>
+            <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Already have an account?{' '}
-                <Text style={styles.loginLink}>Login</Text>
+                <Text style={styles.loginLink} onPress={handleLogin}>Login</Text>
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

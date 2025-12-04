@@ -9,21 +9,25 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
- 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = () => {
     console.log('Login pressed', { email, password });
+    // TODO: Add authentication logic here
+    // navigation.navigate('MainApp'); // Navigate to main app after successful login
   };
 
   const handleSignUp = () => {
-    console.log('Sign up pressed');
+    navigation.navigate('SignUp');
   };
 
   return (
@@ -94,12 +98,12 @@ const LoginScreen = () => {
               <Text style={styles.loginButtonText}>Let's go!</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleSignUp} style={styles.signUpContainer}>
+            <View style={styles.signUpContainer}>
               <Text style={styles.signUpText}>
                 Don't have an account?{' '}
-                <Text style={styles.signUpLink}>Sign up now</Text>
+                <Text style={styles.signUpLink} onPress={handleSignUp}>Sign up now</Text>
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

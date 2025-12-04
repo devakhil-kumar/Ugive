@@ -1,45 +1,20 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
+ * UGive - Gift Card App
  * @format
  */
 
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
-import LoginScreen from './src/screens/auth/Login';
-import SignUpScreen from './src/screens/auth/SignUpScreen';
-import HomeScreen from './src/screens/HomeScreen/HomeScreen';
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import RootNavigator from './src/navigation/RootNavigator';
 
 function App() {
   return (
     <SafeAreaProvider>
-      {/* <LoginScreen /> */}
-      {/* <SignUpScreen /> */}
-      <HomeScreen/>
+      <StatusBar barStyle="dark-content" />
+      <RootNavigator />
     </SafeAreaProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
