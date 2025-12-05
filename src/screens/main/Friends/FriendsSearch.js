@@ -96,15 +96,12 @@ const FriendsSearch = () => {
 const styles = StyleSheet.create({
     pageBg: {
         padding: 16,
-        // backgroundColor: '#6955A5',
         flex: 1,
     },
-    //Top Bar Style
     backIconStyle: {
-        width: 21,
-        height: 21,
-        position: 'absolute',
-        left: 0,
+        width: 25,
+        height: 25,
+     
     },
     topBarTextStyle: {
         fontWeight: '800',
@@ -115,9 +112,9 @@ const styles = StyleSheet.create({
     topBarStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'space-between',
+        width:'60%'
     },
-    //search bar
     searchIconStyle: {
         width: 23,
         height: 23,

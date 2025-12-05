@@ -26,10 +26,13 @@ const FriendsList = () => {
     const navigation = useNavigation();
     const [searchText, setSearchText] = useState('');
 
+    const handleFriendList = () => {
+        navigation.navigate('FriendsRequest')
+    }
+
     return (
         <GradientScreen colors={['#6955A5']}>
             <View style={styles.pageBg}>
-                {/* Top Bar */}
                 <View style={styles.topBarStyle}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Image
@@ -38,10 +41,12 @@ const FriendsList = () => {
                         />
                     </TouchableOpacity>
                     <Text style={styles.topBarTextStyle}>Friends List</Text>
-                    <Image
-                        source={require('../../../assets/share.png')}
-                        style={styles.shareIconStyle}
-                    />
+                    <TouchableOpacity onPress={handleFriendList}>
+                        <Image
+                            source={require('../../../assets/share.png')}
+                            style={styles.shareIconStyle}
+                        />
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.serachBarRowStyle}>
                     <View
@@ -60,11 +65,9 @@ const FriendsList = () => {
                         />
                     </View>
                 </View>
-                {/* Filter People Row */}
                 <View style={styles.filterRowStyle}>
                     <Text style={styles.filterText}>Friends</Text>
                 </View>
-                {/* Searched Data */}
                 <FlatList
                     data={[...Array(5)]}
                     showsVerticalScrollIndicator={false}

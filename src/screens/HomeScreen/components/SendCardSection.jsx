@@ -165,8 +165,9 @@
 
 
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
+const { width, height } = Dimensions.get('window');
 
 const SendCardSection = ({ onStartWriting }) => {
   return (
@@ -187,18 +188,7 @@ const SendCardSection = ({ onStartWriting }) => {
             </Text>
           </TouchableOpacity>
         </View>
-
-        <View style={styles.illustrationContainer}>
-          <View style={styles.illustrationBox}>
-            <View style={styles.cardIllustration}>
-              <View style={styles.blueSection} />
-              <View style={styles.yellowCircle} />
-              <View style={styles.purpleTriangle} />
-              <View style={styles.heartIcon} />
-              <View style={styles.orangeShape} />
-            </View>
-          </View>
-        </View>
+         <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />
       </View>
     </View>
   );
@@ -263,75 +253,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.5,
   },
-  illustrationContainer: {
-    flexShrink: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  illustrationBox: {
-    width: isTablet ? moderateScale(130) : moderateScale(110),
-    height: isTablet ? moderateScale(130) : moderateScale(110),
-    borderRadius: moderateScale(16),
-    borderWidth: 3,
-    borderColor: '#4A9FD8',
-    backgroundColor: '#E8F4F8',
-    overflow: 'hidden',
-  },
-  cardIllustration: {
-    flex: 1,
-  },
-  blueSection: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
-    backgroundColor: '#5B7FA8',
-  },
-  yellowCircle: {
-    position: 'absolute',
-    top: moderateScale(12),
-    right: moderateScale(12),
-    width: moderateScale(26),
-    height: moderateScale(26),
-    borderRadius: moderateScale(13),
-    backgroundColor: '#F5A623',
-  },
-  purpleTriangle: {
-    position: 'absolute',
-    top: moderateScale(28),
-    left: moderateScale(12),
-    width: 0,
-    height: 0,
-    borderLeftWidth: moderateScale(18),
-    borderRightWidth: moderateScale(18),
-    borderBottomWidth: moderateScale(32),
-    borderStyle: 'solid',
-    backgroundColor: 'transparent',
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#6B5B95',
-  },
-  heartIcon: {
-    position: 'absolute',
-    bottom: '58%',
-    right: '38%',
-    width: moderateScale(20),
-    height: moderateScale(20),
-    backgroundColor: '#FF6B9D',
-    borderRadius: moderateScale(10),
-  },
-  orangeShape: {
-    position: 'absolute',
-    bottom: moderateScale(12),
-    right: moderateScale(12),
-    width: moderateScale(30),
-    height: moderateScale(30),
-    backgroundColor: '#F5A623',
-    borderTopLeftRadius: moderateScale(18),
-    borderTopRightRadius: moderateScale(18),
-    borderBottomRightRadius: moderateScale(18),
-  },
+ 
+   imageStyle: {
+        width: width * 0.3,
+        height: height / 6.8,
+    },
 });
 
 export default SendCardSection;

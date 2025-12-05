@@ -9,26 +9,68 @@ import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { loginUser } from '../../fetures/authSlice';
+import { useDispatch } from 'react-redux';
+import { showMessage } from '../../fetures/messageSlice';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const handleLogin = () => {
-    console.log('Login pressed', { email, password });
-    // TODO: Add authentication logic here
-    // navigation.navigate('MainApp'); // Navigate to main app after successful login
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const loginPayload = {
+        email: email,
+        password: password,
+      };
+      const response = await dispatch(loginUser(loginPayload)).unwrap();
+      console.log(response, 'response+++++++')
+    } catch (error) {
+      const errorMessage = typeof error === "string"
+        ? error
+        : error?.message || "Login failed!";
+      if (errorMessage.toLowerCase().includes('invalid') ||
+        errorMessage.toLowerCase().includes('credential')) {
+        dispatch(
+          showMessage({
+            type: 'error',
+            text: 'Invalid email or password',
+          })
+        );
+      } else {
+        dispatch(
+          showMessage({
+            type: 'error',
+            text: errorMessage,
+          })
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = () => {
     navigation.navigate('SignUp');
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color={'yellow'} />
+    </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -157,7 +199,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   inputGroup: {
-    marginBottom: 24,
+    marginBottom: 15,
   },
   label: {
     fontSize: 15,
@@ -170,7 +212,7 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 10,
     fontSize: 15,
     color: '#333333',
     backgroundColor: '#FAFAFA',
@@ -186,7 +228,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 10,
     fontSize: 15,
     color: '#333333',
   },
@@ -196,10 +238,11 @@ const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#D4D4D4',
     borderRadius: 50,
-    paddingVertical: 16,
+    paddingVertical: 10,
     alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 20,
+    width: '70%',
+    alignSelf: 'center',
+    marginBottom: 10
   },
   loginButtonText: {
     fontSize: 17,
@@ -216,6 +259,12 @@ const styles = StyleSheet.create({
   signUpLink: {
     color: '#E5B865',
     fontWeight: '600',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffff',
   },
 });
 

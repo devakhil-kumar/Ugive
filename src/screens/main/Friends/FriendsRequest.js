@@ -67,12 +67,9 @@ const styles = StyleSheet.create({
         padding: 16,
         flex: 1,
     },
-    //Top Bar Style
     backIconStyle: {
-        width: 21,
-        height: 21,
-        position: 'absolute',
-        left: 0,
+        width: 25,
+        height: 25,
     },
     topBarTextStyle: {
         fontWeight: '800',
@@ -84,7 +81,8 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent:'space-between',
+        width:'80%'
     },
     // List Data item Style
     personIconStyle: {

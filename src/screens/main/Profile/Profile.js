@@ -5,6 +5,14 @@ import GradientScreen from '../../common/GradientScreen';
 const Profile = () => {
     const navigation = useNavigation();
 
+    const handleCardSent = () => {
+        navigation.navigate('ReadCard')
+    }
+
+    const handleYourPoint = () => {
+        navigation.navigate('RewardStutas')
+    }
+
     return (
         <GradientScreen colors={['#D99656','#6D5B98', '#B5D1EB','#B5D1EB']}>
             <View style={styles.pageBg}>
@@ -25,10 +33,10 @@ const Profile = () => {
                 >
                     <Text style={styles.buttonText}>Profile Info</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.butoonStyle} >
+                <TouchableOpacity style={styles.butoonStyle} onPress={handleYourPoint}  >
                     <Text style={styles.buttonText}>Your Points</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.butoonStyle} >
+                <TouchableOpacity style={styles.butoonStyle} onPress={handleCardSent} >
                     <Text style={styles.buttonText}>Cards Sent</Text>
                 </TouchableOpacity>
             </View>

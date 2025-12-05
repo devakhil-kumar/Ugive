@@ -8,7 +8,21 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <Text style={styles.logo}>UGive</Text>
+          <View style={{justifyContent:'space-between', flexDirection:"row",alignItems:"center"}}>
+            <Text style={styles.logo}>UGive</Text>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={onProfilePress}
+              activeOpacity={0.8}
+            >
+              <Icon
+                name="person"
+                size={moderateScale(28)}
+                color='#6955A5'
+              />
+            </TouchableOpacity>
+          </View>
+
           <Text style={styles.welcomeText}>
             Welcome, <Text style={styles.userName}>{userName}</Text>!
           </Text>
@@ -16,18 +30,7 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
             Be the difference in{'\n'}someone's world today
           </Text>
         </View>
-        
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={onProfilePress}
-          activeOpacity={0.8}
-        >
-          <Icon 
-            name="person-outline" 
-            size={moderateScale(28)} 
-            color="#FFFFFF" 
-          />
-        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -42,7 +45,6 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
   },
   textContainer: {
     flex: 1,
@@ -72,10 +74,10 @@ const styles = StyleSheet.create({
     lineHeight: isTablet ? moderateScale(36) : moderateScale(30),
   },
   profileButton: {
-    width: moderateScale(56),
-    height: moderateScale(56),
+    width: moderateScale(40),
+    height: moderateScale(40),
     borderRadius: moderateScale(28),
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,

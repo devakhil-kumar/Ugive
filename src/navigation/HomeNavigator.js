@@ -1,6 +1,10 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from '../screens/main/Home/Home';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import GiftCard from '../screens/main/GiftCard/GiftCard';
+import SendingCard from '../screens/main/Cards/SendingCard';
+import RewardStutas from '../screens/main/Cards/RewardStatus';
+import ProfileNavigator from '../navigation/ProfileNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,8 +14,14 @@ const HomeNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}
+      initialRouteName='HomeScreen'
     >
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="GiftCard" component={GiftCard} />
+      <Stack.Screen name="SendingCard" component={SendingCard} />
+      <Stack.Screen name="RewardStutas" component={RewardStutas} />
+      <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
+
     </Stack.Navigator>
   );
 };

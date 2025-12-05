@@ -92,8 +92,9 @@ const BgCard = ({ onPress }) => {
 const GiftCard = () => {
     const navigation = useNavigation();
     const [open, setOpen] = useState(false);
+    
     const handleOnPress = () => {
-        setOpen(true)
+        navigation.navigate('SendingCard')
     }
     return (
 
@@ -136,7 +137,7 @@ const GiftCard = () => {
                         <BgCard onPress={handleOnPress} />
                     </View>
                 </KeyboardAwareScrollView>
-                <CustomModal
+                {/* <CustomModal
                     visible={open}
                     onClose={() => setOpen(false)}
                     title="You're on break!"
@@ -148,7 +149,7 @@ const GiftCard = () => {
                             july 14.
                         </Text>
                     </Text>
-                </CustomModal>
+                </CustomModal> */}
             </View>
         </GradientScreen>
     )

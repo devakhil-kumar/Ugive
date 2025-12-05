@@ -2,10 +2,22 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
+import { logout } from '../../../fetures/authSlice';
+import { useDispatch } from 'react-redux';
 const { width } = Dimensions.get('window');
 
 const ProfileDetails = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const handleLogout = async () => {
+        try {
+            dispatch(logout());
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
 
     return (
         <GradientScreen colors={['#B5D1EB']}>
@@ -59,11 +71,11 @@ const ProfileDetails = () => {
                 >
                     <Text style={styles.buttonText}>Edit Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#8B79C4', marginTop: 20 }]} >
-                    <Text style={styles.buttonText}>Your Points</Text>
+                <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#8B79C4', marginTop: 20 }]} onPress={handleLogout} >
+                    <Text style={styles.buttonText}>Sign Out</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#66579E', marginTop: 20 }]} >
-                    <Text style={styles.buttonText}>Cards Sent</Text>
+                    <Text style={styles.buttonText}>Delete Account</Text>
                 </TouchableOpacity>
             </View>
         </GradientScreen>

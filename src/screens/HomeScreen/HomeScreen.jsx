@@ -5,54 +5,53 @@ import WelcomeHeader from './components/WelcomeHeader';
 import SendCardSection from './components/SendCardSection';
 import RewardSection from './components/RewardSection';
 import { hp } from '../../utils/responsive';
+import GradientScreen from '../common/GradientScreen';
 
 const HomeScreen = ({ navigation, userName = 'Annie' }) => {
 
-    //   // Example: Calculate progress based on cards sent
-  const cardsSent = 1; // This would come from your app state
+  const cardsSent = 1; 
   const totalCardsNeeded = 5;
   const progressPercentage = Math.round((cardsSent / totalCardsNeeded) * 100);
   const cardsRemaining = totalCardsNeeded - cardsSent;
   const handleStartWriting = () => {
-    console.log('Navigate to write card screen');
+    navigation.navigate('GiftCard')
   };
 
   const handleRewardAction = () => {
-    console.log('Navigate to rewards screen');
+    navigation.navigate('RewardStutas')
   };
 
   const handleProfilePress = () => {
-    console.log('Navigate to profile screen');
+    navigation.navigate('ProfileNavigator')
   };
 
-  const safeAreaEdges = Platform.OS === 'android' ? ['top', 'bottom'] : ['top'];
 
   return (
-    <SafeAreaView style={styles.container} edges={safeAreaEdges}>
+    <GradientScreen colors={['#6955A5']} >
       <StatusBar barStyle="light-content" backgroundColor="#6B5B95" />
       <View style={styles.mainContent}>
-        <ScrollView
+        {/* <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-        >
+        > */}
           <WelcomeHeader
             userName={userName}
             onProfilePress={handleProfilePress}
           />
 
           <SendCardSection onStartWriting={handleStartWriting} />
-        </ScrollView>
+        {/* </ScrollView> */}
 
-        <View style={styles.fixedBottom}>
+        {/* <View style={styles.fixedBottom}> */}
           {/* <RewardSection onPress={handleRewardAction} /> */}
-    <RewardSection 
+          <RewardSection 
           onPress={handleRewardAction} 
           cardsRemaining={cardsRemaining}
           progressPercentage={progressPercentage}
          />
-        </View>
+        {/* </View> */}
       </View>
-    </SafeAreaView>
+</GradientScreen>
   );
 };
 

@@ -1,81 +1,118 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image } from 'react-native';
-import HomeNavigator from './HomeNavigator';
-import ProfileNavigator from './ProfileNavigator';
-import FriendsNavigator from './FriendsNavigator';
-import GiftCardNavigator from './GiftCardNavigator';
+import { Image, Platform } from 'react-native';
+import FriendsSearch from '../screens/main/Friends/FriendsSearch';
+import FriendsList from '../screens/main/Friends/FriendsList';
+import FriendsRequest from '../screens/main/Friends/FriendsRequest';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import HomeNavigator from '../navigation/HomeNavigator';
+import FriendsNavigator from '../navigation/FriendsNavigator';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import Home from '../screens/main/RewardsHome/Home';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
 
 const Tab = createBottomTabNavigator();
 
 const MainNavigator = () => {
+  const insets = useSafeAreaInsets();
+  const bottomInset = Platform.OS === 'android' ? insets.bottom : 10;
+
+
+  const defaultTabBarStyle = {
+    height: 65 + bottomInset,
+    paddingBottom: bottomInset,
+    backgroundColor: '#C6D4ED',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    alignItems: 'center',
+    paddingTop: 16
+  };
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 0,
-          elevation: 8,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
-        },
-        tabBarActiveTintColor: '#E9B243',
-        tabBarInactiveTintColor: '#BDBDBD',
+        keyboardHidesTabBar: true,
+        tabBarStyle:defaultTabBarStyle,
+        tabBarShowLabel: false
       }}
     >
       <Tab.Screen
-        name="HomeTab"
+        name="Home"
         component={HomeNavigator}
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => (
+        options={({ route }) => ({
+          tabBarIcon: () => (
             <Image
               source={require('../assets/home.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{ width: 38, height: 38, resizeMode: 'contain' }}
             />
           ),
-        }}
+          tabBarStyle: (() => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? 'HomeScreen';
+            if (routeName === 'GiftCard' || routeName === 'SendingCard' || routeName === 'RewardStutas' || routeName === 'ProfileNavigator') {
+              return { display: 'none' };
+            }
+            return defaultTabBarStyle;
+          })(),
+        })}
       />
       <Tab.Screen
-        name="GiftTab"
-        component={GiftCardNavigator}
+        name="RewardsHome"
+        component={Home}
         options={{
-          title: 'Send Card',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: () => (
             <Image
-              source={require('../assets/sendMesg.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              source={require('../assets/chat.png')}
+              style={{ width: 38, height: 38, resizeMode: 'contain' }}
             />
           ),
+
         }}
       />
+
       <Tab.Screen
-        name="FriendsTab"
+        name="FriendNavigator"
         component={FriendsNavigator}
         options={{
-          title: 'Friends',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: () => (
             <Image
               source={require('../assets/group.png')}
-              style={{ width: size, height: size, tintColor: color }}
+              style={{ width: 38, height: 38, resizeMode: 'contain' }}
             />
           ),
+
         }}
       />
+
       <Tab.Screen
-        name="ProfileTab"
-        component={ProfileNavigator}
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require('../assets/person.png')}
-              style={{ width: size, height: size, tintColor: color }}
-            />
-          ),
+        name="FriendsSearchat"
+        component={FriendsSearch}
+        options={() => {
+          return {
+            tabBarIcon: () => (
+              <Image
+                source={require('../assets/search.png')}
+                style={{ width: 38, height: 38, resizeMode: 'contain' }}
+              />
+            ),
+
+          };
         }}
       />
+      {/* <Tab.Screen
+        name="Request"
+        component={FriendsRequest}
+        options={() => {
+          return {
+            tabBarIcon: () => (
+              <Image
+                source={require('../assets/calender.png')}
+                style={{ width: 38, height: 38, resizeMode: 'contain' }}
+              />
+            ),
+
+          };
+        }}
+      /> */}
     </Tab.Navigator>
   );
 };

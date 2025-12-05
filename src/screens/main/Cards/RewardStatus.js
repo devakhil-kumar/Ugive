@@ -3,6 +3,8 @@ import { PieChart } from 'react-native-gifted-charts';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
+import CustomModal from '../../common/CustomModal';
+import { useState } from 'react';
 const { width, height } = Dimensions.get('window');
 
 
@@ -47,6 +49,12 @@ const ProgressPieChart = ({ percentage = 20 }) => {
 
 const RewardStutas = () => {
     const navigation = useNavigation();
+    const [open, setOpen] = useState(false);
+
+    const hnadleModal = () => {
+        setOpen(true)
+    }
+
     return (
         <GradientScreen colors={['#6D5B98']}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -62,10 +70,23 @@ const RewardStutas = () => {
                     receive a free  <Text style={{ color: "#D99656" }}>Coffee.</Text>
                 </Text>
                 <ProgressPieChart />
-                <TouchableOpacity style={styles.btnLets} >
+                <TouchableOpacity style={styles.btnLets} onPress={hnadleModal} >
                     <Text style={styles.txtBtn}>Start Writing</Text>
                 </TouchableOpacity>
             </View>
+            <CustomModal
+                visible={open}
+                onClose={() => setOpen(false)}
+                title="You're on break!"
+                buttonLabel='Got it'
+            >
+                <Text style={[styles.screenTextStyle, { color: 'black', textAlign: 'center' }]}>
+                    Thanks for sending last card. You can send another card from{' '}
+                    <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>
+                        july 14.
+                    </Text>
+                </Text>
+            </CustomModal>
         </GradientScreen>
 
     )
