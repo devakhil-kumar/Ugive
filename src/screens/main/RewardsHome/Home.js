@@ -1,245 +1,249 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRewardsCollages } from '../../../fetures/getRewardsSlice'; // adjust path
 import GradientScreen from '../../common/GradientScreen';
+import CustomModal from '../../common/CustomModal';
+import { fetchClaimRewards } from '../../../fetures/claimRewardsSlice';
+import { showMessage } from '../../../fetures/messageSlice';
+
 const { width, height } = Dimensions.get('window');
 
-
 const Home = () => {
-    // Top Stats
-    const stats = [
-        { icon: '💬', value: 99, color: '#8B7BF7' },
-        { icon: '🎁', value: 99, color: '#FF9F43' },
-        { icon: '👥', value: 99, color: '#54A0FF' },
-        { icon: '🔥', value: 99, color: '#FF6B6B' },
-    ];
+  const dispatch = useDispatch();
+  const { list: rewards, loading, stats } = useSelector((state) => state.rewards);
+  const [open, setOpen] = useState(false);
+  const [selectedReward, setSelectedReward] = useState(null);
+  console.log(selectedReward, 'selected_______-')
 
-    const rewards = [
-        {
-            id: 1,
-            label: 'Pizza',
-            image: require('../../../assets/pizzaone.png'),
-            color: '#FFB800',
-            progress: 45,
-            stars: 8,
-        },
-        {
-            id: 2,
-            label: 'Coffee',
-            image: require('../../../assets/coffeCupOne.png'),
-            color: '#8B7BF7',
-            progress: 75,
-            stars: 5,
-        },
-        {
-            id: 3,
-            label: 'Flowers',
-            image: require('../../../assets/flowerone.png'),
-            color: '#FFB800',
-            progress: 25,
-            stars: 6, // Star number
-        },
-    ];
+  useEffect(() => {
+    dispatch(fetchRewardsCollages());
+  }, [dispatch]);
 
-    const renderPieChart = (progress, color) => {
-        const pieData = [
-            {
-                value: progress,
-                color: color,
-            },
-            {
-                value: 100 - progress,
-                color: '#E8E8E8',
-            },
-        ];
-
-        return (
-            <View>
-                <PieChart
-                    data={pieData}
-                    donut
-                    radius={70}
-                    innerRadius={65}
-                    innerCircleColor="#F5F5F5"
-                    showText={false}
-                    startAngle={40}
-                    initialAngle={40}
-                />
-            </View>
+  const handleConfirmClaim = async () => {
+    try {
+      if (!selectedReward?.rewardId) return;
+      const response = await dispatch(fetchClaimRewards(selectedReward.rewardId));
+      if (fetchClaimRewards.fulfilled.match(response)) {
+        dispatch(
+          showMessage({
+            type: 'success',
+            text: 'Reward claimed successfully!',
+          })
         );
-    };
+      } else {
+        dispatch(
+          showMessage({
+            type: 'error',
+            text: response?.payload || 'Failed to claim reward.',
+          })
+        );
+      }
+    } catch (error) {
+      console.log('Claim error:', error);
+      dispatch(
+        showMessage({
+          type: 'error',
+          text: 'Something went wrong. Please try again.',
+        })
+      );
+    } finally {
+      setOpen(false);
+      setSelectedReward(null);
+    }
+  };
+  
 
-    const renderRewardItem = (item) => (
-        <View key={item.id} style={styles.rewardItem}>
+  const handleClaimPress = (item) => {
+    if (item?.completedPoints === item?.totalPoints) {
+      setSelectedReward(item);
+      setOpen(true);
+    } else {
+      console.log('Reward not completed yet!');
+    }
+  };
 
-            <View style={styles.pieChartContainer}>
+  const statss = [
+    {
+      icon: 'flame',
+      value: stats?.currentStreak ?? 0,
+      color: '#FF6B6B'
+    },
+    {
+      icon: 'card',
+      value: stats?.totalCardsSent ?? 0,
+      color: '#8B7BF7'
+    },
+    {
+      icon: 'people',
+      value: stats?.totalFriends ?? 0,
+      color: '#54A0FF'
+    },
+    {
+      icon: 'gift',
+      value: stats?.totalGiftsSent ?? 0,
+      color: '#FF9F43'
+    },
+  ];
 
-                {renderPieChart(item.progress, item.color)}
-                <View style={styles.iconContainer}>
-
-                    <Image source={item.image} style={{ width: width / 5, height: height / 10, resizeMode: 'contain', zIndex: 1 }} />
-                </View>
-                {/* Star with number */}
-                <View style={styles.starContainer}>
-                    <View style={styles.starBadge}>
-                        <Text style={styles.starNumber}>{item.stars}</Text>
-                        <Image
-                            source={require('../../../assets/star.png')}
-                            style={styles.starImage}
-                            resizeMode="contain"
-                        />
-                    </View>
-                    <View style={{ position: 'absolute', top: -142, right:45 }}>
-                        <Icon name='close-outline' color={'#F5F5F5'} size={220} />
-                    </View>
-                </View>
-            </View>
-
-            <Text style={styles.label}>{item.label}</Text>
-
-        </View>
+  const renderPieChart = (percentage, color) => {
+    const pieData = [
+      { value: percentage, color },
+      { value: 100 - percentage, color: '#E8E8E8' },
+    ];
+    return (
+      <PieChart
+        data={pieData}
+        donut
+        radius={70}
+        innerRadius={65}
+        innerCircleColor="#F5F5F5"
+        showText={false}
+      />
     );
+  };
+
+  const renderRewardItem = (item) => {
+    const isCompleted = item?.completedPoints === item?.totalPoints;
 
     return (
-        <GradientScreen colors={['#fff']}>
-            <View style={styles.container}>
-                <View style={styles.statsContainer}>
-                    {stats.map((stat, index) => (
-                        <View key={index} style={styles.statItem}>
-                            <Text style={styles.statIcon}>{stat.icon}</Text>
-                            <Text style={styles.statValue}>{stat.value}</Text>
-                        </View>
-                    ))}
-                </View>
-
-                <Text style={styles.title}>Rewards</Text>
-
-                <View style={styles.rewardsContainer}>
-                    <View style={styles.topReward}>
-                        {renderRewardItem(rewards[0])}
-                    </View>
-                    <View style={styles.bottomRow}>
-                        {renderRewardItem(rewards[1])}
-                        {renderRewardItem(rewards[2])}
-                    </View>
-                </View>
+      <View key={item.rewardId} style={styles.rewardItem}>
+        <View style={styles.pieChartContainer}>
+          {renderPieChart(item.percentage, '#FFB800')}
+          <TouchableOpacity style={styles.iconContainer} onPress={() => handleClaimPress(item)} disabled={!isCompleted} >
+          { item?.claimed ?
+            <View style={{width:'90%', backgroundColor:"gray",alignItems:'center', paddingVertical:10, borderRadius:10}}>
+            <Text style={{color:'#fff'}} >Clamied</Text> 
+            </View>:  <Image
+              source={{ uri: item.rewardImage }}
+              style={{ width: width / 5, height: height / 10, backgroundColor: '#f0f0f0',borderRadius:20 }}
+            />}
+          </TouchableOpacity>
+          <View style={styles.starContainer}>
+            <View style={styles.starBadge}>
+              <Text style={styles.starNumber}>{item.totalPoints}</Text>
+            <Image
+                source={require('../../../assets/star.png')}
+                style={styles.starImage}
+                resizeMode="contain"
+              />
             </View>
-        </GradientScreen>
+          </View>
+        </View>
+        <Text style={styles.label}>{item.rewardName}</Text>
+        <Text style={styles.desc}>{item.rewardDescription}</Text>
+      </View>
+    )
+  };
+
+  if (loading) {
+    return (
+      <GradientScreen colors={['#fff']}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#FFB800" />
+        </View>
+      </GradientScreen>
     );
+  }
+
+  return (
+    <GradientScreen colors={['#fff']}>
+      <View style={styles.container}>
+        <View style={styles.statsContainer}>
+          {statss.map((stat, index) => (
+            <View key={index} style={styles.statItem}>
+              <Icon name={stat.icon} size={24} color={stat.color} />
+              <Text style={styles.statValue}>{stat.value}</Text>
+            </View>
+          ))}
+        </View>
+
+        <Text style={styles.title}>Rewards</Text>
+
+        <View style={styles.rewardsContainer}>
+          {rewards.length > 0 && (
+            <>
+              <View style={styles.topReward}>
+                {renderRewardItem(rewards[0])}
+              </View>
+              <View style={styles.bottomRow}>
+                {rewards.slice(1, 3).map((item) => renderRewardItem(item))}
+              </View>
+            </>
+          )}
+        </View>
+        <CustomModal
+          visible={open}
+          confirmModal={true}
+          showClose={true}
+          onClose={handleConfirmClaim}
+          handleClose={() => {
+            setOpen(false);
+            setSelectedReward(null);
+          }}
+          title='Are you sure you want to Claim your Reward?'
+          buttonLabelCancel="No, Cancel"
+          buttonLabel="Yes, Claim"
+        />
+      </View>
+    </GradientScreen>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-        paddingTop: 20,
-    },
-    statsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        backgroundColor: '#FFFFFF',
-        marginHorizontal: 15,
-        borderRadius: 12,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-    },
-    statItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
-    statIcon: {
-        fontSize: 20,
-    },
-    statValue: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#FFB800',
-        marginLeft: 20,
-        marginTop: 25,
-        marginBottom: 20,
-    },
-    rewardsContainer: {
-        flex: 1,
-        paddingHorizontal: 20,
-    },
-    topReward: {
-        alignItems: 'center',
-        marginBottom: 30,
-    },
-    bottomRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-    },
-    rewardItem: {
-        alignItems: 'center',
-        marginTop: 20
-    },
-    pieChartContainer: {
-        position: 'relative',
-        width: 90,
-        height: 90,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    iconContainer: {
-        position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    emoji: {
-        fontSize: 36,
-    },
-    starContainer: {
-        position: 'absolute',
-        // right: -100,
-        bottom: -25,
-        left: -25,
-    
-    },
-    starBadge: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1
-    },
-    starNumber: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        color: '#fff',
-        // backgroundColor: '#FFFFFF',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 10,
-        overflow: 'hidden',
-        position: 'absolute',
-        top: 10,
-        zIndex: 1,
-    },
-    starImage: {
-        width: width / 1.6,
-        height: height / 18,
-    },
-    star: {
-        fontSize: 28,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#8B7BF7',
-        marginTop: 20,
-    },
+  container: { flex: 1, backgroundColor: '#F5F5F5', paddingTop: 20 },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 15,
+    borderRadius: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  statItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  statValue: { fontSize: 16, fontWeight: '600', color: '#333' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#FFB800', marginLeft: 20, marginVertical: 20 },
+  rewardsContainer: { flex: 1, paddingHorizontal: 20 },
+  topReward: { alignItems: 'center', marginBottom: 30 },
+  bottomRow: { flexDirection: 'row', justifyContent: 'space-around' },
+  rewardItem: { alignItems: 'center' },
+  pieChartContainer: {
+    position: 'relative',
+    width: 140,
+    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' },
+  starContainer: { position: 'absolute', bottom: -20, left: -20 },
+  starBadge: { alignItems: 'center', justifyContent: 'center' },
+  starNumber: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    position: 'absolute',
+    zIndex: 2,
+    top: 30,
+  },
+  starImage: { width: width / 4, height: height / 12 },
+  label: { fontSize: 18, fontWeight: '700', color: '#8B7BF7', marginTop: 15 },
+  desc: { fontSize: 12, color: '#666', marginTop: 4 },
 });
 
 export default Home;

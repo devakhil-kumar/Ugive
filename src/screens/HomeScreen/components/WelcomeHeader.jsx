@@ -24,7 +24,7 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
           </View>
 
           <Text style={styles.welcomeText}>
-            Welcome, <Text style={styles.userName}>{userName}</Text>!
+            Welcome
           </Text>
           <Text style={styles.tagline}>
             Be the difference in{'\n'}someone's world today

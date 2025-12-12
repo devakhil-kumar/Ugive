@@ -1,10 +1,16 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator, InteractionManager, Alert } from 'react-native';
 import { Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from '@react-navigation/native';
 import CustomModal from '../../common/CustomModal';
 import GradientScreen from '../../common/GradientScreen';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchEligibility } from '../../../fetures/eligibilitySlice';
+import { sendCardToFriend, resetCardState } from '../../../fetures/cardSendSlice';
+import { showMessage } from '../../../fetures/messageSlice'; 
+import { Dropdown } from 'react-native-element-dropdown';
+import { fetchRewardsCollages } from '../../../fetures/getRewardsSlice';
 const { height, width } = Dimensions.get('window');
 
 const CustomTextField = ({
@@ -15,7 +21,6 @@ const CustomTextField = ({
     multiline = false,
     inputStyle,
 }) => {
-
     return (
         <TextInput
             value={value}
@@ -29,78 +34,257 @@ const CustomTextField = ({
     );
 }
 
-const CustomButton = ({ onPress }) => {
+const CustomButton = ({ onPress, loading }) => {
     return (
-        <TouchableOpacity style={styles.customButtonStyle} onPress={onPress}>
-            <Text style={styles.customButtonTextStyle}>Submit</Text>
+        <TouchableOpacity 
+            style={[styles.customButtonStyle, loading && { backgroundColor: '#999' }]} 
+            onPress={onPress}
+            disabled={loading}
+        >
+            {loading ? (
+                <ActivityIndicator color="#fff" size="small" />
+            ) : (
+                <Text style={styles.customButtonTextStyle}>Submit</Text>
+            )}
         </TouchableOpacity>
     )
 }
 
-const BgCard = ({ onPress }) => {
+const BgCard = ({ onPress, sendCardLoading }) => {
     const [name, setNameText] = useState('');
     const [recipeintName, setRecipeintNameText] = useState('');
-    const [recipeintCollegeHouse, setRecipeintCollegeHouseText] = useState('');
+    const [recipeintEmail, setRecipeintEmail] = useState('');
     const [message, setMessageText] = useState('');
+    const [recipeintLast, setRecipeintNameLast] = useState('');
+    const [recipeintCollege, setRecipeintCollege] = useState('');
+    const dispatch = useDispatch();
+    const { list: rewards, loading } = useSelector((state) => state.rewards);
+    const [selectedReward, setSelectedReward] = useState(null);
+
+    console.log(rewards, loading, 'rewards');
+
+    useEffect(() => {
+        if (!rewards || rewards.length === 0) {
+            dispatch(fetchRewardsCollages());
+        }
+    }, []);
+
+    const rewardsData = rewards.map(item => ({
+        ...item,
+        disable: item.claimed || !item.unlocked
+    }));
+
+    const renderRewardItem = (item) => {
+        return (
+            <TouchableOpacity
+                style={{
+                    padding: 12,
+                    backgroundColor: item.disable ? "#eee" : "white",
+                    opacity: item.disable ? 0.5 : 1,
+                    flexDirection: "row",
+                    alignItems: "center"
+                }}
+            >
+                <Image
+                    source={{ uri: item.rewardImage }}
+                    style={{ width: 30, height: 30, borderRadius: 6, marginRight: 10 }}
+                />
+                <Text style={{ color: item.disable ? "gray" : "black" }}>
+                    {item.rewardName}
+                    {item.claimed ? " (Claimed)" : ""}
+                    {!item.unlocked && !item.claimed ? " (Locked)" : ""}
+                </Text>
+            </TouchableOpacity>
+        );
+    };
+
+    const handleSubmit = () => {
+        if (!name.trim()) {
+            Alert.alert('Error', 'Please enter your name');
+            return;
+        }
+        if (!recipeintName.trim()) {
+            Alert.alert('Error', 'Please enter recipient\'s first name');
+            return;
+        }
+        if (!recipeintEmail.trim()) {
+            Alert.alert('Error', 'Please enter recipient\'s email');
+            return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(recipeintEmail)) {
+            Alert.alert('Error', 'Please enter a valid email address');
+            return;
+        }
+
+        if (!message.trim()) {
+            Alert.alert('Error', 'Please enter a message');
+            return;
+        }
+
+        const cardData = {
+            reward: selectedReward,
+            message: message.trim(),
+            sender_name: name.trim(),
+            recipient_email: recipeintEmail.trim().toLowerCase(),
+            recipient_name: recipeintName.trim(),
+            recipient_last_name: recipeintLast.trim(),
+            college_name: recipeintCollege.trim(),
+        };
+
+        console.log('Sending card data:', cardData);
+        onPress(cardData);
+    };
+
     return (
         <View style={styles.cardBgStyle}>
-            
-            <Text style={styles.cardLabelTextStyle}>
-                Your Name
-            </Text>
+            <Text style={styles.cardLabelTextStyle}>Your Name</Text>
             <CustomTextField
                 value={name}
                 onChangeText={setNameText}
                 placeholder="Enter your Name"
             />
 
-            <Text style={styles.cardLabelTextStyle}>
-                Recipeint's Name
-            </Text>
+            <Text style={styles.cardLabelTextStyle}>Recipient's Name</Text>
             <CustomTextField
                 value={recipeintName}
                 onChangeText={setRecipeintNameText}
-                placeholder="Enter Recipeint's Name"
+                placeholder="Enter Recipient's Name"
             />
 
-            <Text style={styles.cardLabelTextStyle}>
-                Recipeint's College House
-            </Text>
+            <Text style={styles.cardLabelTextStyle}>Recipient's Last Name</Text>
             <CustomTextField
-                value={recipeintCollegeHouse}
-                onChangeText={setRecipeintCollegeHouseText}
-                placeholder="Type to search"
+                value={recipeintLast}
+                onChangeText={setRecipeintNameLast}
+                placeholder="Enter Recipient's Last Name"
             />
 
-            <Text style={styles.cardLabelTextStyle}>
-                Your Message
-            </Text>
+            <Text style={styles.cardLabelTextStyle}>Recipient's Email</Text>
+            <CustomTextField
+                value={recipeintEmail}
+                onChangeText={setRecipeintEmail}
+                placeholder="Enter email address"
+                keyboardType="email-address"
+            />
+
+            <Text style={styles.cardLabelTextStyle}>Recipient's College Name</Text>
+            <CustomTextField
+                value={recipeintCollege}
+                onChangeText={setRecipeintCollege}
+                placeholder="Enter Recipient's College Name"
+            />
+
+            <Text style={styles.cardLabelTextStyle}>Rewards</Text>
+            {(!rewards || rewards.length === 0) ? (
+                <Text style={{ color: "gray", marginTop: 10 }}>No rewards available</Text>
+            ) : (
+                <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    data={rewardsData}
+                    labelField="rewardName"
+                    valueField="rewardId"
+                    placeholder="Select Reward"
+                    searchPlaceholder="Search rewards..."
+                    value={selectedReward}
+                    onChange={(item) => {
+                        if (!item.disable) {
+                            setSelectedReward(item.rewardId);
+                            console.log('Selected reward:', item.rewardId);
+                        }
+                    }}
+                    renderItem={renderRewardItem}
+                />
+            )}
+
+            <Text style={styles.cardLabelTextStyle}>Your Message</Text>
             <CustomTextField
                 value={message}
                 onChangeText={setMessageText}
                 placeholder="Enter Your Message"
                 multiline={true}
             />
-
-            <CustomButton onPress={onPress} />
-            {/* </ScrollView> */}
+            
+            <CustomButton onPress={handleSubmit} loading={sendCardLoading} />
         </View>
     )
 }
 
-
 const GiftCard = () => {
     const navigation = useNavigation();
     const [open, setOpen] = useState(false);
+    const [modalHandled, setModalHandled] = useState(false);
+    const dispatch = useDispatch();
     
-    const handleOnPress = () => {
-        navigation.navigate('SendingCard')
-    }
-    return (
+    // ELIGIBILITY STATE
+    const { eligible, message, next_available_date, loading, error } = useSelector(
+        (state) => state.eligibility
+    );
+    
+    const { loading: sendCardLoading } = useSelector((state) => state.cardSend);
 
+    useEffect(() => {
+        dispatch(fetchEligibility());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (!loading && !modalHandled) {
+            if (eligible === false) {
+                setOpen(true);
+            } else {
+                setOpen(false);
+            }
+        }
+    }, [eligible, loading, modalHandled]);
+
+
+
+    const handleOnPress = async (cardData) => {
+        console.log('Submitting card:', cardData);
+        try {
+            const result = await dispatch(sendCardToFriend(cardData)).unwrap();
+            
+            dispatch(
+                showMessage({
+                    type: 'success',
+                    text: 'Card sent successfully to your friend!',
+                })
+            );
+            
+            navigation.navigate('SendingCard');
+            
+        } catch (error) {
+            dispatch(
+                showMessage({
+                    type: 'error',
+                    text: error || 'Failed to send card. Please try again.',
+                })
+            );
+        } finally {
+            dispatch(resetCardState());
+        }
+    };
+
+    const handleCloseModal = async () => {
+        setOpen(false);
+        setModalHandled(true);
+        await new Promise(resolve => setTimeout(resolve, 50));
+        navigation.navigate('HomeScreen');
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color={'#6D5B98'} />
+            </View>
+        );
+    }
+
+    return (
         <GradientScreen colors={['#B5D1EB', '#B5D1EB', '#E9B243', '#6D5B98']} locations={[0, 0.5, 0.6, 1]}>
             <View style={styles.container}>
-                {/* Fixed Background Images */}
                 <View style={styles.cupImagePosition}>
                     <Image
                         source={require('../../../assets/cup.png')}
@@ -134,22 +318,20 @@ const GiftCard = () => {
                             style={styles.appLogoStyle}
                         />
                         <Text style={styles.screenTextStyle}>One card a week keeps the smiles going!</Text>
-                        <BgCard onPress={handleOnPress} />
+                        <BgCard onPress={handleOnPress} sendCardLoading={sendCardLoading} />
                     </View>
                 </KeyboardAwareScrollView>
-                {/* <CustomModal
+                <CustomModal
                     visible={open}
-                    onClose={() => setOpen(false)}
+                    onClose={handleCloseModal}
                     title="You're on break!"
                     buttonLabel='Got it'
+                    showClose={true}
                 >
                     <Text style={[styles.screenTextStyle, { color: 'black', textAlign: 'center' }]}>
-                        Thanks for sending last card. You can send another card from{' '}
-                        <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>
-                            july 14.
-                        </Text>
+                        {error?.message}
                     </Text>
-                </CustomModal> */}
+                </CustomModal>
             </View>
         </GradientScreen>
     )
@@ -211,8 +393,6 @@ const styles = StyleSheet.create({
         color: 'white',
         marginTop: 10
     },
-
-    // custom Text Field
     input: {
         height: 43,
         borderWidth: 1,
@@ -223,9 +403,7 @@ const styles = StyleSheet.create({
         color: "#000",
         marginTop: 5,
         marginBottom: 16
-
     },
-    // custom Button style 
     customButtonStyle: {
         height: 40,
         backgroundColor: '#DDDDDD',
@@ -246,14 +424,13 @@ const styles = StyleSheet.create({
         letterSpacing: 0.2,
         color: '#A0A0A0'
     },
-    // cardBg style
     cardBgStyle: {
         backgroundColor: 'white',
         padding: 16,
         borderRadius: 15,
         marginHorizontal: 16,
         marginTop: 25,
-        height: height * 0.60,
+        height: height * 0.90,
     },
     cardLabelTextStyle: {
         fontWeight: '500',
@@ -261,8 +438,23 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         letterSpacing: 0,
         color: 'black'
-    }
-
+    },
+    loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#ffff',
+    },
+    dropdown: {
+        borderWidth: 1.5,
+        borderColor: '#E0E0E0',
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        backgroundColor: '#FAFAFA',
+    },
+    placeholderStyle: { fontSize: 15, color: '#C4C4C4' },
+    selectedTextStyle: { fontSize: 15, color: '#333' },
 });
 
-export default GiftCard
+export default GiftCard;

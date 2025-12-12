@@ -11,9 +11,8 @@ const { width, height } = Dimensions.get('window');
 
 const SendingCard = () => {
     const navigation = useNavigation();
-    const [open, setOpen] = useState(false);
-   const handleOnPress = () => {
-        setOpen(!open)
+    const handleOnPress = () => {
+        navigation.navigate('HomeScreen')
     }
     return (
         <GradientScreen>
@@ -44,19 +43,6 @@ const SendingCard = () => {
                         <Text style={styles.txtBtn}>Let's go!</Text>
                     </TouchableOpacity>
                 </View>
-                <CustomModal
-                    visible={open}
-                    onClose={() => setOpen(false)}
-                    title="You're on break!"
-                    buttonLabel='Got it'
-                >
-                    <Text style={[styles.screenTextStyle, { color: 'black', textAlign: 'center' }]}>
-                        Thanks for sending last card. You can send another card from{' '}
-                        <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>
-                            july 14.
-                        </Text>
-                    </Text>
-                </CustomModal>
             </View>
         </GradientScreen>
     );
@@ -114,7 +100,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-     screenTextStyle: {
+    screenTextStyle: {
         fontWeight: '800',
         fontSize: 16,
         lineHeight: 21,

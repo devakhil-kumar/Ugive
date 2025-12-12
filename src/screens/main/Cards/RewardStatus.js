@@ -1,14 +1,15 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 import GradientScreen from '../../common/GradientScreen';
-import CustomModal from '../../common/CustomModal';
-import { useState } from 'react';
+import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice';
+
 const { width, height } = Dimensions.get('window');
 
-
-const ProgressPieChart = ({ percentage = 20 }) => {
+export const ProgressPieChart = ({ percentage = 20 }) => {
     const pieData = [
         {
             value: percentage,
@@ -47,14 +48,57 @@ const ProgressPieChart = ({ percentage = 20 }) => {
     );
 };
 
-const RewardStutas = () => {
+const RewardStatus = () => {
     const navigation = useNavigation();
-    const [open, setOpen] = useState(false);
+    const dispatch = useDispatch();
+    
+    const { currentReward, loading, error } = useSelector(state => state.cardRemaning);
+    console.log(currentReward, 'current')
 
-    const hnadleModal = () => {
-        setOpen(true)
+    const handleModal = () => {
+        navigation.navigate('GiftCard');
+    };
+
+    if (loading) {
+        return (
+            <GradientScreen colors={['#6D5B98']}>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#FFFFFF" />
+                    <Text style={styles.loadingText}>Loading...</Text>
+                </View>
+            </GradientScreen>
+        );
     }
 
+    if (error) {
+        return (
+            <GradientScreen colors={['#6D5B98']}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Image
+                        source={require('../../../assets/backIcon.png')}
+                        style={styles.backIconStyle}
+                    />
+                </TouchableOpacity>
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>Error loading rewards</Text>
+                    <TouchableOpacity 
+                        style={styles.retryButton}
+                        onPress={() => dispatch(fetchCardSendRemaining())}
+                    >
+                        <Text style={styles.retryText}>Retry</Text>
+                    </TouchableOpacity>
+                </View>
+            </GradientScreen>
+        );
+    }
+
+    const remainingCards = currentReward 
+        ? currentReward.totalPoints - currentReward.completedPoints 
+        : 0;
+    const percentage = currentReward?.percentage || 0;
+    const rewardName = currentReward?.rewardName || 'Reward';
+
+    console.log(percentage,currentReward, 'perscantge+++++++++++')
     return (
         <GradientScreen colors={['#6D5B98']}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -64,34 +108,18 @@ const RewardStutas = () => {
                 />
             </TouchableOpacity>
             <View style={styles.pageBg}>
-
                 <Text style={styles.header}>
-                    Send 4 more cards to
-                    receive a free  <Text style={{ color: "#D99656" }}>Coffee.</Text>
+                    Send {remainingCards} more {remainingCards === 1 ? 'card' : 'cards'} to
+                    receive a free <Text style={{ color: "#D99656" }}>{rewardName}.</Text>
                 </Text>
-                <ProgressPieChart />
-                <TouchableOpacity style={styles.btnLets} onPress={hnadleModal} >
+                <ProgressPieChart percentage={percentage} />
+                <TouchableOpacity style={styles.btnLets} onPress={handleModal}>
                     <Text style={styles.txtBtn}>Start Writing</Text>
                 </TouchableOpacity>
             </View>
-            <CustomModal
-                visible={open}
-                onClose={() => setOpen(false)}
-                title="You're on break!"
-                buttonLabel='Got it'
-            >
-                <Text style={[styles.screenTextStyle, { color: 'black', textAlign: 'center' }]}>
-                    Thanks for sending last card. You can send another card from{' '}
-                    <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>
-                        july 14.
-                    </Text>
-                </Text>
-            </CustomModal>
         </GradientScreen>
-
-    )
-}
-
+    );
+};
 
 const styles = StyleSheet.create({
     pageBg: {
@@ -100,59 +128,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-evenly'
     },
-    screenText: {
-        fontSize: 14,
-        fontWeight: '800',
-        lineHeight: 14,
-        letterSpacing: 0,
-        color: 'black'
-    },
-    contentContainerStyle: {
-        padding: 16,
-        borderWidth: 2,
-        borderColor: '#BDBDBD',
-        borderRadius: 10,
-        marginTop: 20
-    },
-    dropDownTextRowStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    dropDownStyle: {
-        borderWidth: 2,
-        borderRadius: 10,
-        padding: 10,
-        marginTop: 5,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    backImagePosition: {
-        position: 'absolute',
-        top: 20,
-        left: 16,
-    },
     backIconStyle: {
         width: 38,
         height: 38,
         alignSelf: "flex-start",
         marginLeft: 16
-    },
-    stackIconStyle: {
-        width: 18,
-        height: 18,
-    },
-    arrowIconStyle: {
-        height: 10,
-        width: 10
-    },
-    bgCard: {
-        padding: 16,
-        backgroundColor: 'white',
-        borderRadius: 15,
-        width: width * 0.8,
-        height: height * 0.4
     },
     header: {
         fontSize: 22,
@@ -172,18 +152,15 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         borderWidth: 1,
         borderColor: '#fff',
-        // marginTop: 30
     },
     txtBtn: {
         color: '#fff',
         fontSize: 14,
         fontWeight: '500'
     },
-    ////paircahrt
     container: {
         width: 365,
         height: 365,
-        // backgroundColor: '#8B7FB8',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -200,9 +177,43 @@ const styles = StyleSheet.create({
     percentageText: {
         fontSize: 84,
         fontWeight: '800',
-        // fontWeight: 'bold',
         color: '#FFFFFF',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        marginTop: 10,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    errorText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    retryButton: {
+        backgroundColor: "#E9B243",
+        borderRadius: 25,
+        paddingHorizontal: 30,
+        paddingVertical: 12,
+        borderWidth: 1,
+        borderColor: '#fff',
+    },
+    retryText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '500',
     },
 });
 
-export default RewardStutas;
+export default RewardStatus;

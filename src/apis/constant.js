@@ -4,5 +4,22 @@ export const API_ROUTES = {
     GETUNIVERSITIES: "public/universities",
     GETCOLLEGES: (universityId) =>
         `public/universities/${universityId}/colleges`,
-
+    GETPROFILE:"student/profile",
+    EDITPROFILE:'student/profile',
+    RESETPASSWORD:"public/request-reset-password",
+    RESETCODE:"public/verify-reset-password",
+    DELETEACCOUNT:'student/delete-account',
+    CHANGEPASSWORD:'student/change-password',
+    GETALLREWARDS:'student/college-rewards',
+    SENDCARD:'student/cards',
+    FRIENDdLIST: "student/friends",
+    FRIENDSRECEVIED: 'student/friend/received',
+    SEARCHNAMEEMAIL:'search?name=',
+    ADDFRINED:'student/friend/send',
+    AcceptFriend:'student/friend/accept',
+    DeleteRequest:'student/friend/delete',
+    ELIGIBILITYcheck:'student/check-card-eligibility',
+    REMAININGCARDS:'student/remaining-cards',
+    CLAIMREWARDS:'student/rewards/claim',
+    SENDCARDLIST:'student/sent-card-listing'
 }

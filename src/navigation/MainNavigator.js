@@ -18,11 +18,13 @@ const MainNavigator = () => {
 
 
   const defaultTabBarStyle = {
-    height: 65 + bottomInset,
-    paddingBottom: bottomInset,
+    // height: 65 + bottomInset,
+    height: Platform.OS === 'android' ? 65 + bottomInset : 80,
+
+    // paddingBottom: bottomInset,
     backgroundColor: '#C6D4ED',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    // borderTopLeftRadius: 30,
+    // borderTopRightRadius: 30,
     alignItems: 'center',
     paddingTop: 16
   };

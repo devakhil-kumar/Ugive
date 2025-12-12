@@ -1,9 +1,29 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfile } from '../../../fetures/profileSlice';
 
 const Profile = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            dispatch(fetchProfile());
+        }, [dispatch])
+    )
+
+    if (loading) {
+        return (
+            <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#3340C4" />
+            </View>
+        );
+    }
+
+    const { user, loading } = useSelector(state => state.profile);
 
     const handleCardSent = () => {
         navigation.navigate('ReadCard')
@@ -13,8 +33,12 @@ const Profile = () => {
         navigation.navigate('RewardStutas')
     }
 
+    const handleProfileDetails = () => {
+        navigation.navigate('ProfileDetails', { user: user })
+    }
+
     return (
-        <GradientScreen colors={['#D99656','#6D5B98', '#B5D1EB','#B5D1EB']}>
+        <GradientScreen colors={['#D99656', '#6D5B98', '#B5D1EB', '#B5D1EB']}>
             <View style={styles.pageBg}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Image
@@ -26,10 +50,10 @@ const Profile = () => {
                     source={require('../../../assets/profile.png')}
                     style={styles.profileStyle}
                 />
-                <Text style={[styles.screenTextStyle, { color: 'white', textAlign: 'center' }]}>Hey, <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>Annie</Text>!</Text>
+                <Text style={[styles.screenTextStyle, { color: 'white', textAlign: 'center' }]}>Hey, <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>{user?.name}</Text>!</Text>
                 <TouchableOpacity
                     style={styles.butoonStyle}
-                    onPress={() => navigation.navigate('ProfileDetails')}
+                    onPress={handleProfileDetails}
                 >
                     <Text style={styles.buttonText}>Profile Info</Text>
                 </TouchableOpacity>
@@ -51,7 +75,7 @@ const styles = StyleSheet.create({
     backIconStyle: {
         width: 38,
         height: 38,
-        marginLeft:20
+        marginLeft: 20
     },
     profileStyle: {
         marginTop: 60,
@@ -90,6 +114,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 14,
         letterSpacing: 0.2,
+    },
+    loaderContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff'
     }
 });
 

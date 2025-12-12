@@ -1,34 +1,70 @@
-import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity } from "react-native";
-import { useState } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useState, useEffect, useMemo } from 'react';
 import { Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import GradientScreen from "../../common/GradientScreen";
+import { fetchFriendList } from '../../../fetures/friendListSlice'; 
+
 const { height, width } = Dimensions.get('window');
 
-const ListItem = () => {
+const ListItem = ({ friend }) => {
     return (
         <View style={styles.listDataItemStyle}>
             <View style={styles.imageContainer}>
-                <Image
-                    source={require('../../../assets/person.png')}
-                    style={styles.personIconStyle}
-                />
+                {friend.profileImage ? (
+                    <Image
+                        source={{ uri: friend.profileImage }}
+                        style={styles.personIconStyle}
+                    />
+                ) : (
+                    <Image
+                        source={require('../../../assets/person.png')}
+                        style={styles.personIconStyle}
+                    />
+                )}
             </View>
-            <View style={{ marginStart: 16 }}>
-                <Text style={styles.nameTextStyle}>John Doe</Text>
-                <Text style={styles.emailTextStyle}>@johndoe</Text>
+            <View style={{ marginStart: 16, flex: 1 }}>
+                <Text style={styles.nameTextStyle}>{friend.name}</Text>
+                <Text style={styles.emailTextStyle}>{friend.email}</Text>
+                {friend.university && (
+                    <Text style={styles.universityTextStyle}>
+                        {friend.university.name}
+                    </Text>
+                )}
             </View>
         </View>
-    )
-}
+    );
+};
 
 const FriendsList = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
     const [searchText, setSearchText] = useState('');
 
+    const { list: friends, loading, error } = useSelector((state) => state.friends);
+    console.log(friends,loading,error,'firends________')
+
+    useEffect(() => {
+        dispatch(fetchFriendList());
+    }, [dispatch]);
+
+    const filteredFriends = useMemo(() => {
+        if (!searchText.trim()) {
+            return friends;
+        }
+        const searchLower = searchText.toLowerCase();
+        return friends.filter(friend => 
+            friend.name?.toLowerCase().includes(searchLower) ||
+            friend.email?.toLowerCase().includes(searchLower) ||
+            friend.university?.name?.toLowerCase().includes(searchLower) ||
+            friend.college?.name?.toLowerCase().includes(searchLower)
+        );
+    }, [friends, searchText]);
+
     const handleFriendList = () => {
-        navigation.navigate('FriendsRequest')
-    }
+        navigation.navigate('FriendsRequest');
+    };
 
     return (
         <GradientScreen colors={['#6955A5']}>
@@ -48,10 +84,9 @@ const FriendsList = () => {
                         />
                     </TouchableOpacity>
                 </View>
+
                 <View style={styles.serachBarRowStyle}>
-                    <View
-                        style={styles.searchContainerStyle}
-                    >
+                    <View style={styles.searchContainerStyle}>
                         <Image
                             source={require('../../../assets/search.png')}
                             style={styles.searchIconStyle}
@@ -65,21 +100,47 @@ const FriendsList = () => {
                         />
                     </View>
                 </View>
+
                 <View style={styles.filterRowStyle}>
-                    <Text style={styles.filterText}>Friends</Text>
+                    <Text style={styles.filterText}>
+                        Friends {filteredFriends.length > 0 && `(${filteredFriends.length})`}
+                    </Text>
                 </View>
-                <FlatList
-                    data={[...Array(5)]}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ index }) => (
-                        <ListItem />
-                    )}
-                />
+
+                {loading ? (
+                    <View style={styles.centerContainer}>
+                        <ActivityIndicator size="large" color="#F3B11C" />
+                        <Text style={styles.loadingText}>Loading friends...</Text>
+                    </View>
+                ) : error ? (
+                    <View style={styles.centerContainer}>
+                        <Text style={styles.errorText}>Error: {error}</Text>
+                        <TouchableOpacity 
+                            style={styles.retryButton}
+                            onPress={() => dispatch(fetchFriendList())}
+                        >
+                            <Text style={styles.retryButtonText}>Retry</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : filteredFriends.length === 0 ? (
+                    <View style={styles.centerContainer}>
+                        <Text style={styles.emptyText}>
+                            {searchText ? 'No friends found' : 'No friends yet'}
+                        </Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={filteredFriends}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => <ListItem friend={item} />}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                    />
+                )}
             </View>
         </GradientScreen>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     pageBg: {
@@ -113,7 +174,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: 40,
+        marginTop: 20,
     },
     searchContainerStyle: {
         flexDirection: 'row',
@@ -131,7 +192,6 @@ const styles = StyleSheet.create({
         color: '#6955A5',
         marginStart: 10
     },
-    //Filter People Row
     filterRowStyle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -143,13 +203,14 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: 'white'
     },
-    // List Data item Style
     personIconStyle: {
         width: 45,
         height: 45,
+        borderRadius: 22.5,
     },
     listDataItemStyle: {
-        height: 60,
+        height: 'auto',
+        minHeight: 60,
         backgroundColor: 'transparent',
         marginBottom: 30,
         flexDirection: 'row',
@@ -162,7 +223,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F3B11C',
         borderRadius: 16,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        overflow: 'hidden'
     },
     nameTextStyle: {
         fontWeight: '800',
@@ -171,8 +233,47 @@ const styles = StyleSheet.create({
     },
     emailTextStyle: {
         fontWeight: '400',
-        fontSize: 17,
-        color: 'white'
+        fontSize: 15,
+        color: 'white',
+        marginTop: 2
+    },
+    universityTextStyle: {
+        fontWeight: '400',
+        fontSize: 13,
+        color: '#F3B11C',
+        marginTop: 4
+    },
+    centerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        color: 'white',
+        fontSize: 16,
+        marginTop: 10,
+    },
+    errorText: {
+        color: '#FF6B6B',
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    emptyText: {
+        color: 'white',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    retryButton: {
+        backgroundColor: '#F3B11C',
+        paddingHorizontal: 30,
+        paddingVertical: 12,
+        borderRadius: 25,
+    },
+    retryButtonText: {
+        color: '#6955A5',
+        fontSize: 16,
+        fontWeight: '700',
     }
 });
 

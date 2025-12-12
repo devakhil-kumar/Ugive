@@ -1,14 +1,19 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
 import { logout } from '../../../fetures/authSlice';
 import { useDispatch } from 'react-redux';
+import { deleteAccount } from '../../../fetures/deleteSlice';
+import { clearUserData } from '../../../utils/asyncStorageManager';
+import { useState } from 'react';
+import CustomModal from '../../common/CustomModal';
 const { width } = Dimensions.get('window');
 
 const ProfileDetails = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [confirmVisible, setConfirmVisible] = useState(false);
 
     const handleLogout = async () => {
         try {
@@ -16,7 +21,29 @@ const ProfileDetails = () => {
         } catch (error) {
             console.log(error);
         }
+    }
 
+    const handleDelete = async () => {
+        try {
+            const response = await dispatch(deleteAccount()).unwrap();
+            await clearUserData();
+            dispatch(logout());
+        } catch (error) {
+            console.log('error', error)
+        }
+    }
+
+    const onHandleConfirm = () => {
+        setConfirmVisible(false);
+        handleDelete();
+    }
+
+
+    const route = useRoute();
+    const { user } = route.params;
+
+    const HandleProfileEdit = () => {
+        navigation.navigate('EditProfile', { user: user })
     }
 
     return (
@@ -41,43 +68,44 @@ const ProfileDetails = () => {
                 <View style={{ marginVertical: 30, alignContent: 'center' }}>
                     <View style={styles.textRowStyle}>
                         <Text style={styles.screenTextStyle}>Name:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>Annie Philips</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>{user?.name}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>Mobile:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>0123456789</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>{user?.phoneNumber}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>Email:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>annie.phillips93@gmail.com</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>{user?.email}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>University:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>University of{"\n"}Queensland</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '50%' }]}>{user?.university?.name}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>College:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>Pitt Hall</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '60%' }]}>{user?.college?.name}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>USI:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>321</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>{user?.studentUniId}</Text>
                     </View>
                 </View>
 
                 <TouchableOpacity
                     style={[styles.butoonStyle, { backgroundColor: '#B09FE9', marginTop: 30 }]}
-                    onPress={() => navigation.navigate('EditProfile')}
+                    onPress={HandleProfileEdit}
                 >
                     <Text style={styles.buttonText}>Edit Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#8B79C4', marginTop: 20 }]} onPress={handleLogout} >
                     <Text style={styles.buttonText}>Sign Out</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#66579E', marginTop: 20 }]} >
+                <TouchableOpacity style={[styles.butoonStyle, { backgroundColor: '#66579E', marginTop: 20 }]} onPress={() => setConfirmVisible(true)}>
                     <Text style={styles.buttonText}>Delete Account</Text>
                 </TouchableOpacity>
             </View>
+            <CustomModal visible={confirmVisible} confirmModal={true} showClose={true} onClose={onHandleConfirm} handleClose={() => setConfirmVisible(false)} title=" Are you sure you want to delete your account?" buttonLabelCancel={'No,Cancel'} buttonLabel={'Yes, Delete'} />
         </GradientScreen>
     )
 }
@@ -111,8 +139,7 @@ const styles = StyleSheet.create({
     screenTextStyle: {
         fontWeight: '800',
         fontSize: 18,
-        letterSpacing: 0,
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
         color: '#7D8286',
     },
 

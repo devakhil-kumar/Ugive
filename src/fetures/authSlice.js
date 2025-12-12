@@ -68,6 +68,7 @@ const authSlice = createSlice({
             state.isLoggedIn = false;
             state.user = null;
             state.userRole = null;
+            state.token = null;
             console.log('User logged out successfully.');
         },
         resetAuthError: (state) => {

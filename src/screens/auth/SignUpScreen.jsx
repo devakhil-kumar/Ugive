@@ -26,7 +26,6 @@ const SignUpScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  // Form Fields
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [university, setUniversity] = useState(null);
@@ -36,7 +35,6 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  // Validation States
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -54,7 +52,6 @@ const SignUpScreen = () => {
     return () => dispatch(clearColleges());
   }, [dispatch]);
 
-  // Allowed University Domains (Add more if needed)
   const ALLOWED_EMAIL_DOMAINS = [
     'usq.edu.au',
     'uq.edu.au',
@@ -313,7 +310,6 @@ const SignUpScreen = () => {
               {showError('college') && <Text style={styles.errorText}>{errors.college}</Text>}
             </View>
 
-            {/* Email */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>University Email</Text>
               <TextInput
@@ -328,7 +324,6 @@ const SignUpScreen = () => {
               {showError('email') && <Text style={styles.errorText}>{errors.email}</Text>}
             </View>
 
-            {/* Mobile */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Mobile Number</Text>
               <MaskedTextInput
@@ -439,7 +434,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#FAFAFA',
   },
-  passwordInput: { flex: 1, paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 },
+  passwordInput: {paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 , width:'90%'},
   inputError: { borderColor: '#e74c3c' },
   errorText: { color: '#e74c3c', fontSize: 13, marginTop: 6 },
   signUpButton: {

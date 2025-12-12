@@ -1,69 +1,61 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
+import { useDispatch, useSelector } from 'react-redux';
+import { PieChart } from 'react-native-gifted-charts';
+import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice';
 
-const CircularProgress = ({ percentage, size = 120, strokeWidth = 8 }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circleCircumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circleCircumference - (circleCircumference * percentage) / 100;
-  
-  return (
-    <Svg width={size} height={size}>
-      <G rotation="-90" origin={`${size / 2}, ${size / 2}`}>
-        {/* Background Circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="#E5B865"
-          strokeWidth={strokeWidth}
-          fill="none"
-          opacity={0.3}
-        />
-        {/* Progress Circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="#E5B865"
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circleCircumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-        />
-        {/* Inner Circle */}
-        {/* <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius - strokeWidth}
-          stroke="#E5B865"
-          strokeWidth={strokeWidth / 2}
-          fill="none"
-          opacity={0.3}
-        /> */}
-        {/* Inner Progress Circle */}
-        {/* <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius - strokeWidth}
-          stroke="#E5B865"
-          strokeWidth={strokeWidth / 2}
-          fill="none"
-          strokeDasharray={circleCircumference - strokeWidth * 2}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-        /> */}
-      </G>
-    </Svg>
-  );
+ const ProgressPieChart = ({ percentage = 20 }) => {
+    const pieData = [
+        {
+            value: percentage,
+            color: '#EBB142',
+            focused: false,
+        },
+        {
+            value: 100 - percentage,
+            color:"#FFFFFF",
+            strokeColor: '#EBB142',
+            strokeWidth: 2,
+        },
+    ];
+
+    return (
+        <View style={styles.containersen}>
+            <View style={styles.chartContainer}>
+                <PieChart
+                    data={pieData}
+                    donut
+                    radius={60}
+                    innerRadius={50}
+                    // innerCircleColor="#6D5B98"
+                    strokeColor="#EBB142"
+                    strokeWidth={2}
+                    showText={false}
+                    showGradient={false}
+                    innerCircleBorderWidth={3}
+                    innerCircleBorderColor={'#EBB142'}
+                    
+                />
+                <View style={styles.centerTextContainer}>
+                    <Text style={styles.percentageText}>{percentage}%</Text>
+                </View>
+            </View>
+        </View>
+    );
 };
 
-const RewardSection = ({ onPress, cardsRemaining = 5, progressPercentage = 0 }) => {
+const RewardSection = ({ onPress }) => {
   const circleSize = isTablet ? moderateScale(140) : moderateScale(120);
-  
+  const { currentReward, loading, error } = useSelector(state => state.cardRemaning);
+  const percentage = currentReward?.percentage || 0;
+  const remainingCards = currentReward 
+  ? currentReward.totalPoints - currentReward.completedPoints 
+  : 0;
+
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -73,7 +65,7 @@ const RewardSection = ({ onPress, cardsRemaining = 5, progressPercentage = 0 }) 
           </Text>
           
           <Text style={styles.subtitle}>
-            Send <Text style={styles.number}>{cardsRemaining} more</Text>{' '}
+            Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
             <Text style={styles.action}>cards</Text> to{'\n'}
             <Text style={styles.receive}>receive</Text> a free{' '}
             <Text style={styles.item}>coffee.</Text>
@@ -87,17 +79,7 @@ const RewardSection = ({ onPress, cardsRemaining = 5, progressPercentage = 0 }) 
             <Text style={styles.buttonText}>Let's go!</Text>
           </TouchableOpacity>
         </View>
-        
-        <View style={styles.progressContainer}>
-          <CircularProgress 
-            percentage={progressPercentage} 
-            size={circleSize}
-            strokeWidth={moderateScale(8)}
-          />
-          <View style={styles.percentageContainer}>
-            <Text style={styles.progressText}>{progressPercentage}%</Text>
-          </View>
-        </View>
+        <ProgressPieChart percentage={percentage} />
       </View>
     </View>
   );
@@ -193,6 +175,26 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#E5B865',
   },
+  centerTextContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+containersen: {
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+chartContainer: {
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+  padding:2
+},
+percentageText: {
+  fontSize:30,
+  fontWeight: '800',
+  color: '#EBB142',
+},
 });
 
 export default RewardSection;

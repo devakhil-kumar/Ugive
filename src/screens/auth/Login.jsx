@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../fetures/authSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from '../../fetures/messageSlice';
+import CustomModal from '../common/CustomModal';
+import { resetAccountDeleted } from '../../fetures/deleteSlice';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -25,7 +27,24 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const { accountDeleted , message} = useSelector((state) => state.delete);
+  console.log(accountDeleted, message,'bchkdfbvdfjgbvgkhjfv')
+
+  useEffect(() => {
+    if (accountDeleted) {
+        setShowMessage(true);
+        const timer = setTimeout(() => {
+            setShowMessage(false);
+            dispatch(resetAccountDeleted()); 
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+}, [accountDeleted, dispatch]);
+
   
+
   const handleLogin = async () => {
     setIsLoading(true);
     try {
@@ -34,7 +53,6 @@ const LoginScreen = () => {
         password: password,
       };
       const response = await dispatch(loginUser(loginPayload)).unwrap();
-      console.log(response, 'response+++++++')
     } catch (error) {
       const errorMessage = typeof error === "string"
         ? error
@@ -68,8 +86,12 @@ const LoginScreen = () => {
     return (
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color={'yellow'} />
-    </View>
+      </View>
     );
+  }
+
+  const handleForgetPassword = () => {
+    navigation.navigate('ResetPassword')
   }
 
   return (
@@ -106,7 +128,7 @@ const LoginScreen = () => {
               />
             </View>
 
-            <View style={styles.inputGroup}>
+            <View style={[styles.inputGroup, { marginBottom: 0 }]}>
               <Text style={styles.label}>Your Password</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
@@ -131,6 +153,12 @@ const LoginScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
+            <TouchableOpacity onPress={handleForgetPassword} >
+              <Text style={{ alignSelf: 'flex-end', marginTop: 10 }}>
+                Forgot Password
+              </Text>
+            </TouchableOpacity>
+
 
             <TouchableOpacity
               style={styles.loginButton}
@@ -149,6 +177,7 @@ const LoginScreen = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <CustomModal visible={showMessage} title={message} />
     </SafeAreaView>
   );
 };
@@ -242,7 +271,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '70%',
     alignSelf: 'center',
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 15
   },
   loginButtonText: {
     fontSize: 17,
