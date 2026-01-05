@@ -27,25 +27,76 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
-  const { accountDeleted , message} = useSelector((state) => state.delete);
-  console.log(accountDeleted, message,'bchkdfbvdfjgbvgkhjfv')
+  const [showMessagee, setShowMessagee] = useState(false);
+  const { accountDeleted, message } = useSelector((state) => state.delete);
+
+  // Validation states
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [hasAttemptedLogin, setHasAttemptedLogin] = useState(false);
 
   useEffect(() => {
     if (accountDeleted) {
-        setShowMessage(true);
-        const timer = setTimeout(() => {
-            setShowMessage(false);
-            dispatch(resetAccountDeleted()); 
-        }, 3000);
+      setShowMessagee(true);
+      const timer = setTimeout(() => {
+        setShowMessagee(false);
+        dispatch(resetAccountDeleted());
+      }, 3000);
 
-        return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
     }
-}, [accountDeleted, dispatch]);
+  }, [accountDeleted, dispatch]);
 
-  
+  // Email validation function
+  const validateEmail = (emailValue) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailValue.trim()) {
+      return 'Email is required';
+    } else if (!emailRegex.test(emailValue)) {
+      return 'Please enter a valid email';
+    }
+    return '';
+  };
+
+  // Password validation function
+  const validatePassword = (passwordValue) => {
+    if (!passwordValue.trim()) {
+      return 'Password is required';
+    } else if (passwordValue.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return '';
+  };
+
+  // Live validation after first attempt
+  useEffect(() => {
+    if (hasAttemptedLogin) {
+      setEmailError(validateEmail(email));
+    }
+  }, [email, hasAttemptedLogin]);
+
+  useEffect(() => {
+    if (hasAttemptedLogin) {
+      setPasswordError(validatePassword(password));
+    }
+  }, [password, hasAttemptedLogin]);
 
   const handleLogin = async () => {
+    // Mark that user has attempted login
+    setHasAttemptedLogin(true);
+
+    // Validate all fields
+    const emailErr = validateEmail(email);
+    const passwordErr = validatePassword(password);
+
+    setEmailError(emailErr);
+    setPasswordError(passwordErr);
+
+    // If there are errors, don't proceed
+    if (emailErr || passwordErr) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       const loginPayload = {
@@ -94,6 +145,9 @@ const LoginScreen = () => {
     navigation.navigate('ResetPassword')
   }
 
+  // Check if form is valid
+  const isFormValid = email.trim() && password.trim() && !emailError && !passwordError;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E5B865" />
@@ -117,7 +171,10 @@ const LoginScreen = () => {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Your Email</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  emailError ? styles.inputError : null
+                ]}
                 placeholder="Enter your Email"
                 placeholderTextColor="#C4C4C4"
                 value={email}
@@ -126,11 +183,17 @@ const LoginScreen = () => {
                 autoCapitalize="none"
                 autoCorrect={false}
               />
+              {emailError ? (
+                <Text style={styles.errorText}>{emailError}</Text>
+              ) : null}
             </View>
 
             <View style={[styles.inputGroup, { marginBottom: 0 }]}>
               <Text style={styles.label}>Your Password</Text>
-              <View style={styles.passwordContainer}>
+              <View style={[
+                styles.passwordContainer,
+                passwordError ? styles.inputError : null
+              ]}>
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="Enter your Password"
@@ -152,20 +215,31 @@ const LoginScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
+              {passwordError ? (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              ) : null}
             </View>
-            <TouchableOpacity onPress={handleForgetPassword} >
-              <Text style={{ alignSelf: 'flex-end', marginTop: 10 }}>
+
+            <TouchableOpacity onPress={handleForgetPassword}>
+              <Text style={styles.forgotPassword}>
                 Forgot Password
               </Text>
             </TouchableOpacity>
 
-
             <TouchableOpacity
-              style={styles.loginButton}
+              style={[
+                styles.loginButton,
+                isFormValid && styles.loginButtonActive
+              ]}
               onPress={handleLogin}
               activeOpacity={0.8}
             >
-              <Text style={styles.loginButtonText}>Let's go!</Text>
+              <Text style={[
+                styles.loginButtonText,
+                isFormValid && styles.loginButtonTextActive
+              ]}>
+                Let's go!
+              </Text>
             </TouchableOpacity>
 
             <View style={styles.signUpContainer}>
@@ -177,7 +251,7 @@ const LoginScreen = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <CustomModal visible={showMessage} title={message} />
+      <CustomModal visible={showMessagee} title={message} />
     </SafeAreaView>
   );
 };
@@ -246,6 +320,15 @@ const styles = StyleSheet.create({
     color: '#333333',
     backgroundColor: '#FAFAFA',
   },
+  inputError: {
+    borderColor: '#FF3B30',
+  },
+  errorText: {
+    color: '#FF3B30',
+    fontSize: 12,
+    marginTop: 5,
+    marginLeft: 4,
+  },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -264,6 +347,12 @@ const styles = StyleSheet.create({
   eyeIcon: {
     paddingHorizontal: 12,
   },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    color: '#666',
+    fontSize: 14,
+  },
   loginButton: {
     backgroundColor: '#D4D4D4',
     borderRadius: 50,
@@ -272,19 +361,25 @@ const styles = StyleSheet.create({
     width: '70%',
     alignSelf: 'center',
     marginBottom: 10,
-    marginTop: 15
+    marginTop: 15,
+  },
+  loginButtonActive: {
+    backgroundColor: '#E5B865',
   },
   loginButtonText: {
     fontSize: 17,
     color: '#999999',
     fontWeight: '600',
   },
+  loginButtonTextActive: {
+    color: '#FFFFFF',
+  },
   signUpContainer: {
     alignItems: 'center',
   },
   signUpText: {
     fontSize: 14,
-    color: '#B8B8B8',
+    color: '#000',
   },
   signUpLink: {
     color: '#E5B865',

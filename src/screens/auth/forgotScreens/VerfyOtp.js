@@ -150,9 +150,9 @@ const VerifyOtp = ({ route }) => {
                 </TouchableOpacity>
               </View>
             <View style={styles.buttonsRowStyle}>
-                <TouchableOpacity style={[styles.buttonStyle, { width: width * 0.4, borderWidth: 1, borderColor: '#0000', borderRadius: 10, }]}>
+                {/* <TouchableOpacity style={[styles.buttonStyle, { width: width * 0.4, borderWidth: 1, borderColor: '#0000', borderRadius: 10, }]}>
                     <Text style={styles.buttonTextStyle}>Cancel</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={[styles.buttonStyle, { width: width * 0.4,backgroundColor:'#E5B865' }]} onPress={handleVerifyOtp}>
                     {loading ? <ActivityIndicator size={'small'} color={'#fff'} /> : <Text style={[styles.buttonTextStyle, { color: '#fff' }]}>Reset Password</Text>}
                 </TouchableOpacity>

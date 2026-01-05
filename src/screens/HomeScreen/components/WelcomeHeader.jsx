@@ -2,13 +2,27 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
+import { fetchProfile } from '../../../fetures/profileSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
 
 const WelcomeHeader = ({ userName, onProfilePress }) => {
+  const dispatch = useDispatch();
+
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(fetchProfile());
+    }, [dispatch])
+  )
+
+  const { user, loading } = useSelector(state => state.profile);
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <View style={{justifyContent:'space-between', flexDirection:"row",alignItems:"center"}}>
+          <View style={{ justifyContent: 'space-between', flexDirection: "row", alignItems: "center" }}>
             <Text style={styles.logo}>UGive</Text>
             <TouchableOpacity
               style={styles.profileButton}
@@ -24,7 +38,7 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
           </View>
 
           <Text style={styles.welcomeText}>
-            Welcome
+            Welcome, <Text style={styles.userName}>{user?.name}</Text>!
           </Text>
           <Text style={styles.tagline}>
             Be the difference in{'\n'}someone's world today

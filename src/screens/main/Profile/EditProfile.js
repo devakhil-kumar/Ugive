@@ -14,7 +14,7 @@ import { fetchColleges } from '../../../fetures/getUniversitySlice';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { changePassword } from '../../../fetures/changepassword';
-import { stat } from 'react-native-fs';
+import RNFS from 'react-native-fs';
 const { width } = Dimensions.get('window');
 
 const CustomTextField = ({
@@ -98,7 +98,7 @@ const EditProfie = () => {
                     type: 'success',
                     text: resultAction.payload.message || 'Profile updated successfully!'
                 }));
-                navigation.pop(2);
+                navigation.replace('HomeScreen')
             } else {
                 dispatch(showMessage({
                     type: 'error',
@@ -113,70 +113,52 @@ const EditProfie = () => {
         }
     };
 
-    const convertToBase64 = async (uri) => {
-        try {
-            const response = await fetch(uri);
-            const blob = await response.blob();
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    resolve(reader.result);
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        } catch (error) {
-            console.error('Error converting image to base64:', error);
-            Alert.alert('Error', 'Failed to convert image');
-            return null;
-        }
-    };
+    // const handlePickImage = () => {
+    //     const options = {
+    //         mediaType: 'photo',
+    //         quality: 1,
+    //         selectionLimit: 1,
+    //          includeBase64: true, 
+    //     };
+    //     launchImageLibrary(options, async (response) => {
+    //         if (response.didCancel) {
+    //             console.log('User cancelled image picker');
+    //             return;
+    //         }
+    //         if (response.error) {
+    //             console.log('ImagePicker Error: ', response.error);
+    //             Alert.alert('Error', 'Failed to pick image');
+    //             return;
+    //         }
+    //         if (!response.assets || !response.assets[0]) {
+    //             console.log('No image selected');
+    //             return;
+    //         }
 
-    const handlePickImage = () => {
-        const options = {
-            mediaType: 'photo',
-            quality: 1,
-            selectionLimit: 1,
-        };
-        launchImageLibrary(options, async (response) => {
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-                return;
-            }
-            if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-                Alert.alert('Error', 'Failed to pick image');
-                return;
-            }
-            if (!response.assets || !response.assets[0]) {
-                console.log('No image selected');
-                return;
-            }
-
-            try {
-                const asset = response.assets[0];
-                console.log('Original image URI:', asset.uri);
-                const resized = await ImageResizer.createResizedImage(
-                    asset.uri,
-                    600,
-                    600,
-                    'JPEG',
-                    60,
-                    0
-                );
-                const base64String = await convertToBase64(resized.uri);
-                if (base64String) {
-                    console.log('Image converted to base64 successfully');
-                    setImage(base64String);
-                } else {
-                    Alert.alert('Error', 'Failed to process image');
-                }
-            } catch (err) {
-                console.error("Image processing error:", err);
-                Alert.alert('Error', 'Failed to process image: ' + err.message);
-            }
-        });
-    };
+    //         try {
+    //             const asset = response.assets[0];
+    //             console.log('Original image URI:', asset.uri);
+    //             const resized = await ImageResizer.createResizedImage(
+    //                 asset.uri,
+    //                 600,
+    //                 600,
+    //                 'JPEG',
+    //                 60,
+    //                 0
+    //             );
+    //             const base64String = await convertToBase64(resized.uri);
+    //             if (base64String) {
+    //                 console.log('Image converted to base64 successfully');
+    //                 setImage(base64String);
+    //             } else {
+    //                 Alert.alert('Error', 'Failed to process image');
+    //             }
+    //         } catch (err) {
+    //             console.error("Image processing error:", err);
+    //             Alert.alert('Error', 'Failed to process image: ' + err.message);
+    //         }
+    //     });
+    // };
 
     // const handlePasswordChange = () => {
     //     // Validation
@@ -213,6 +195,59 @@ const EditProfie = () => {
     //         // }))
     //     }
     // };
+    
+    const handlePickImage = () => {
+    const options = {
+        mediaType: 'photo',
+          quality: 0.5,
+        selectionLimit: 1,
+        includeBase64:false, 
+    };
+    launchImageLibrary(options, async (response) => {
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+            return;
+        }
+        if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+            Alert.alert('Error', 'Failed to pick image');
+            return;
+        }
+        if (!response.assets || !response.assets[0]) {
+            console.log('No image selected');
+            return;
+        }
+
+        try {
+            const asset = response.assets[0];
+            console.log('Original image URI:', asset.uri);
+            
+            // Resize the image first
+            const resized = await ImageResizer.createResizedImage(
+                asset.uri,
+                400,
+                400,
+                'JPEG',
+                40,
+                0
+            );
+            // const base64String = await RNFS.readFile(resized.uri, 'base64');
+            // const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+            // console.log(fullBase64, 'chldblvkdfbvdf')
+            // console.log('Image converted to base64 successfully');
+            setImage(resized.uri);
+            
+        } catch (err) {
+            console.error("Image processing error:", err);
+            Alert.alert('Error', 'Failed to process image: ' + err.message);
+        }
+    });
+};
+    
+    
+    
+    
+    
     const handlePasswordChange = async () => {
         // Validation
         if (!currentpassword || !newpassword || !confirmpassword) {
@@ -256,7 +291,7 @@ const EditProfie = () => {
         } else {
             setCurrentPassword('');
             setNewPassword('');
-            setConfirmPassword('');
+            setConfirmPassword('')
         }
     };
 
@@ -404,7 +439,7 @@ const EditProfie = () => {
                                             selectedTextStyle={styles.selectedTextStyle}
                                             data={collegesList}
                                             search
-                                            maxHeight={180}
+                                            maxHeight={160}
                                             labelField="name"
                                             valueField="_id"
                                             placeholder={university ? 'Select College' : 'First select university'}
@@ -649,7 +684,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#BDBDBD",
         borderRadius: 10,
-        paddingHorizontal: 16,
+        paddingHorizontal: 12,
         fontSize: 14,
         color: "#000",
         marginTop: 10,
@@ -702,11 +737,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         borderColor: '#fff',
-        elevation: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 5,
+        // elevation: 8,
+        // shadowColor: '#000',
+        // shadowOffset: { width: 0, height: 4 },
+        // shadowOpacity: 0.3,
+        // shadowRadius: 5,
     },
     txtBtn: {
         color: '#fff',

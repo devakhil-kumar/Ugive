@@ -54,14 +54,14 @@ const ListItem = ({ request, onAccept, onReject, isAccepting, isRejecting }) => 
             </View>
             <View style={styles.buttonContainer}>
                 <CustomButton 
-                    style={{ backgroundColor: '#F3B11C', marginRight: 8 }} 
+                    style={{ backgroundColor:'#F3B11C', marginRight: 8 , width:width/4}} 
                     title="Connect" 
                     onPress={onAccept}
                     disabled={isAccepting || isRejecting}
                     loading={isAccepting}
                 />
                 <CustomButton 
-                    style={{ backgroundColor: '#BBBFC6' , marginTop:10}} 
+                    style={{ backgroundColor:'#BBBFC6' , marginTop:10, width:width/4}} 
                     title="Delete"
                     onPress={onReject}
                     disabled={isAccepting || isRejecting}
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     },
     butoonStyle: {
         paddingVertical: 8,
-        paddingHorizontal: 14,
+        paddingHorizontal: 8,
         backgroundColor: '#E9B243',
         justifyContent: 'center',
         alignItems: 'center',

@@ -1,4 +1,4 @@
-package com.ugive
+package com.ugive.com
 
 import android.app.Application
 import com.facebook.react.PackageList

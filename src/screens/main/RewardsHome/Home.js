@@ -17,6 +17,7 @@ import CustomModal from '../../common/CustomModal';
 import { fetchClaimRewards } from '../../../fetures/claimRewardsSlice';
 import { showMessage } from '../../../fetures/messageSlice';
 
+
 const { width, height } = Dimensions.get('window');
 
 const Home = () => {
@@ -62,35 +63,37 @@ const Home = () => {
       setSelectedReward(null);
     }
   };
-  
 
-  const handleClaimPress = (item) => {
-    if (item?.completedPoints === item?.totalPoints) {
-      setSelectedReward(item);
-      setOpen(true);
-    } else {
-      console.log('Reward not completed yet!');
-    }
-  };
+
+const handleClaimPress = (item) => {
+  if (item?.claimed) {
+    return;
+  }
+  if (item?.completedPoints === item?.totalPoints) {
+    setSelectedReward(item);
+    setOpen(true);
+  }
+};
+
 
   const statss = [
     {
-      icon: 'flame',
+      icon: require('../../../assets/flame.png'),
       value: stats?.currentStreak ?? 0,
       color: '#FF6B6B'
     },
     {
-      icon: 'card',
+      icon: require('../../../assets/Heart.png'),
       value: stats?.totalCardsSent ?? 0,
       color: '#8B7BF7'
     },
     {
-      icon: 'people',
+      icon: require('../../../assets/people.png'),
       value: stats?.totalFriends ?? 0,
       color: '#54A0FF'
     },
     {
-      icon: 'gift',
+      icon: require('../../../assets/giftCard.png'),
       value: stats?.totalGiftsSent ?? 0,
       color: '#FF9F43'
     },
@@ -114,25 +117,28 @@ const Home = () => {
   };
 
   const renderRewardItem = (item) => {
+    console.log(item?.completedPoints,item?.totalPoints ,'item+++++++===')
     const isCompleted = item?.completedPoints === item?.totalPoints;
+    console.log(isCompleted, 'iscompleteed')
 
     return (
       <View key={item.rewardId} style={styles.rewardItem}>
         <View style={styles.pieChartContainer}>
           {renderPieChart(item.percentage, '#FFB800')}
-          <TouchableOpacity style={styles.iconContainer} onPress={() => handleClaimPress(item)} disabled={!isCompleted} >
-          { item?.claimed ?
-            <View style={{width:'90%', backgroundColor:"gray",alignItems:'center', paddingVertical:10, borderRadius:10}}>
-            <Text style={{color:'#fff'}} >Clamied</Text> 
-            </View>:  <Image
-              source={{ uri: item.rewardImage }}
-              style={{ width: width / 5, height: height / 10, backgroundColor: '#f0f0f0',borderRadius:20 }}
-            />}
+          <TouchableOpacity style={styles.iconContainer} onPress={() => handleClaimPress(item)} disabled={!isCompleted || item?.claimed}
+ >
+            {item?.claimed ?
+              <View style={{ width: '90%', backgroundColor: "gray", alignItems: 'center', paddingVertical: 10, borderRadius: 10 }}>
+                <Text style={{ color: '#fff' }} >Clamied</Text>
+              </View> : <Image
+                source={{ uri: item.rewardImage }}
+                style={{ width: width / 5, height: height / 10, backgroundColor: '#f0f0f0', borderRadius: 20 }}
+              />}
           </TouchableOpacity>
           <View style={styles.starContainer}>
             <View style={styles.starBadge}>
               <Text style={styles.starNumber}>{item.totalPoints}</Text>
-            <Image
+              <Image
                 source={require('../../../assets/star.png')}
                 style={styles.starImage}
                 resizeMode="contain"
@@ -162,7 +168,12 @@ const Home = () => {
         <View style={styles.statsContainer}>
           {statss.map((stat, index) => (
             <View key={index} style={styles.statItem}>
-              <Icon name={stat.icon} size={24} color={stat.color} />
+              <Image source={stat.icon} style={{
+                width: 20, height: 20, alignItems: 'center',
+                justifyContent: 'center',
+              }}
+                 resizeMode="contain"
+              />
               <Text style={styles.statValue}>{stat.value}</Text>
             </View>
           ))}

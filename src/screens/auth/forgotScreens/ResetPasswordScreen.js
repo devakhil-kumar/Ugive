@@ -57,7 +57,7 @@ const ResetPasswordScreen = ({ navigation }) => {
                 <View style={{ width: 24 }} />
             </View>
             <Text style={styles.headerTextStyle}>Reset Password</Text>
-            <Text style={styles.descriptionTextStyle}>Enter your email address to receive an OTP or password reset</Text>
+            <Text style={styles.descriptionTextStyle}>Enter your email address to receive an OTP.</Text>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Your Email</Text>
               <TextInput

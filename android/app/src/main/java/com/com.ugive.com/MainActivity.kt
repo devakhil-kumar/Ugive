@@ -1,4 +1,4 @@
-package com.ugive
+package com.ugive.com
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

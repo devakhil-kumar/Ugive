@@ -10,9 +10,7 @@ export const changePassword = createAsyncThunk(
             console.log(response, 'password change response++++');
             return response.data;
         } catch (error) {
-            // console.log(error.message , 'password change error++++++');
-            const errorMessage = error?.response?.data?.message || error.message || "Failed to change password";
-            return rejectWithValue(errorMessage);
+             return rejectWithValue(error.message);
         }
     }
 );

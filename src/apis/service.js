@@ -132,9 +132,9 @@ export const passwordChange = async (UpdatePassword) => {
         console.log(response, 'response++++')
         return response;
     } catch (error) {
-        throw new Error(
-            error || "Failed to update profile"
-        );
+        console.log(error.response.data, 'error++++++++')
+        const message = error?.response?.data?.message || 'Password change failed';
+        throw new Error(message);
     }
 }
 
@@ -204,27 +204,27 @@ export const EligibilityCard = async () => {
         const response = await CheckEligibility()
         return response;
     } catch (error) {
-         throw error;
+        throw error;
     }
 }
 
-  
+
 export const CardSendRemaining = async () => {
-    try{
+    try {
         const response = await CardsRemaningSend()
         console.log(response, 'response++++')
         return response;
-    }catch (error){
+    } catch (error) {
         throw error;
     }
 }
 
 export const CalimRewards = async (rewardId) => {
-    try{
+    try {
         const response = await claimRewards(rewardId)
         console.log(response, 'response++++')
         return response;
-    }catch (error){
+    } catch (error) {
         console.log(error, 'errorr +++++')
         throw error;
     }
@@ -237,6 +237,6 @@ export const listCardSend = async () => {
         return response.data;
     } catch (error) {
         console.log(error, 'errorrnbvhdsuvbf')
-         throw error;
+        throw error;
     }
 }

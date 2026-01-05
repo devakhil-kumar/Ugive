@@ -36,7 +36,7 @@ const SignUpScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
+  // const [touched, setTouched] = useState({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // First button press
 
@@ -64,99 +64,101 @@ const SignUpScreen = () => {
   ];
 
   // Validation Rules
-  const validateName = (val) => /^[A-Za-z\s]{2,50}$/.test(val.trim());
-  const validateEmail = (val) => {
-    const lower = val.toLowerCase().trim();
+  const validateName = (v) => /^[A-Za-z\s]{2,50}$/.test(v.trim());
+  const validateEmail = (v) => {
+    const lower = v.toLowerCase().trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower)) return false;
-    return ALLOWED_EMAIL_DOMAINS.some(domain => lower.endsWith(`@${domain}`));
+    return ALLOWED_EMAIL_DOMAINS.some(d => lower.endsWith(`@${d}`));
   };
-  const validateMobile = (val) => /^04\d{8}$/.test(val.replace(/\s/g, ''));
-  const validatePassword = (val) => {
-    return (
-      val.length >= 8 &&
-      /[a-z]/.test(val) &&
-      /[A-Z]/.test(val) &&
-      /\d/.test(val) &&
-      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(val)
-    );
-  };
+  const validateMobile = (v) => /^04\d{8}$/.test(v.replace(/\s/g, ''));
+  const validatePassword = (v) =>
+    v.length >= 8 &&
+    /[a-z]/.test(v) &&
+    /[A-Z]/.test(v) &&
+    /\d/.test(v) &&
+    /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(v);
 
   const validateField = (field, value) => {
     let error = '';
+
     switch (field) {
       case 'name':
         if (!value.trim()) error = 'Name is required';
         else if (!validateName(value)) error = 'Only letters and spaces allowed';
         break;
+
       case 'studentId':
         if (!value.trim()) error = 'Student ID is required';
         break;
+
       case 'university':
         if (!value) error = 'Please select your university';
         break;
+
       case 'college':
         if (!value) error = 'Please select your college';
         break;
+
       case 'email':
         if (!value) error = 'Email is required';
-        else if (!validateEmail(value)) error = 'Only university email allowed (e.g. @usq.edu.au)';
+        else if (!validateEmail(value))
+          error = 'Only university email allowed';
         break;
+
       case 'mobile':
         if (!value) error = 'Mobile number is required';
-        else if (!validateMobile(value)) error = 'Enter valid Australian mobile number';
+        else if (!validateMobile(value))
+          error = 'Enter valid Australian mobile number';
         break;
+
       case 'password':
         if (!value) error = 'Password is required';
         else if (!validatePassword(value))
-          error = 'Min 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 special';
+          error = 'Min 8 chars, upper, lower, number & special';
         break;
     }
 
     setErrors(prev => ({ ...prev, [field]: error }));
   };
 
-  const handleBlur = (field, value) => {
-    setTouched(prev => ({ ...prev, [field]: true }));
-    validateField(field, value);
+  const handleBlur = (field, value, setter) => {
+    if (submitAttempted) {
+      validateField(field, value);
+    }
   };
 
-  const isFormValid = () => {
-    return (
-      name.trim() &&
-      studentId.trim() &&
-      university &&
-      college &&
-      email &&
-      mobile &&
-      password &&
-      !errors.name &&
-      !errors.studentId &&
-      !errors.university &&
-      !errors.college &&
-      !errors.email &&
-      !errors.mobile &&
-      !errors.password
-    );
-  };
+
+  const isFormValid = () =>
+    name.trim() &&
+    studentId.trim() &&
+    university &&
+    college &&
+    email &&
+    mobile &&
+    password &&
+    Object.values(errors).every(e => !e);
+
 
   const handleUniversityChange = (item) => {
     setUniversity(item._id);
     setCollege(null);
     dispatch(clearColleges());
     dispatch(fetchColleges(item._id));
-    setTouched(prev => ({ ...prev, university: true }));
-    validateField('university', item._id);
-    validateField('college', null);
+    // setTouched(prev => ({ ...prev, university: true }));
+    if (submitAttempted) {
+      validateField('university', item._id);
+      validateField('college', null);
+    }
   };
 
   const handleCollegeChange = (item) => {
     setCollege(item._id);
-    setTouched(prev => ({ ...prev, college: true }));
+    // setTouched(prev => ({ ...prev, college: true }));
     validateField('college', item._id);
   };
 
   const handleSignUp = async () => {
-    setIsLoading(true);
+
     setSubmitAttempted(true);
     validateField('name', name);
     validateField('studentId', studentId);
@@ -170,6 +172,9 @@ const SignUpScreen = () => {
       Alert.alert('Fix Errors', 'Please correct all fields before submitting');
       return;
     }
+
+    setIsLoading(true);
+
     const payload = {
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -180,6 +185,7 @@ const SignUpScreen = () => {
       phoneNumber: mobile,
       studentUniId: studentId.trim(),
     };
+
     try {
       const response = await dispatch(registerUser(payload)).unwrap();
       dispatch(showMessage({
@@ -209,11 +215,12 @@ const SignUpScreen = () => {
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const handleLogin = () => navigation.navigate('Login');
 
-  const showError = (field) => (touched[field] || submitAttempted) && errors[field];
+  const showError = field => submitAttempted && errors[field];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -332,7 +339,12 @@ const SignUpScreen = () => {
                 placeholderTextColor="#C4C4C4"
                 mask="04[00] [000] [000]"
                 value={mobile}
-                onChangeText={(formatted) => setMobile(formatted)}
+                onChangeText={(formatted) => {
+                  setMobile(formatted);
+                  if (submitAttempted) {
+                    validateField('mobile', formatted);
+                  }
+                }}
                 keyboardType="phone-pad"
               />
               {showError('mobile') && <Text style={styles.errorText}>{errors.mobile}</Text>}
@@ -347,7 +359,7 @@ const SignUpScreen = () => {
                   value={password}
                   onChangeText={(text) => {
                     setPassword(text);
-                    if (touched.password || submitAttempted) {
+                    if (submitAttempted) {
                       validateField('password', text);
                     }
                   }}
@@ -364,11 +376,14 @@ const SignUpScreen = () => {
 
             {/* Submit Button */}
             <TouchableOpacity
-              style={[styles.signUpButton, !isFormValid() && styles.signUpButtonDisabled]}
+              style={[
+                styles.signUpButton,
+                submitAttempted && !isFormValid() && styles.signUpButtonDisabled
+              ]}
               onPress={handleSignUp}
-              disabled={!isFormValid()}
+              disabled={isLoading}
             >
-              <Text style={styles.signUpButtonText}>Let's go!</Text>
+              <Text style={styles.signUpButtonText}>{isLoading ? 'Please wait...' : "Let's go!"}</Text>
             </TouchableOpacity>
 
             <View style={styles.loginContainer}>
@@ -434,7 +449,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#FAFAFA',
   },
-  passwordInput: {paddingHorizontal: 16, paddingVertical: 12, fontSize: 15 , width:'90%'},
+  passwordInput: { paddingHorizontal: 16, paddingVertical: 12, fontSize: 15, width: '90%' },
   inputError: { borderColor: '#e74c3c' },
   errorText: { color: '#e74c3c', fontSize: 13, marginTop: 6 },
   signUpButton: {

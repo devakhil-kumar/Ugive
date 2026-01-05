@@ -62,7 +62,11 @@ const ProfileDetails = () => {
                     />
                 </TouchableOpacity>
                 <Image
-                    source={require('../../../assets/purple_profile.png')}
+                    source={
+                        user?.profileImage
+                            ? { uri: user.profileImage }
+                            : require('../../../assets/purple_profile.png')
+                    }
                     style={styles.profileStyle}
                 />
                 <View style={{ marginVertical: 30, alignContent: 'center' }}>
@@ -80,11 +84,11 @@ const ProfileDetails = () => {
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>University:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '50%' }]}>{user?.university?.name}</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '80%' }]}>{user?.university?.name}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>College:</Text>
-                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '60%' }]}>{user?.college?.name}</Text>
+                        <Text style={[styles.screenTextStyle, { marginStart: 5, width: '50%' }]}>{user?.college?.name}</Text>
                     </View>
                     <View style={[styles.textRowStyle, { marginTop: 10 }]}>
                         <Text style={styles.screenTextStyle}>USI:</Text>
@@ -114,7 +118,7 @@ const styles = StyleSheet.create({
     pageBg: {
         flex: 1,
     },
-    textRowStyle: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
+    textRowStyle: { flexDirection: 'row', justifyContent: 'flex-start', alignItems:'flex-start' , marginLeft:20},
     flowerImagePosition: {
         position: 'absolute',
         top: -50,

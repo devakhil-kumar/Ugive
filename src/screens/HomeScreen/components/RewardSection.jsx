@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: '#E5B865',
   },
   receive: {
-    fontWeight: '400',
+    fontWeight: '600',
     color: '#B8D4E8',
   },
   item: {

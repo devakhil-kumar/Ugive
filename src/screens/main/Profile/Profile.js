@@ -7,13 +7,13 @@ import { fetchProfile } from '../../../fetures/profileSlice';
 
 const Profile = () => {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
-    useFocusEffect(
-        React.useCallback(() => {
-            dispatch(fetchProfile());
-        }, [dispatch])
-    )
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         dispatch(fetchProfile());
+    //     }, [dispatch])
+    // )
 
     if (loading) {
         return (
@@ -47,7 +47,11 @@ const Profile = () => {
                     />
                 </TouchableOpacity>
                 <Image
-                    source={require('../../../assets/profile.png')}
+                    source={
+                        user?.profileImage
+                            ? { uri: user.profileImage }
+                            : require('../../../assets/profile.png')
+                    }
                     style={styles.profileStyle}
                 />
                 <Text style={[styles.screenTextStyle, { color: 'white', textAlign: 'center' }]}>Hey, <Text style={[styles.screenTextStyle, { color: '#E9B243', textAlign: 'center' }]}>{user?.name}</Text>!</Text>

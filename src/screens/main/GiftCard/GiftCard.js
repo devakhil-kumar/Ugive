@@ -37,7 +37,7 @@ const CustomTextField = ({
 const CustomButton = ({ onPress, loading }) => {
     return (
         <TouchableOpacity 
-            style={[styles.customButtonStyle, loading && { backgroundColor: '#999' }]} 
+            style={[styles.customButtonStyle, loading && { backgroundColor: '#E5B865' }]} 
             onPress={onPress}
             disabled={loading}
         >
@@ -222,6 +222,7 @@ const GiftCard = () => {
     const { eligible, message, next_available_date, loading, error } = useSelector(
         (state) => state.eligibility
     );
+    console.log(eligible,modalHandled,loading, 'eligible+++++++++')
     
     const { loading: sendCardLoading } = useSelector((state) => state.cardSend);
 
@@ -234,6 +235,7 @@ const GiftCard = () => {
             if (eligible === false) {
                 setOpen(true);
             } else {
+                console.log('chlbldfsohlvbldfs')
                 setOpen(false);
             }
         }
@@ -402,11 +404,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#000",
         marginTop: 5,
-        marginBottom: 16
+        marginBottom: 10
     },
     customButtonStyle: {
         height: 40,
-        backgroundColor: '#DDDDDD',
+        backgroundColor: '#E5B865',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 40,
@@ -422,7 +424,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 14,
         letterSpacing: 0.2,
-        color: '#A0A0A0'
+        color: '#FFF'
     },
     cardBgStyle: {
         backgroundColor: 'white',
@@ -435,9 +437,9 @@ const styles = StyleSheet.create({
     cardLabelTextStyle: {
         fontWeight: '500',
         fontSize: 14,
-        lineHeight: 20,
+        // lineHeight: 20,
         letterSpacing: 0,
-        color: 'black'
+        color: 'black',
     },
     loaderContainer: {
         flex: 1,
