@@ -16,6 +16,8 @@ import cardSendSliceReducer from '../fetures/cardSendSlice';
 import cardRemainingSlice from '../fetures/CardSendRemainingSlice';
 import claimRewardsSliceReducer from '../fetures/claimRewardsSlice';
 import SendlistSliceReducer from '../fetures/getCardListSlice';
+import sendOtpSignupThunk from "../fetures/sendOtpSignupThunk";
+
 
 const store = configureStore({
     reducer: {
@@ -35,7 +37,8 @@ const store = configureStore({
         cardSend: cardSendSliceReducer,
         cardRemaning: cardRemainingSlice,
         claimRewards: claimRewardsSliceReducer,
-        listCards: SendlistSliceReducer
+        listCards: SendlistSliceReducer,
+        OtpVerfication:sendOtpSignupThunk
     }
 })
 

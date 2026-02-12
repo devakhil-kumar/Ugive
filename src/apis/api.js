@@ -3,6 +3,7 @@ import { API_ROUTES } from './constant';
 import { getUserData } from '../utils/asyncStorageManager';
 
 const BASE_URL = "https://ugive.com.au/api/"
+const NEW_BASE_URL = "https://ugive.com.au/"
 
 
 const axiosInstance = axios.create({
@@ -133,10 +134,34 @@ export const CardsRemaningSend = () => {
 
 export const claimRewards = (rewardId) => {
   return axiosInstance.post(API_ROUTES.CLAIMREWARDS, {
-    rewardId: rewardId
+    rewardId:rewardId
   });
 };
 
 export const GetListCards = () => {
   return axiosInstance.get(API_ROUTES.SENDCARDLIST)
 }
+
+export const checkBanWordsApi = async (message) => {
+  console.log("Data from api :", message)
+  const { token } = await getUserData();
+  return axios.post(`${NEW_BASE_URL}${API_ROUTES.CHECKBANWORDS}`, message, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  // return axiosInstance.post(API_ROUTES.CHECKBANWORDS, message);
+};
+
+export const OtpVerfication = (email,name) => {
+  return axiosInstance.post(API_ROUTES.REGISTER_OTP, {
+    email: email,
+    name: name
+  });
+}
+
+export const GetNote = () => {
+  return axiosInstance.get(API_ROUTES.GETNOTE)
+}   
+

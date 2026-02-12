@@ -15,6 +15,7 @@ const Profile = () => {
     //     }, [dispatch])
     // )
 
+
     if (loading) {
         return (
             <View style={styles.loaderContainer}>
@@ -24,13 +25,14 @@ const Profile = () => {
     }
 
     const { user, loading } = useSelector(state => state.profile);
+    console.log(user, 'user++++++')
 
     const handleCardSent = () => {
         navigation.navigate('ReadCard')
     }
 
     const handleYourPoint = () => {
-        navigation.navigate('RewardStutas')
+        navigation.navigate('RewardsHome')
     }
 
     const handleProfileDetails = () => {
@@ -85,7 +87,8 @@ const styles = StyleSheet.create({
         marginTop: 60,
         width: 155,
         height: 155,
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderRadius:80
     },
     screenTextStyle: {
         fontWeight: '800',

@@ -13,7 +13,7 @@ export const fetchFriendList = createAsyncThunk(
         error.response?.data?.message ||
         error.message ||
         'Failed to fetch friend list';
-      return rejectWithValue(message);
+      return rejectWithValue(message); 
     }
   }
 );

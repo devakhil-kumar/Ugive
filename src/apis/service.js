@@ -1,4 +1,4 @@
-import { CardsRemaningSend, ChangePassword, CheckEligibility, claimRewards, DeleteAcount, editProfileAPI, FriendRequestAccept, FriendRequestDelete, FriendRequestSent, getColleges, GetFriendList, GetListCards, GetReceivedList, GetRewards, GetSearchNameEmail, getUniversities, loginAPI, profileGetData, registerStudent, ResetPassword, SendCardsFriends, VerifyResetCode } from "./api"
+import { CardsRemaningSend, ChangePassword, CheckEligibility, claimRewards, DeleteAcount, editProfileAPI, FriendRequestAccept, FriendRequestDelete, FriendRequestSent, getColleges, GetFriendList, GetListCards, GetReceivedList, GetRewards, GetSearchNameEmail, getUniversities, loginAPI, OtpVerfication, profileGetData, registerStudent, ResetPassword, SendCardsFriends, VerifyResetCode } from "./api"
 
 export const getUniversitiesSerivce = async () => {
     try {
@@ -155,7 +155,7 @@ export const getFriendList = async () => {
         return response;
     } catch (error) {
         console.log(error, 'error+++++')
-        throw new Error('failed fetch the freand list')
+        throw new Error('failed fetch the friends list')
     }
 }
 
@@ -166,7 +166,7 @@ export const getFriendRecevied = async () => {
         return response;
     } catch (error) {
         console.log(error, 'errrorrcsdcs')
-        throw new Error('failed fetch the freand list')
+        throw new Error('failed fetch the friends request')
     }
 }
 
@@ -175,7 +175,7 @@ export const AddFriendSent = async (receiverId) => {
         const response = await FriendRequestSent(receiverId);
         return response;
     } catch (error) {
-        throw new Error('failed fetch the freand list')
+        throw new Error('failed to add friends')
     }
 }
 
@@ -186,7 +186,7 @@ export const ConfirmFriendRequest = async (requestId) => {
         return response;
     } catch (error) {
         console.log(error, 'error+++++')
-        throw new Error('failed fetch the freand list')
+        throw new Error('failed to confirm friends request')
     }
 }
 
@@ -240,3 +240,16 @@ export const listCardSend = async () => {
         throw error;
     }
 }
+
+export const sendOtpSignup = async (email,name) => {
+    try {
+        const response = await OtpVerfication(email,name)
+        console.log(response, 'responseb')
+        return response.data
+    } catch (error) {
+        console.log(error, 'errorr')
+        throw error;
+    }
+}
+
+

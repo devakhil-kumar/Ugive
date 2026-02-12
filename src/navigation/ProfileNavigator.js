@@ -4,6 +4,7 @@ import Profile from '../screens/main/Profile/Profile';
 import EditProfile from '../screens/main/Profile/EditProfile';
 import ProfileDetails from '../screens/main/Profile/ProfileDetails';
 import ReadCard from '../screens/main/Cards/ReadCard';
+import Home from '../screens/main/RewardsHome/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +20,7 @@ const ProfileNavigator = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="ProfileDetails" component={ProfileDetails} />
       <Stack.Screen name="ReadCard" component={ReadCard} />
-
+      <Stack.Screen name="RewardsHome" component={Home} />
     </Stack.Navigator>
   );
 };

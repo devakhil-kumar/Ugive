@@ -11,13 +11,13 @@ import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice'
     const pieData = [
         {
             value: percentage,
-            color: '#EBB142',
+            color: '#F3B11C',
             focused: false,
         },
         {
             value: 100 - percentage,
             color:"#FFFFFF",
-            strokeColor: '#EBB142',
+            strokeColor: '#F3B11C',
             strokeWidth: 2,
         },
     ];
@@ -29,13 +29,13 @@ import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice'
                     data={pieData}
                     donut
                     radius={60}
-                    innerRadius={50}
+                    innerRadius={53}
                     // innerCircleColor="#6D5B98"
                     strokeColor="#EBB142"
-                    strokeWidth={2}
+                    strokeWidth={1}
                     showText={false}
                     showGradient={false}
-                    innerCircleBorderWidth={3}
+                    innerCircleBorderWidth={2}
                     innerCircleBorderColor={'#EBB142'}
                     
                 />
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: isTablet ? moderateScale(28) : moderateScale(24),
     fontWeight: '700',
-    color: '#E5B865',
+    color: '#F3B11C',
     lineHeight: isTablet ? moderateScale(38) : moderateScale(32),
     marginBottom: hp(1.5),
   },
@@ -125,27 +125,27 @@ const styles = StyleSheet.create({
   },
   number: {
     fontWeight: '700',
-    color: '#E5B865',
+    color: '#F3B11C',
   },
   action: {
     fontWeight: '600',
-    color: '#E5B865',
+    color: '#F3B11C',
   },
   receive: {
-    fontWeight: '600',
-    color: '#B8D4E8',
+    fontWeight: '400',
+    // color: '#B8D4E8',
   },
   item: {
     fontWeight: '600',
-    color: '#B8D4E8',
+    color: '#F3B11C',
   },
   button: {
-    backgroundColor: '#E5B865',
+    backgroundColor: '#F3B11C',
     borderRadius: moderateScale(30),
     paddingVertical: hp(1.8),
     paddingHorizontal: wp(8),
     alignSelf: 'flex-start',
-    shadowColor: '#E5B865',
+    shadowColor: '#F3B11C',
     shadowOffset: {
       width: 0,
       height: 4,

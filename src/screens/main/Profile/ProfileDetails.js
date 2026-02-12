@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
         marginTop: 40,
         width: 115,
         height: 115,
-        alignSelf: 'center'
+        alignSelf: 'center',
+               borderRadius:80
     },
     screenTextStyle: {
         fontWeight: '800',

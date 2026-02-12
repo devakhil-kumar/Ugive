@@ -21,5 +21,8 @@ export const API_ROUTES = {
     ELIGIBILITYcheck:'student/check-card-eligibility',
     REMAININGCARDS:'student/remaining-cards',
     CLAIMREWARDS:'student/rewards/claim',
-    SENDCARDLIST:'student/sent-card-listing'
+    SENDCARDLIST:'student/sent-card-listing',
+      CHECKBANWORDS:'banword/process_text',
+      REGISTER_OTP:'public/send-registration-otp',
+      GETNOTE:'student/get-student-notifications'
 }

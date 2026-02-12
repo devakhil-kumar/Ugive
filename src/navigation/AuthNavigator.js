@@ -4,6 +4,9 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import ResetPasswordScreen from '../screens/auth/forgotScreens/ResetPasswordScreen';
 import VerfyOtp from '../screens/auth/forgotScreens/VerfyOtp';
 import SplashScreen from '../screens/auth/SplashScreen';
+import TermsScreen from '../screens/auth/TermsScreen'
+import PrivacyPolicy from '../screens/auth/PrivacyPolicyScreen'
+import YourRegistrationScreen from '../screens/auth/YourRegistrationScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +22,9 @@ const AuthNavigator = () => {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
       <Stack.Screen name="VerfyOtp" component={VerfyOtp} />
+      <Stack.Screen name="TermsScreen" component={TermsScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+      <Stack.Screen name="YourRegistrationScreen" component={YourRegistrationScreen} />
 
     </Stack.Navigator>
   );

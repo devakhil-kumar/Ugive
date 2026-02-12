@@ -18,7 +18,7 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#519377" barStyle="light-content" />
+      <StatusBar backgroundColor="#6955A5" barStyle="light-content" />
       <Image
         source={require('../../assets/ugive_logo.png')} 
         style={styles.logo}

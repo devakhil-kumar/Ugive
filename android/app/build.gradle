@@ -79,13 +79,13 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.ugive.com"
+    namespace "com.ugivenew.com"
     defaultConfig {
-        applicationId "com.ugive.com"
+        applicationId "com.ugivenew.com"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 65
+        versionName "6.5"
     }
     signingConfigs {
         debug {

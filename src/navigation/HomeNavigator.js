@@ -5,6 +5,7 @@ import GiftCard from '../screens/main/GiftCard/GiftCard';
 import SendingCard from '../screens/main/Cards/SendingCard';
 import RewardStutas from '../screens/main/Cards/RewardStatus';
 import ProfileNavigator from '../navigation/ProfileNavigator';
+import Home from '../screens/main/RewardsHome/Home';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ const HomeNavigator = () => {
       <Stack.Screen name="SendingCard" component={SendingCard} />
       <Stack.Screen name="RewardStutas" component={RewardStutas} />
       <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
+      <Stack.Screen name="RewardsHome" component={Home} />
 
     </Stack.Navigator>
   );

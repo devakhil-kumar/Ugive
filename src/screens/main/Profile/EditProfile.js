@@ -71,7 +71,7 @@ const EditProfie = () => {
     const { colleges, collegesLoading } = useSelector(
         (state) => state.universities
     );
-    const { loading, dataresponse, error} = useSelector((state) => state.password);
+    const { loading, dataresponse, error } = useSelector((state) => state.password);
     const { updateLoading } = useSelector(state => state.profile);
     const collegesList = Array.isArray(colleges) ? colleges : [];
 
@@ -88,9 +88,18 @@ const EditProfie = () => {
         formData.append('name', name);
         formData.append('phoneNumber', mobile);
         formData.append('college', college);
-        if (image && image.startsWith('data:image')) {
-            formData.append('profileImage', image);
+        if (image) {
+            const filename = image.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename);
+            const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+            formData.append('profileImage', {
+                uri: image,      
+                name: filename, 
+                type: type     
+            });
         }
+        console.log(formData, 'data+++++++++++')
         try {
             const resultAction = await dispatch(updateProfile(formData));
             if (updateProfile.fulfilled.match(resultAction)) {
@@ -195,81 +204,81 @@ const EditProfie = () => {
     //         // }))
     //     }
     // };
-    
-    const handlePickImage = () => {
-    const options = {
-        mediaType: 'photo',
-          quality: 0.5,
-        selectionLimit: 1,
-        includeBase64:false, 
-    };
-    launchImageLibrary(options, async (response) => {
-        if (response.didCancel) {
-            console.log('User cancelled image picker');
-            return;
-        }
-        if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-            Alert.alert('Error', 'Failed to pick image');
-            return;
-        }
-        if (!response.assets || !response.assets[0]) {
-            console.log('No image selected');
-            return;
-        }
 
-        try {
-            const asset = response.assets[0];
-            console.log('Original image URI:', asset.uri);
-            
-            // Resize the image first
-            const resized = await ImageResizer.createResizedImage(
-                asset.uri,
-                400,
-                400,
-                'JPEG',
-                40,
-                0
-            );
-            // const base64String = await RNFS.readFile(resized.uri, 'base64');
-            // const fullBase64 = `data:image/jpeg;base64,${base64String}`;
-            // console.log(fullBase64, 'chldblvkdfbvdf')
-            // console.log('Image converted to base64 successfully');
-            setImage(resized.uri);
-            
-        } catch (err) {
-            console.error("Image processing error:", err);
-            Alert.alert('Error', 'Failed to process image: ' + err.message);
-        }
-    });
-};
-    
-    
-    
-    
-    
+    const handlePickImage = () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 0.5,
+            selectionLimit: 1,
+            includeBase64: false,
+        };
+        launchImageLibrary(options, async (response) => {
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+                return;
+            }
+            if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                Alert.alert('Error', 'Failed to pick image');
+                return;
+            }
+            if (!response.assets || !response.assets[0]) {
+                console.log('No image selected');
+                return;
+            }
+
+            try {
+                const asset = response.assets[0];
+                console.log('Original image URI:', asset.uri);
+
+                // Resize the image first
+                const resized = await ImageResizer.createResizedImage(
+                    asset.uri,
+                    400,
+                    400,
+                    'JPEG',
+                    40,
+                    0
+                );
+                // const base64String = await RNFS.readFile(resized.uri, 'base64');
+                // const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+                // console.log(fullBase64, 'chldblvkdfbvdf')
+                // console.log('Image converted to base64 successfully');
+                setImage(resized.uri);
+
+            } catch (err) {
+                console.error("Image processing error:", err);
+                Alert.alert('Error', 'Failed to process image: ' + err.message);
+            }
+        });
+    };
+
+
+
+
+
     const handlePasswordChange = async () => {
         // Validation
         if (!currentpassword || !newpassword || !confirmpassword) {
             Alert.alert('Error', 'Please fill all password fields');
             return;
         }
-    
+
         if (newpassword !== confirmpassword) {
             Alert.alert('Error', 'New password and confirm password do not match');
             return;
         }
-    
+
         if (newpassword.length < 6) {
             Alert.alert('Error', 'New password must be at least 6 characters long');
             return;
         }
-    
+
         const passwordData = {
             currentPassword: currentpassword,
             newPassword: newpassword,
         };
-    
+
         try {
             const response = await dispatch(changePassword(passwordData)).unwrap();
             dispatch(showMessage({

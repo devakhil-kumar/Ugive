@@ -28,9 +28,8 @@ const FriendsSearch = () => {
     const dispatch = useDispatch();
 
     const { results, loading, error } = useSelector((state) => state.searchFriend);
-    console.log(results?.results, 'results+++++')
     const [searchText, setSearchText] = useState('');
-    const [selectedFilter, setSelectedFilter] = useState('People');
+    const [selectedFilter, setSelectedFilter] = useState('');
 
     const debouncedSearch = useCallback(
         debounce((query) => {
@@ -186,7 +185,7 @@ const FriendsSearch = () => {
                         />
                         <TextInput
                             style={styles.serachTextInputStyle}
-                            placeholder="Search People"
+                            placeholder="Find Friends"
                             placeholderTextColor={'#6955A5'}
                             value={searchText}
                             onChangeText={handleSearch}
@@ -201,7 +200,7 @@ const FriendsSearch = () => {
                 </View>
 
                 <View style={styles.filterRowStyle}>
-                    {['People'].map((filter) => (
+                    {[].map((filter) => (
                         <TouchableOpacity
                             key={filter}
                             onPress={() => handleSelectedFilter(filter)}
@@ -245,7 +244,7 @@ const FriendsSearch = () => {
                             searchText.length === 0 ? (
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
                                     <Text style={{ color: '#ccc', fontSize: 18 }}>
-                                        Type to search friends...
+                                        Type to search for your friends...
                                     </Text>
                                 </View>
                             ) : null

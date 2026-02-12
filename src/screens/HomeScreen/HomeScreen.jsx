@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation, userName = 'Annie' }) => {
   };
 
   const handleRewardAction = () => {
-    navigation.navigate('RewardStutas')
+    navigation.navigate('RewardsHome')
   };
 
   const handleProfilePress = () => {

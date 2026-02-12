@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet, FlatList, Image, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import GradientScreen from "../../common/GradientScreen";
 import { fetchFriendList } from '../../../fetures/friendListSlice'; 
+import Feather from "@react-native-vector-icons/feather";
+import FontAwesome from "@react-native-vector-icons/fontawesome";
 
 const { height, width } = Dimensions.get('window');
 
@@ -45,9 +47,12 @@ const FriendsList = () => {
     const { list: friends, loading, error } = useSelector((state) => state.friends);
     console.log(friends,loading,error,'firends________')
 
-    useEffect(() => {
-        dispatch(fetchFriendList());
-    }, [dispatch]);
+
+useFocusEffect(
+  useCallback(() => { 
+    dispatch(fetchFriendList());
+  }, [dispatch])
+);
 
     const filteredFriends = useMemo(() => {
         if (!searchText.trim()) {
@@ -78,10 +83,7 @@ const FriendsList = () => {
                     </TouchableOpacity>
                     <Text style={styles.topBarTextStyle}>Friends List</Text>
                     <TouchableOpacity onPress={handleFriendList}>
-                        <Image
-                            source={require('../../../assets/share.png')}
-                            style={styles.shareIconStyle}
-                        />
+                        <FontAwesome name="user-plus" color={'#F3B11C'} size={28}/>
                     </TouchableOpacity>
                 </View>
 
@@ -93,7 +95,7 @@ const FriendsList = () => {
                         />
                         <TextInput
                             style={styles.serachTextInputStyle}
-                            placeholder="Search People"
+                            placeholder="Search Friends"
                             placeholderTextColor={'#6955A5'}
                             value={searchText}
                             onChangeText={setSearchText}

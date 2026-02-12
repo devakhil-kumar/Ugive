@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(1.5),
   },
   userName: {
-    color: '#E5B865',
+    color: '#F3B11C',
     fontWeight: '600',
   },
   tagline: {

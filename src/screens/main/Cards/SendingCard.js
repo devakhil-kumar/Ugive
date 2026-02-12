@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
 import CustomModal from '../../common/CustomModal';
 
@@ -14,6 +14,13 @@ const SendingCard = () => {
     const handleOnPress = () => {
         navigation.navigate('HomeScreen')
     }
+
+    const route = useRoute();
+    const { noteData } = route.params || {};
+    useEffect(() => {
+        console.log("Received Note Data:", noteData);
+    }, [noteData]);
+
     return (
         <GradientScreen>
             <View style={{ padding: 16, flex: 1 }}>
@@ -26,9 +33,7 @@ const SendingCard = () => {
                             Your <Text style={{ color: "#D99656" }}>Card</Text> is on {"\n"}its way!
                         </Text>
                         <Text style={styles.subHeader}>
-                            Note: Cards are delivered each Thursday
-                            with a Tuesday evening cutoff to allow
-                            time for printing.
+                            Note: {noteData}
                         </Text>
                     </View>
                     <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />
