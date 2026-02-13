@@ -172,3 +172,9 @@ export const registerFCMToken = (fcmToken, platform) => {
   });
 }
 
+export const logoutDevice = (fcmToken) => {
+  return axiosInstance.delete(API_ROUTES.LOGOUT_DEVICE, {
+    data: { token: fcmToken },
+  });
+}
+

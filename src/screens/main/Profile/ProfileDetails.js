@@ -8,6 +8,8 @@ import { deleteAccount } from '../../../fetures/deleteSlice';
 import { clearUserData } from '../../../utils/asyncStorageManager';
 import { useState } from 'react';
 import CustomModal from '../../common/CustomModal';
+import { logoutDevice } from '../../../apis/api';
+import { getFCMToken } from '../../../utils/notificationService';
 const { width } = Dimensions.get('window');
 
 const ProfileDetails = () => {
@@ -17,9 +19,15 @@ const ProfileDetails = () => {
 
     const handleLogout = async () => {
         try {
-            dispatch(logout());
+            const fcmToken = await getFCMToken();
+            if (fcmToken) {
+                await logoutDevice(fcmToken);
+                console.log('✅ Device unregistered from backend');
+            }
         } catch (error) {
-            console.log(error);
+            console.log('Logout device error:', error?.response?.data || error.message);
+        } finally {
+            dispatch(logout());
         }
     }
 
