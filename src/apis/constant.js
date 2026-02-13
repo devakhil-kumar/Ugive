@@ -24,5 +24,6 @@ export const API_ROUTES = {
     SENDCARDLIST:'student/sent-card-listing',
       CHECKBANWORDS:'banword/process_text',
       REGISTER_OTP:'public/send-registration-otp',
-      GETNOTE:'student/get-student-notifications'
+      GETNOTE:'student/get-student-notifications',
+      REGISTER_FCM_TOKEN:'student/register-fcm-token'
 }

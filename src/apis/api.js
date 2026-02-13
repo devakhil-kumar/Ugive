@@ -163,5 +163,11 @@ export const OtpVerfication = (email,name) => {
 
 export const GetNote = () => {
   return axiosInstance.get(API_ROUTES.GETNOTE)
-}   
+}
+
+export const registerFCMToken = (fcmToken) => {
+  return axiosInstance.post(API_ROUTES.REGISTER_FCM_TOKEN, {
+    fcm_token: fcmToken,
+  });
+}
 
