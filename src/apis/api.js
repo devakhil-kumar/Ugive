@@ -165,9 +165,10 @@ export const GetNote = () => {
   return axiosInstance.get(API_ROUTES.GETNOTE)
 }
 
-export const registerFCMToken = (fcmToken) => {
+export const registerFCMToken = (fcmToken, platform) => {
   return axiosInstance.post(API_ROUTES.REGISTER_FCM_TOKEN, {
-    fcm_token: fcmToken,
+    token: fcmToken,
+    platform: platform,
   });
 }
 

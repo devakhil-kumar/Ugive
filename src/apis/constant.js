@@ -25,5 +25,5 @@ export const API_ROUTES = {
       CHECKBANWORDS:'banword/process_text',
       REGISTER_OTP:'public/send-registration-otp',
       GETNOTE:'student/get-student-notifications',
-      REGISTER_FCM_TOKEN:'student/register-fcm-token'
+      REGISTER_FCM_TOKEN:'student/register-device'
 }
