@@ -3,8 +3,8 @@
  * @format
  */
 
-import React, { useEffect } from 'react';
-import { StatusBar, Alert, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './src/navigation/RootNavigator';
 import store from './src/fetures/store'
@@ -20,6 +20,7 @@ import {
   onTokenRefresh,
 } from './src/utils/notificationService';
 import { registerFCMToken } from './src/apis/api';
+import InAppNotification from './src/screens/common/InAppNotification';
 
 
 const GlobalMessageWrapper = () => {
@@ -41,6 +42,7 @@ const GlobalMessageWrapper = () => {
 
 const NotificationHandler = () => {
   const { token: authToken } = useSelector(state => state.auth);
+  const [notification, setNotification] = useState({ visible: false, title: '', body: '' });
 
   useEffect(() => {
     initNotifications();
@@ -59,7 +61,7 @@ const NotificationHandler = () => {
       if (hasPermission) {
         const fcmToken = await getFCMToken();
         if (fcmToken) {
-          const platform = Platform.OS; // 'ios' or 'android'
+          const platform = Platform.OS;
           const response = await registerFCMToken(fcmToken, platform);
           console.log('✅ FCM token registered with backend:', response.data);
         }
@@ -89,13 +91,14 @@ const NotificationHandler = () => {
       }
     });
 
-    // Foreground message handler
+    // Foreground message handler - show in-app banner
     const unsubscribeForeground = onForegroundMessage(remoteMessage => {
       console.log('Foreground message:', remoteMessage);
-      Alert.alert(
-        remoteMessage.notification?.title || 'Notification',
-        remoteMessage.notification?.body || '',
-      );
+      setNotification({
+        visible: true,
+        title: remoteMessage.notification?.title || '',
+        body: remoteMessage.notification?.body || '',
+      });
     });
 
     // When app is opened from background via notification tap
@@ -115,7 +118,14 @@ const NotificationHandler = () => {
     };
   };
 
-  return null;
+  return (
+    <InAppNotification
+      visible={notification.visible}
+      title={notification.title}
+      body={notification.body}
+      onHide={() => setNotification(prev => ({ ...prev, visible: false }))}
+    />
+  );
 };
 
 function App() {
@@ -123,8 +133,8 @@ function App() {
     <Provider store={store}>
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
-      <NotificationHandler />
       <GlobalMessageWrapper />
+      <NotificationHandler />
     </SafeAreaProvider>
     </Provider>
   );
