@@ -61,14 +61,13 @@ const RewardSection = ({ onPress }) => {
       <View style={styles.content}>
         <View style={styles.textContainer}>
           <Text style={styles.title}>
-            You're close to{'\n'}a reward!
+            You're close to unlocking a gift! 
           </Text>
           
           <Text style={styles.subtitle}>
             Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
             <Text style={styles.action}>cards</Text> to{'\n'}
-            <Text style={styles.receive}>receive</Text> a free{' '}
-            <Text style={styles.item}>coffee.</Text>
+            <Text style={styles.receive}>unlock a  <Text style={styles.item}>coffee</Text> voucher {'\n'}for a friend.</Text> 
           </Text>
           
           <TouchableOpacity
@@ -110,16 +109,16 @@ const styles = StyleSheet.create({
     paddingRight: wp(4),
   },
   title: {
-    fontSize: isTablet ? moderateScale(28) : moderateScale(24),
+    fontSize: isTablet ? moderateScale(28) : moderateScale(22),
     fontWeight: '700',
     color: '#F3B11C',
-    lineHeight: isTablet ? moderateScale(38) : moderateScale(32),
+    lineHeight: isTablet ? moderateScale(38) : moderateScale(24),
     marginBottom: hp(1.5),
   },
   subtitle: {
-    fontSize: isTablet ? moderateScale(17) : moderateScale(15),
+    fontSize: isTablet ? moderateScale(17) : moderateScale(14),
     fontWeight: '400',
-    lineHeight: isTablet ? moderateScale(28) : moderateScale(24),
+    lineHeight: isTablet ? moderateScale(28) : moderateScale(20),
     marginBottom: hp(2.5),
     color: '#333333',
   },

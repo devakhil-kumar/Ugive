@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Platform, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Platform, Alert, ActivityIndicator, PermissionsAndroid } from 'react-native';
 import { Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { changePassword } from '../../../fetures/changepassword';
 import RNFS from 'react-native-fs';
+import { MaskedTextInput } from 'react-native-advanced-input-mask';
 const { width } = Dimensions.get('window');
 
 const CustomTextField = ({
@@ -94,9 +95,9 @@ const EditProfie = () => {
             const type = match ? `image/${match[1]}` : 'image/jpeg';
 
             formData.append('profileImage', {
-                uri: image,      
-                name: filename, 
-                type: type     
+                uri: image,
+                name: filename,
+                type: type
             });
         }
         console.log(formData, 'data+++++++++++')
@@ -122,96 +123,67 @@ const EditProfie = () => {
         }
     };
 
-    // const handlePickImage = () => {
-    //     const options = {
-    //         mediaType: 'photo',
-    //         quality: 1,
-    //         selectionLimit: 1,
-    //          includeBase64: true, 
-    //     };
-    //     launchImageLibrary(options, async (response) => {
-    //         if (response.didCancel) {
-    //             console.log('User cancelled image picker');
-    //             return;
-    //         }
-    //         if (response.error) {
-    //             console.log('ImagePicker Error: ', response.error);
-    //             Alert.alert('Error', 'Failed to pick image');
-    //             return;
-    //         }
-    //         if (!response.assets || !response.assets[0]) {
-    //             console.log('No image selected');
-    //             return;
-    //         }
+    // --- NEW: Permission Request Function ---
+    const requestGalleryPermission = async () => {
+        if (Platform.OS === 'android') {
+            try {
+                // Android 13+ (API Level 33) uses READ_MEDIA_IMAGES
+                if (Platform.Version >= 33) {
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+                        {
+                            title: "Photo Access Required",
+                            message: "This app needs access to your photos to update your profile picture.",
+                            buttonNeutral: "Ask Me Later",
+                            buttonNegative: "Cancel",
+                            buttonPositive: "OK"
+                        }
+                    );
+                    return granted === PermissionsAndroid.RESULTS.GRANTED;
+                } else {
+                    // Android 12 and below uses READ_EXTERNAL_STORAGE
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                        {
+                            title: "Photo Access Required",
+                            message: "This app needs access to your photos to update your profile picture.",
+                            buttonNeutral: "Ask Me Later",
+                            buttonNegative: "Cancel",
+                            buttonPositive: "OK"
+                        }
+                    );
+                    return granted === PermissionsAndroid.RESULTS.GRANTED;
+                }
+            } catch (err) {
+                console.warn(err);
+                return false;
+            }
+        }
+        // iOS handles permission via the library automatically or Info.plist
+        // However, it's good practice to ensure Info.plist has NSPhotoLibraryUsageDescription
+        return true;
+    };
 
-    //         try {
-    //             const asset = response.assets[0];
-    //             console.log('Original image URI:', asset.uri);
-    //             const resized = await ImageResizer.createResizedImage(
-    //                 asset.uri,
-    //                 600,
-    //                 600,
-    //                 'JPEG',
-    //                 60,
-    //                 0
-    //             );
-    //             const base64String = await convertToBase64(resized.uri);
-    //             if (base64String) {
-    //                 console.log('Image converted to base64 successfully');
-    //                 setImage(base64String);
-    //             } else {
-    //                 Alert.alert('Error', 'Failed to process image');
-    //             }
-    //         } catch (err) {
-    //             console.error("Image processing error:", err);
-    //             Alert.alert('Error', 'Failed to process image: ' + err.message);
-    //         }
-    //     });
-    // };
+    const handlePickImage = async () => {
 
-    // const handlePasswordChange = () => {
-    //     // Validation
-    //     try {
-    //         if (!currentpassword || !newpassword || !confirmpassword) {
-    //             Alert.alert('Error', 'Please fill all password fields');
-    //             return;
-    //         }
+        const hasPermission = await requestGalleryPermission();
 
-    //         if (newpassword !== confirmpassword) {
-    //             Alert.alert('Error', 'New password and confirm password do not match');
-    //             return;
-    //         }
+        if (!hasPermission) {
+            Alert.alert(
+                'Permission Denied',
+                'We need access to your photo album to change your profile picture. Please go to settings and enable permissions for UGive.'
+            );
+            return;
+        }
 
-    //         if (newpassword.length < 6) {
-    //             Alert.alert('Error', 'New password must be at least 6 characters long');
-    //             return;
-    //         }
-    //         const passwordData = {
-    //             currentPassword: currentpassword,
-    //             newPassword: newpassword,
-    //         };
-    //         console.log(passwordData, 'password')
-    //         const response = dispatch(changePassword(passwordData));
-    //         dispatch(showMessage({
-    //             type: 'success',
-    //             text: dataresponse?.data?.message,
-    //         }))
-    //     } catch (error) {
-    //         // console.log(error, 'errror')
-    //         // dispatch(showMessage({
-    //         //     type: 'error',
-    //         //     text: error.message,
-    //         // }))
-    //     }
-    // };
 
-    const handlePickImage = () => {
         const options = {
             mediaType: 'photo',
             quality: 0.5,
             selectionLimit: 1,
             includeBase64: false,
         };
+
         launchImageLibrary(options, async (response) => {
             if (response.didCancel) {
                 console.log('User cancelled image picker');
@@ -240,10 +212,6 @@ const EditProfie = () => {
                     40,
                     0
                 );
-                // const base64String = await RNFS.readFile(resized.uri, 'base64');
-                // const fullBase64 = `data:image/jpeg;base64,${base64String}`;
-                // console.log(fullBase64, 'chldblvkdfbvdf')
-                // console.log('Image converted to base64 successfully');
                 setImage(resized.uri);
 
             } catch (err) {
@@ -252,10 +220,6 @@ const EditProfie = () => {
             }
         });
     };
-
-
-
-
 
     const handlePasswordChange = async () => {
         // Validation
@@ -404,16 +368,21 @@ const EditProfie = () => {
                                     editable={true}
                                 />
 
-                                <Text style={styles.cardLabelTextStyle}>
-                                    Mobile
-                                </Text>
-                                <CustomTextField
-                                    value={mobile}
-                                    onChangeText={setMobileText}
-                                    placeholder="0478040086"
-                                    keyboardType="phone-pad"
-                                    editable={true}
-                                />
+
+                                <View style={styles.inputGroup}>
+                                    <Text style={styles.label}>Mobile Number</Text>
+                                    <MaskedTextInput
+                                        style={styles.input}
+                                         placeholder="0478 040 086"
+                                        placeholderTextColor="#C4C4C4"
+                                        mask="04[00] [000] [000]"
+                                        value={mobile}
+                                        onChangeText={(formatted) => {
+                                            setMobileText(formatted);
+                                        }}
+                                        keyboardType="phone-pad"
+                                    />
+                                </View>
 
                                 <Text style={styles.cardLabelTextStyle}>
                                     Email
@@ -705,13 +674,14 @@ const styles = StyleSheet.create({
     },
     // Password Input Styles
     inputGroup: {
-        marginBottom: 15,
+        // marginBottom: 15,
     },
     label: {
         fontSize: 15,
-        color: '#333333',
-        marginBottom: 10,
+        color: 'gray',
+        // marginBottom: 10,
         fontWeight: '500',
+        marginTop:10
     },
     passwordContainer: {
         flexDirection: 'row',

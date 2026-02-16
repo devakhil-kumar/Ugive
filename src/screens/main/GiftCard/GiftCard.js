@@ -31,7 +31,7 @@ const CustomTextField = ({
             placeholder={placeholder}
             keyboardType={keyboardType}
             multiline={multiline}
-            style={[styles.input, inputStyle, multiline && { textAlignVertical: "top", minHeight: 100 }]}
+            style={[styles.input, inputStyle, multiline && { textAlignVertical: "top", minHeight: 150 }]}
             placeholderTextColor="#BDBDBD"
         />
     );
@@ -53,7 +53,7 @@ const CustomButton = ({ onPress, loading }) => {
     )
 }
 
-const BgCard = ({ onPress, sendCardLoading,collegesLoading,colleges }) => {
+const BgCard = ({ onPress, sendCardLoading, collegesLoading, colleges }) => {
     const [name, setNameText] = useState('');
     const [recipeintName, setRecipeintNameText] = useState('');
     const [recipeintEmail, setRecipeintEmail] = useState('');
@@ -65,6 +65,8 @@ const BgCard = ({ onPress, sendCardLoading,collegesLoading,colleges }) => {
     const [selectedReward, setSelectedReward] = useState(null);
     const [charCount, setCharCount] = useState(0)
     const [college, setCollege] = useState(null);
+
+    const placeholderText = "Dear James,\n\nQuick reminder that you’re actually crushing it, even on the hard days. Don’t forget that.\n\nFrom Tom";
 
     console.log(rewards, loading, 'rewards');
 
@@ -85,10 +87,10 @@ const BgCard = ({ onPress, sendCardLoading,collegesLoading,colleges }) => {
         setCharCount(text.trim().length);
     };
 
-     const handleCollegeChange = (item) => {
-    setCollege(item._id);
-    // validateField('college', item._id);
-  };
+    const handleCollegeChange = (item) => {
+        setCollege(item._id);
+        // validateField('college', item._id);
+    };
 
 
     const handleSubmit = async () => {
@@ -175,29 +177,29 @@ const BgCard = ({ onPress, sendCardLoading,collegesLoading,colleges }) => {
                 />
 
                 <View style={styles.inputGroup}>
-              <Text style={styles.label}>Recipient's College Name</Text>
-              {collegesLoading ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="small" color="#E5B865" />
-                  <Text style={styles.loadingText}>Loading colleges...</Text>
+                    <Text style={styles.label}>Recipient's College Name</Text>
+                    {collegesLoading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="small" color="#E5B865" />
+                            <Text style={styles.loadingText}>Loading colleges...</Text>
+                        </View>
+                    ) : (
+                        <Dropdown
+                            style={[styles.dropdown]}
+                            placeholderStyle={styles.placeholderStyle}
+                            selectedTextStyle={styles.selectedTextStyle}
+                            data={colleges}
+                            search
+                            maxHeight={300}
+                            labelField="name"
+                            valueField="_id"
+                            placeholder={'Select College'}
+                            searchPlaceholder="Search..."
+                            value={college}
+                            onChange={handleCollegeChange}
+                        />
+                    )}
                 </View>
-              ) : (
-                <Dropdown
-                  style={[styles.dropdown ]}
-                  placeholderStyle={styles.placeholderStyle}
-                  selectedTextStyle={styles.selectedTextStyle}
-                  data={colleges}
-                  search
-                  maxHeight={300}
-                  labelField="name"
-                  valueField="_id"
-                  placeholder={ 'Select College' }
-                  searchPlaceholder="Search..."
-                  value={college}
-                  onChange={handleCollegeChange}
-                />
-              )}
-            </View>
 
                 <Text style={styles.cardLabelTextStyle}>Rewards</Text>
                 {(!rewards || rewards.length === 0) ? (
@@ -243,10 +245,11 @@ const BgCard = ({ onPress, sendCardLoading,collegesLoading,colleges }) => {
                     value={message}
                     // onChangeText={setMessageText}
                     onChangeText={handleTextChange}
-                    placeholder="Enter Your Message"
+                    placeholder={placeholderText}
                     multiline={true}
+                    placeholderTextColor="#9CA3AF"
                 />
-                <View style={{ width: '100%', alignItems: 'flex-end' }}><Text style={styles.cardLabelTextStyle}>
+                <View style={{ width: '100%', alignItems: 'flex-end' , paddingBottom:10}}><Text style={styles.cardLabelTextStyle}>
                     {charCount}/600
                 </Text></View>
                 <CustomButton onPress={handleSubmit} loading={sendCardLoading} />
@@ -265,15 +268,15 @@ const GiftCard = () => {
         (state) => state.eligibility
     );
 
-    const { colleges ,collegesLoading } = useSelector(
+    const { colleges, collegesLoading } = useSelector(
         (state) => state.universities
     );
 
-    const { user} = useSelector(state => state.profile);
+    const { user } = useSelector(state => state.profile);
 
 
     const { loading: sendCardLoading } = useSelector((state) => state.cardSend);
-    const noteMessage = noteData?.data[0].message 
+    const noteMessage = noteData?.data[0].message
     console.log(noteData, 'noptemessage+++=')
 
     useEffect(() => {
@@ -281,9 +284,9 @@ const GiftCard = () => {
         dispatch(sendNote());
     }, [dispatch]);
 
-    useEffect(() => {
-        dispatch(fetchColleges(user.university._id))
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(fetchColleges(user.university._id))
+    // }, [dispatch])
 
     // useEffect(() => {
     //     if (!loading) {
@@ -292,7 +295,7 @@ const GiftCard = () => {
     // }, [loading]);
 
     useEffect(() => {
-        if (!loading && eligible === false  && error?.message) {
+        if (!loading && eligible === false && error?.message) {
             setOpen(true);
         }
     }, [loading, eligible, error]);
@@ -332,7 +335,7 @@ const GiftCard = () => {
                 })
             );
 
-            navigation.navigate('SendingCard', { noteData: noteMessage });
+            navigation.navigate('SendingCard');
         } catch (error) {
             dispatch(
                 showMessage({
@@ -380,7 +383,7 @@ const GiftCard = () => {
                     contentContainerStyle={styles.scrollContent}
                     enableOnAndroid={true}
                     enableAutomaticScroll={true}
-                    extraScrollHeight={Platform.OS === 'ios' ? 120 : 40}
+                    extraScrollHeight={Platform.OS === 'ios' ? 200 : 40}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                     enableResetScrollToCoords={false}
@@ -437,8 +440,8 @@ const styles = StyleSheet.create({
         pointerEvents: 'none',
     },
     pizzaImageStyle: {
-        width: width / 2.8,
-        height: height / 9,
+        width: width / 2.5,
+        height: height / 10,
         resizeMode: "contain",
     },
     cupImagePosition: {
@@ -483,7 +486,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#000",
         marginTop: 5,
-        marginBottom: 10
+        marginBottom:5
     },
     customButtonStyle: {
         height: 40,
@@ -508,7 +511,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         borderRadius: 15,
         paddingBottom: 60,
-        marginTop: 5
+        marginTop: 10
     },
     cardLabelTextStyle: {
         fontWeight: '500',
@@ -545,10 +548,10 @@ const styles = StyleSheet.create({
         height: Platform.OS === 'ios' ? 50 : 50,
         width: '100%',
     },
-  loadingContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 50 },
-  loadingText: { marginLeft: 10, color: '#999' },
+    loadingContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 50 },
+    loadingText: { marginLeft: 10, color: '#999' },
     inputGroup: { marginBottom: 12 },
-  label: { fontSize: 15, color: '#333', marginBottom: 8, fontWeight: '500' },
+    label: { fontSize: 15, color: '#333', marginBottom: 8, fontWeight: '500' },
 });
 
 export default GiftCard;

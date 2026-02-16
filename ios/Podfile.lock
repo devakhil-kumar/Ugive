@@ -2786,7 +2786,7 @@ PODS:
     - RNWorklets
     - SocketRocket
     - Yoga
-  - RNScreens (4.20.0):
+  - RNScreens (4.23.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2813,10 +2813,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.20.0)
+    - RNScreens/common (= 4.23.0)
     - SocketRocket
     - Yoga
-  - RNScreens/common (4.20.0):
+  - RNScreens/common (4.23.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2845,7 +2845,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNSVG (15.15.1):
+  - RNSVG (15.15.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2871,10 +2871,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNSVG/common (= 15.15.1)
+    - RNSVG/common (= 15.15.3)
     - SocketRocket
     - Yoga
-  - RNSVG/common (15.15.1):
+  - RNSVG/common (15.15.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2930,7 +2930,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNWorklets (0.7.2):
+  - RNWorklets (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2957,10 +2957,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets (= 0.7.2)
+    - RNWorklets/worklets (= 0.7.3)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets (0.7.2):
+  - RNWorklets/worklets (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -2987,10 +2987,10 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/worklets/apple (= 0.7.2)
+    - RNWorklets/worklets/apple (= 0.7.3)
     - SocketRocket
     - Yoga
-  - RNWorklets/worklets/apple (0.7.2):
+  - RNWorklets/worklets/apple (0.7.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -3422,10 +3422,10 @@ SPEC CHECKSUMS:
   RNFBMessaging: da2d7f511df0368011a126b156f1a7f4be0c1b72
   RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNReanimated: 7d59df16c018cf3ed5d5b45964cedea4fc5c26ef
-  RNScreens: 714e10b6b554f7dc7ad9f78dcf36dc8e3fc73415
-  RNSVG: 1bbfeab22b26db18b73d2e36b37a0f02a1180838
+  RNScreens: afaf526a9c804c3b4503f950cf3e67ed81e29ada
+  RNSVG: 91da5f4f11f562cafee06e2a6f04bb4401ef1090
   RNVectorIcons: 791f13226ec4a3fd13062eda9e892159f0981fae
-  RNWorklets: cb0d3cc3c613ac60a3b7620f394980d997a86d8d
+  RNWorklets: edd6646f96b38e2ae089396088bc7fcadfd2612f
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: edeb9900b9e5bb5b27b9a6a2d5914e4fe4033c1b
 

@@ -14,13 +14,6 @@ const SendingCard = () => {
     const handleOnPress = () => {
         navigation.navigate('HomeScreen')
     }
-
-    const route = useRoute();
-    const { noteData } = route.params || {};
-    useEffect(() => {
-        console.log("Received Note Data:", noteData);
-    }, [noteData]);
-
     return (
         <GradientScreen>
             <View style={{ padding: 16, flex: 1 }}>
@@ -33,7 +26,7 @@ const SendingCard = () => {
                             Your <Text style={{ color: "#D99656" }}>Card</Text> is on {"\n"}its way!
                         </Text>
                         <Text style={styles.subHeader}>
-                            Note: {noteData}
+                            Note:Your Card will be delivered in next week 
                         </Text>
                     </View>
                     <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />
@@ -83,7 +76,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: '600',
         textAlign: "center",
-        lineHeight: 20
+        lineHeight: 23
     },
     subHeader: {
         fontSize: 15,

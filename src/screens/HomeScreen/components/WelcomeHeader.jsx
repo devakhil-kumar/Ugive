@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 import { fetchProfile } from '../../../fetures/profileSlice';
@@ -29,10 +29,13 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
               onPress={onProfilePress}
               activeOpacity={0.8}
             >
-              <Icon
-                name="person"
-                size={moderateScale(28)}
-                color='#6955A5'
+              <Image
+                source={
+                  user?.profileImage
+                    ? { uri: user.profileImage }
+                    : require('../../../assets/profile.png')
+                }
+                style={styles.profileStyle}
               />
             </TouchableOpacity>
           </View>
@@ -97,6 +100,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFFFFF',
   },
+   profileStyle: {
+        width: 40,
+        height: 40,
+        alignSelf: 'center',
+        borderRadius:80
+    },
 });
 
 export default WelcomeHeader;
