@@ -34,6 +34,7 @@ const cardRemainingSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.success = false;
+      state.data = null;
     }
   },
   extraReducers: (builder) => {
@@ -47,6 +48,7 @@ const cardRemainingSlice = createSlice({
         state.success = action.payload.success;
         state.currentReward = action.payload.currentReward;
         state.nextRewards = action.payload.nextRewards;
+        state.data = action.payload;
         state.error = null;
       })
       .addCase(fetchCardSendRemaining.rejected, (state, action) => {

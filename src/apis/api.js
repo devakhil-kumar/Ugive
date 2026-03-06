@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { API_ROUTES } from './constant';
 import { getUserData } from '../utils/asyncStorageManager';
+import store from '../fetures/store';
+import { logout } from '../fetures/authSlice';
+import { showMessage } from '../fetures/messageSlice';
 
 const BASE_URL = "https://ugive.com.au/api/"
 const NEW_BASE_URL = "https://ugive.com.au/"
@@ -26,6 +29,23 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.log("Token Expired or Unauthorized! Force Logging out...");
+      store.dispatch(logout());
+      store.dispatch(showMessage({
+        type: 'error',
+        text: 'Session expired. Please login again.',
+      }));
+    }
+    return Promise.reject(error);
+  }
 );
 
 
@@ -134,7 +154,7 @@ export const CardsRemaningSend = () => {
 
 export const claimRewards = (rewardId) => {
   return axiosInstance.post(API_ROUTES.CLAIMREWARDS, {
-    rewardId:rewardId
+    rewardId: rewardId
   });
 };
 
@@ -154,7 +174,7 @@ export const checkBanWordsApi = async (message) => {
   // return axiosInstance.post(API_ROUTES.CHECKBANWORDS, message);
 };
 
-export const OtpVerfication = (email,name) => {
+export const OtpVerfication = (email, name) => {
   return axiosInstance.post(API_ROUTES.REGISTER_OTP, {
     email: email,
     name: name

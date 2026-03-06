@@ -26,7 +26,7 @@ const SendingCard = () => {
                             Your <Text style={{ color: "#D99656" }}>Card</Text> is on {"\n"}its way!
                         </Text>
                         <Text style={styles.subHeader}>
-                            Note:Your Card will be delivered in next week 
+                            Note : Your Card will be delivered in the next week.
                         </Text>
                     </View>
                     <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />

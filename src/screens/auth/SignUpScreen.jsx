@@ -11,6 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -22,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from '../../fetures/messageSlice';
 import Feather from '@react-native-vector-icons/feather';
 import { sendOtpSignupThunk } from '../../fetures/sendOtpSignupThunk'; // Ensure this path is correct
+import { registerUser } from '../../fetures/authSlice';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -152,44 +154,99 @@ const SignUpScreen = () => {
   const handleLogin = () => navigation.navigate('Login');
   const showError = field => submitAttempted && errors[field];
 
-  // --- MAIN FUNCTIONALITY: SEND OTP & NAVIGATE ---
-  const handleSendOTP = async () => {
-    setSubmitAttempted(true);
-    if (!isTermsAccepted) {
-      Alert.alert('Terms Required', 'Please accept the Terms & Conditions and Privacy Policy.');
-      return;
-    }
+  // const handleSendOTP = async () => {
+  //   setSubmitAttempted(true);
+  //   if (!isTermsAccepted) {
+  //     Alert.alert('Terms Required', 'Please accept the Terms & Conditions and Privacy Policy.');
+  //     return;
+  //   }
 
-    // 2. Trigger validation for all fields
-    validateField('name', name);
-    validateField('studentId', studentId);
-    validateField('university', university);
-    validateField('college', college);
-    validateField('email', email);
-    validateField('mobile', mobile);
-    validateField('password', password);
+  //   // 2. Trigger validation for all fields
+  //   validateField('name', name);
+  //   validateField('studentId', studentId);
+  //   validateField('university', university);
+  //   validateField('college', college);
+  //   validateField('email', email);
+  //   validateField('mobile', mobile);
+  //   validateField('password', password);
 
-    // 3. Check if form is valid
-    if (!isFormValid()) {
-      Alert.alert('Fix Errors', 'Please correct all fields before submitting');
-      return;
-    }
+  //   // 3. Check if form is valid
+  //   if (!isFormValid()) {
+  //     Alert.alert('Fix Errors', 'Please correct all fields before submitting');
+  //     return;
+  //   }
 
-    setIsLoading(true);
+  //   setIsLoading(true);
 
-    try {
-      const response = await dispatch(
-        sendOtpSignupThunk({ email: email.trim(), name: name.trim() })
-      ).unwrap();
-      console.log(response, 'response+++++')
-      dispatch(
-        showMessage({
-          type: 'success',
-          text: response.message || 'OTP Sent Successfully! Please check your email.',
-        })
-      );
+  //   try {
+  //     const response = await dispatch(
+  //       sendOtpSignupThunk({ email: email.trim(), name: name.trim() })
+  //     ).unwrap();
+  //     console.log(response, 'response+++++')
+  //     dispatch(
+  //       showMessage({
+  //         type: 'success',
+  //         text: response.message || 'OTP Sent Successfully! Please check your email.',
+  //       })
+  //     );
 
-      const userDataForNextScreen = {
+  //     const userDataForNextScreen = {
+  //       name: name.trim(),
+  //       email: email.toLowerCase().trim(),
+  //       password,
+  //       role: 'student',
+  //       university,
+  //       college,
+  //       phoneNumber: mobile,
+  //       studentUniId: studentId.trim(),
+  //     };
+
+  //     navigation.navigate('YourRegistrationScreen', { 
+  //       email: email.trim(),
+  //       userData: userDataForNextScreen 
+  //     });
+
+  //   } catch (error) {
+  //     console.log(error, 'OTP Error');
+  //     let errorMessage = typeof error === 'string' ? error : error.message || 'Failed to send OTP.';
+      
+  //     if (errorMessage.toLowerCase().includes('already registered')) {
+  //       dispatch(
+  //         showMessage({
+  //           type: 'error',
+  //           text: 'This email is already registered. Please use a different email or try logging in.',
+  //         })
+  //       );
+  //     } else {
+  //       dispatch(
+  //         showMessage({
+  //           type: 'error',
+  //           text: errorMessage,
+  //         })
+  //       );
+  //     }
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+   const handleVerify = async () => {
+      Keyboard.dismiss();
+  
+      // if (otp.length !== length) {
+      //   Alert.alert('Invalid OTP', 'Please enter a valid 6-digit code.');
+      //   return;
+      // }
+  
+      setIsLoading(true);
+  
+     
+      // const payload = {
+      //   ...userData, 
+      //   otp: otp    
+      // };
+
+       const userDataForNextScreen = {
         name: name.trim(),
         email: email.toLowerCase().trim(),
         password,
@@ -200,34 +257,45 @@ const SignUpScreen = () => {
         studentUniId: studentId.trim(),
       };
 
-      navigation.navigate('YourRegistrationScreen', { 
-        email: email.trim(),
-        userData: userDataForNextScreen 
-      });
-
-    } catch (error) {
-      console.log(error, 'OTP Error');
-      let errorMessage = typeof error === 'string' ? error : error.message || 'Failed to send OTP.';
-      
-      if (errorMessage.toLowerCase().includes('already registered')) {
-        dispatch(
-          showMessage({
-            type: 'error',
-            text: 'This email is already registered. Please use a different email or try logging in.',
-          })
-        );
-      } else {
-        dispatch(
-          showMessage({
-            type: 'error',
-            text: errorMessage,
-          })
-        );
+  
+      try {
+        const response = await dispatch(registerUser(userDataForNextScreen)).unwrap();
+        dispatch(showMessage({
+          type: 'success',
+          text: response.message || 'Signup successful!',
+        }));
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+  
+      } catch (error) {
+        console.log(error, 'error');
+        let errorMessage = typeof error === 'string' ? error : error.message || 'Signup failed!';
+        
+        console.log(errorMessage, 'errormessage');
+        
+        if (errorMessage.toLowerCase().includes('user already') || errorMessage.toLowerCase().includes('email')) {
+          dispatch(
+            showMessage({
+              type: 'error',
+              text: errorMessage || 'This email is already registered. Please use a different email or try logging in.',
+            })
+          );
+        } else {
+          dispatch(
+            showMessage({
+              type: 'error',
+              text: errorMessage,
+            })
+          );
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -424,7 +492,7 @@ const SignUpScreen = () => {
                 styles.signUpButton,
                 isLoading && styles.signUpButtonDisabled
               ]}
-              onPress={handleSendOTP}
+              onPress={handleVerify}
               disabled={isLoading}
             >
               <Text style={styles.signUpButtonText}>{isLoading ? 'Please wait...' : "Sign Up"}</Text>

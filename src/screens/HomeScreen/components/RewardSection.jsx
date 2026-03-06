@@ -49,27 +49,58 @@ import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice'
 
 const RewardSection = ({ onPress }) => {
   const circleSize = isTablet ? moderateScale(140) : moderateScale(120);
-  const { currentReward, loading, error } = useSelector(state => state.cardRemaning);
+  const { currentReward, loading, error, data} = useSelector(state => state.cardRemaning);
   const percentage = currentReward?.percentage || 0;
   const remainingCards = currentReward 
   ? currentReward.totalPoints - currentReward.completedPoints 
   : 0;
 
+console.log(currentReward ,data, "rewards++++++" )
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>
+          {/* <Text style={styles.title}>
             You're close to unlocking a gift! 
-          </Text>
+          </Text> */}
           
-          <Text style={styles.subtitle}>
+          {/* <Text style={styles.subtitle}>
             Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
             <Text style={styles.action}>cards</Text> to{'\n'}
             <Text style={styles.receive}>unlock a  <Text style={styles.item}>coffee</Text> voucher {'\n'}for a friend.</Text> 
-          </Text>
-          
+          </Text> */}
+
+       {
+  data?.message === "No rewards found" ? (
+    <Text style={styles.subtitle}>
+      <Text style={styles.receive}>No rewards available right now</Text>{'\n'}
+      <Text style={styles.number}>You can still send cards to your friends!</Text>
+    </Text>
+  ) : remainingCards === 0 ? (
+    <Text style={styles.subtitle}>
+      <Text style={styles.receive}>Your reward has unlocked!</Text>{'\n'}
+      <Text style={styles.number}>
+        Please visit the rewards section to claim your reward.
+      </Text>
+    </Text>
+  ) : (
+    <>
+      <Text style={styles.title}>
+        You're close to unlocking a gift!
+      </Text>
+
+      <Text style={styles.subtitle}>
+        Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
+        <Text style={styles.action}>cards</Text> to{'\n'}
+        <Text style={styles.receive}>
+          unlock a <Text style={styles.item}>coffee</Text> voucher {'\n'}
+          for a friend.
+        </Text>
+      </Text>
+    </>
+  )
+}
           <TouchableOpacity
             style={styles.button}
             onPress={onPress}

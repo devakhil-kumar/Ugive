@@ -88,7 +88,7 @@ const BgCard = ({ onPress, sendCardLoading, collegesLoading, colleges }) => {
     };
 
     const handleCollegeChange = (item) => {
-        setCollege(item._id);
+        setRecipeintCollege(item._id);
         // validateField('college', item._id);
     };
 
@@ -98,10 +98,24 @@ const BgCard = ({ onPress, sendCardLoading, collegesLoading, colleges }) => {
             Alert.alert('Error', 'Please enter your name');
             return;
         }
+
+
         if (!recipeintName.trim()) {
             Alert.alert('Error', 'Please enter recipient\'s first name');
             return;
         }
+
+         if (!recipeintLast.trim()) {
+            Alert.alert('Error', 'Please enter recipient\'s last name');
+            return;
+        }
+
+         if (!recipeintCollege.trim()) {
+            Alert.alert('Error', 'Please enter recipient\'s College name');
+            return;
+        }
+        
+
         if (!recipeintEmail.trim()) {
             Alert.alert('Error', 'Please enter recipient\'s email');
             return;
@@ -272,6 +286,8 @@ const GiftCard = () => {
         (state) => state.universities
     );
 
+    console.log(colleges, 'collages_________')
+
     const { user } = useSelector(state => state.profile);
 
 
@@ -284,9 +300,9 @@ const GiftCard = () => {
         dispatch(sendNote());
     }, [dispatch]);
 
-    // useEffect(() => {
-    //     dispatch(fetchColleges(user.university._id))
-    // }, [dispatch])
+    useEffect(() => {
+        dispatch(fetchColleges(user.university._id))
+    }, [dispatch])
 
     // useEffect(() => {
     //     if (!loading) {
