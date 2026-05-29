@@ -11,7 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from '@react-native-vector-icons/ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../fetures/authSlice';
@@ -28,7 +28,7 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showMessagee, setShowMessagee] = useState(false);
-  const { accountDeleted, message } = useSelector((state) => state.delete);
+  const { accountDeleted, message } = useSelector(state => state.delete);
 
   // Validation states
   const [emailError, setEmailError] = useState('');
@@ -48,7 +48,7 @@ const LoginScreen = () => {
   }, [accountDeleted, dispatch]);
 
   // Email validation function
-  const validateEmail = (emailValue) => {
+  const validateEmail = emailValue => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailValue.trim()) {
       return 'Email is required';
@@ -59,7 +59,7 @@ const LoginScreen = () => {
   };
 
   // Password validation function
-  const validatePassword = (passwordValue) => {
+  const validatePassword = passwordValue => {
     if (!passwordValue.trim()) {
       return 'Password is required';
     } else if (passwordValue.length < 6) {
@@ -105,23 +105,24 @@ const LoginScreen = () => {
       };
       const response = await dispatch(loginUser(loginPayload)).unwrap();
     } catch (error) {
-      const errorMessage = typeof error === "string"
-        ? error
-        : error?.message || "Login failed!";
-      if (errorMessage.toLowerCase().includes('invalid') ||
-        errorMessage.toLowerCase().includes('credential')) {
+      const errorMessage =
+        typeof error === 'string' ? error : error?.message || 'Login failed!';
+      if (
+        errorMessage.toLowerCase().includes('invalid') ||
+        errorMessage.toLowerCase().includes('credential')
+      ) {
         dispatch(
           showMessage({
             type: 'error',
             text: 'Invalid email or password',
-          })
+          }),
         );
       } else {
         dispatch(
           showMessage({
             type: 'error',
             text: errorMessage,
-          })
+          }),
         );
       }
     } finally {
@@ -142,11 +143,12 @@ const LoginScreen = () => {
   }
 
   const handleForgetPassword = () => {
-    navigation.navigate('ResetPassword')
-  }
+    navigation.navigate('ResetPassword');
+  };
 
   // Check if form is valid
-  const isFormValid = email.trim() && password.trim() && !emailError && !passwordError;
+  const isFormValid =
+    email.trim() && password.trim() && !emailError && !passwordError;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -163,7 +165,8 @@ const LoginScreen = () => {
           <View style={styles.headerSection}>
             <Text style={styles.logo}>UGive</Text>
             <Text style={styles.tagline}>
-              Sign up to UGive, and make a{'\n'}difference in someone's world{'\n'}today.
+              Sign up to UGive, and make a{'\n'}difference in someone's world
+              {'\n'}today.
             </Text>
           </View>
 
@@ -171,10 +174,7 @@ const LoginScreen = () => {
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Your Email</Text>
               <TextInput
-                style={[
-                  styles.input,
-                  emailError ? styles.inputError : null
-                ]}
+                style={[styles.input, emailError ? styles.inputError : null]}
                 placeholder="Enter your Email"
                 placeholderTextColor="#C4C4C4"
                 value={email}
@@ -190,10 +190,12 @@ const LoginScreen = () => {
 
             <View style={[styles.inputGroup, { marginBottom: 0 }]}>
               <Text style={styles.label}>Your Password</Text>
-              <View style={[
-                styles.passwordContainer,
-                passwordError ? styles.inputError : null
-              ]}>
+              <View
+                style={[
+                  styles.passwordContainer,
+                  passwordError ? styles.inputError : null,
+                ]}
+              >
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="Enter your Password"
@@ -221,23 +223,23 @@ const LoginScreen = () => {
             </View>
 
             <TouchableOpacity onPress={handleForgetPassword}>
-              <Text style={styles.forgotPassword}>
-                Forgot Password
-              </Text>
+              <Text style={styles.forgotPassword}>Forgot Password</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[
                 styles.loginButton,
-                isFormValid && styles.loginButtonActive
+                isFormValid && styles.loginButtonActive,
               ]}
               onPress={handleLogin}
               activeOpacity={0.8}
             >
-              <Text style={[
-                styles.loginButtonText,
-                isFormValid && styles.loginButtonTextActive
-              ]}>
+              <Text
+                style={[
+                  styles.loginButtonText,
+                  isFormValid && styles.loginButtonTextActive,
+                ]}
+              >
                 Let's go!
               </Text>
             </TouchableOpacity>
@@ -245,7 +247,9 @@ const LoginScreen = () => {
             <View style={styles.signUpContainer}>
               <Text style={styles.signUpText}>
                 Don't have an account?{' '}
-                <Text style={styles.signUpLink} onPress={handleSignUp}>Sign up now</Text>
+                <Text style={styles.signUpLink} onPress={handleSignUp}>
+                  Sign up now
+                </Text>
               </Text>
             </View>
           </View>

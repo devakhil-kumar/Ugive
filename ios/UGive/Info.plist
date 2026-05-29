@@ -26,13 +26,27 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAppTransportSecurity</key>
+ <key>NSAppTransportSecurity</key>
+<dict>
+	<key>NSAllowsArbitraryLoads</key>
+	<true/>
+
+	<key>NSAllowsLocalNetworking</key>
+	<true/>
+
+	<key>NSExceptionDomains</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
+		<key>49.13.70.253</key>
+		<dict>
+			<key>NSIncludesSubdomains</key>
+			<true/>
+			<key>NSExceptionAllowsInsecureHTTPLoads</key>
+			<true/>
+			<key>NSExceptionMinimumTLSVersion</key>
+			<string>TLSv1.0</string>
+		</dict>
 	</dict>
+</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>

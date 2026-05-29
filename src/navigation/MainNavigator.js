@@ -8,14 +8,13 @@ import HomeNavigator from '../navigation/HomeNavigator';
 import FriendsNavigator from '../navigation/FriendsNavigator';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Home from '../screens/main/RewardsHome/Home';
-import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import EventNavigator from '../navigation/EventNavigator';
 
 const Tab = createBottomTabNavigator();
 
 const MainNavigator = () => {
   const insets = useSafeAreaInsets();
   const bottomInset = Platform.OS === 'android' ? insets.bottom : 10;
-
 
   const defaultTabBarStyle = {
     // height: 65 + bottomInset,
@@ -26,7 +25,7 @@ const MainNavigator = () => {
     // borderTopLeftRadius: 30,
     // borderTopRightRadius: 30,
     alignItems: 'center',
-    paddingTop: 16
+    paddingTop: 16,
   };
 
   return (
@@ -34,8 +33,8 @@ const MainNavigator = () => {
       screenOptions={{
         headerShown: false,
         keyboardHidesTabBar: true,
-        tabBarStyle:defaultTabBarStyle,
-        tabBarShowLabel: false
+        tabBarStyle: defaultTabBarStyle,
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
@@ -49,8 +48,14 @@ const MainNavigator = () => {
             />
           ),
           tabBarStyle: (() => {
-            const routeName = getFocusedRouteNameFromRoute(route) ?? 'HomeScreen';
-            if (routeName === 'GiftCard' || routeName === 'SendingCard' || routeName === 'RewardStutas' || routeName === 'ProfileNavigator') {
+            const routeName =
+              getFocusedRouteNameFromRoute(route) ?? 'HomeScreen';
+            if (
+              routeName === 'GiftCard' ||
+              routeName === 'SendingCard' ||
+              routeName === 'RewardStutas' ||
+              routeName === 'ProfileNavigator'
+            ) {
               return { display: 'none' };
             }
             return defaultTabBarStyle;
@@ -67,7 +72,6 @@ const MainNavigator = () => {
               style={{ width: 38, height: 38, resizeMode: 'contain' }}
             />
           ),
-
         }}
       />
 
@@ -81,7 +85,6 @@ const MainNavigator = () => {
               style={{ width: 38, height: 38, resizeMode: 'contain' }}
             />
           ),
-
         }}
       />
 
@@ -96,14 +99,13 @@ const MainNavigator = () => {
                 style={{ width: 38, height: 38, resizeMode: 'contain' }}
               />
             ),
-
           };
         }}
       />
-      {/* <Tab.Screen
-        name="Request"
-        component={FriendsRequest}
-        options={() => {
+      <Tab.Screen
+        name="Events"
+        component={EventNavigator}
+        options={({ route }) => {
           return {
             tabBarIcon: () => (
               <Image
@@ -111,10 +113,16 @@ const MainNavigator = () => {
                 style={{ width: 38, height: 38, resizeMode: 'contain' }}
               />
             ),
-
+            tabBarStyle: (() => {
+              const routeName = getFocusedRouteNameFromRoute(route) ?? 'Events';
+              if (routeName === 'EventDetail') {
+                return { display: 'none' };
+              }
+              return defaultTabBarStyle;
+            })(),
           };
         }}
-      /> */}
+      />
     </Tab.Navigator>
   );
 };

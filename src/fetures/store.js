@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 import getUniversityReducer from '../fetures/getUniversitySlice';
 import messageReducer from '../fetures/messageSlice';
 import authSliceReducer from '../fetures/authSlice';
@@ -16,30 +16,41 @@ import cardSendSliceReducer from '../fetures/cardSendSlice';
 import cardRemainingSlice from '../fetures/CardSendRemainingSlice';
 import claimRewardsSliceReducer from '../fetures/claimRewardsSlice';
 import SendlistSliceReducer from '../fetures/getCardListSlice';
-import sendOtpSignupThunk from "../fetures/sendOtpSignupThunk";
-
+import sendOtpSignupThunk from '../fetures/sendOtpSignupThunk';
+import eventListreducer from '../fetures/eventListSlice';
+import calendarReducer from '../fetures/calendarslice';
+import rsvpReducer from '../fetures/rsvpslice';
+import eventDetailReducer from '../fetures/eventDetailsSlice';
+import contactFormReducer from '../fetures/contactformslice';
+import leaderboardReducer from '../fetures/leaderBoardSlice';
 
 const store = configureStore({
-    reducer: {
-        universities: getUniversityReducer,
-        message: messageReducer,
-        auth: authSliceReducer,
-        profile: profileReducer,
-        forgetData: resetPasswordSlice,
-        delete: deleteAcountSlice,
-        password: passwordChangeSlice,
-        rewards: rewardsSlice,
-        friends: FriendsReducer,
-        friendsRecevied: friendsReceviedReducer,
-        searchFriend: searchFriendSliceReducer,
-        friendsAdd: friendsAddDeleteReducer,
-        eligibility: eligibilitySliceReducer,
-        cardSend: cardSendSliceReducer,
-        cardRemaning: cardRemainingSlice,
-        claimRewards: claimRewardsSliceReducer,
-        listCards: SendlistSliceReducer,
-        OtpVerfication:sendOtpSignupThunk
-    }
-})
+  reducer: {
+    universities: getUniversityReducer,
+    message: messageReducer,
+    auth: authSliceReducer,
+    profile: profileReducer,
+    forgetData: resetPasswordSlice,
+    delete: deleteAcountSlice,
+    password: passwordChangeSlice,
+    rewards: rewardsSlice,
+    friends: FriendsReducer,
+    friendsRecevied: friendsReceviedReducer,
+    searchFriend: searchFriendSliceReducer,
+    friendsAdd: friendsAddDeleteReducer,
+    eligibility: eligibilitySliceReducer,
+    cardSend: cardSendSliceReducer,
+    cardRemaning: cardRemainingSlice,
+    claimRewards: claimRewardsSliceReducer,
+    listCards: SendlistSliceReducer,
+    OtpVerfication: sendOtpSignupThunk,
+    eventList: eventListreducer,
+    calendar: calendarReducer,
+    rsvp: rsvpReducer,
+    eventDetail: eventDetailReducer,
+    contactForm: contactFormReducer,
+    leaderboard: leaderboardReducer,
+  },
+});
 
 export default store;

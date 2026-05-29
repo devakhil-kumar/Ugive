@@ -14,11 +14,15 @@ import {
   Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from '@react-native-vector-icons/ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { MaskedTextInput } from 'react-native-advanced-input-mask';
 import { useNavigation } from '@react-navigation/native';
-import { clearColleges, fetchColleges, fetchUniversities } from '../../fetures/getUniversitySlice';
+import {
+  clearColleges,
+  fetchColleges,
+  fetchUniversities,
+} from '../../fetures/getUniversitySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { showMessage } from '../../fetures/messageSlice';
 import Feather from '@react-native-vector-icons/feather';
@@ -46,9 +50,8 @@ const SignUpScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Redux Data
-  const { universities, colleges, universitiesLoading, collegesLoading } = useSelector(
-    (state) => state.universities
-  );
+  const { universities, colleges, universitiesLoading, collegesLoading } =
+    useSelector(state => state.universities);
 
   const universitiesList = Array.isArray(universities) ? universities : [];
   const collegesList = Array.isArray(colleges) ? colleges : [];
@@ -69,14 +72,14 @@ const SignUpScreen = () => {
   ];
 
   // --- Validation Logic ---
-  const validateName = (v) => /^[A-Za-z\s]{2,50}$/.test(v.trim());
-  const validateEmail = (v) => {
+  const validateName = v => /^[A-Za-z\s]{2,50}$/.test(v.trim());
+  const validateEmail = v => {
     const lower = v.toLowerCase().trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower)) return false;
     return ALLOWED_EMAIL_DOMAINS.some(d => lower.endsWith(`@${d}`));
   };
-  const validateMobile = (v) => /^04\d{8}$/.test(v.replace(/\s/g, ''));
-  const validatePassword = (v) =>
+  const validateMobile = v => /^04\d{8}$/.test(v.replace(/\s/g, ''));
+  const validatePassword = v =>
     v.length >= 8 &&
     /[a-z]/.test(v) &&
     /[A-Z]/.test(v) &&
@@ -88,7 +91,8 @@ const SignUpScreen = () => {
     switch (field) {
       case 'name':
         if (!value.trim()) error = 'Name is required';
-        else if (!validateName(value)) error = 'Only letters and spaces allowed';
+        else if (!validateName(value))
+          error = 'Only letters and spaces allowed';
         break;
       case 'studentId':
         if (!value.trim()) error = 'Student ID is required';
@@ -105,11 +109,13 @@ const SignUpScreen = () => {
         break;
       case 'mobile':
         if (!value) error = 'Mobile number is required';
-        else if (!validateMobile(value)) error = 'Enter valid Australian mobile number';
+        else if (!validateMobile(value))
+          error = 'Enter valid Australian mobile number';
         break;
       case 'password':
         if (!value) error = 'Password is required';
-        else if (!validatePassword(value)) error = 'Min 8 chars, upper, lower, number & special';
+        else if (!validatePassword(value))
+          error = 'Min 8 chars, upper, lower, number & special';
         break;
     }
     setErrors(prev => ({ ...prev, [field]: error }));
@@ -135,18 +141,18 @@ const SignUpScreen = () => {
   const handleOpenTerms = () => navigation.navigate('TermsScreen');
   const handleOpenPrivacy = () => navigation.navigate('PrivacyPolicy');
 
-  const handleUniversityChange = (item) => {
+  const handleUniversityChange = item => {
     setUniversity(item._id);
     setCollege(null);
     dispatch(clearColleges());
-    dispatch(fetchColleges(item._id));   
+    dispatch(fetchColleges(item._id));
     if (submitAttempted) {
       validateField('university', item._id);
       validateField('college', null);
     }
   };
 
-  const handleCollegeChange = (item) => {
+  const handleCollegeChange = item => {
     setCollege(item._id);
     validateField('college', item._id);
   };
@@ -201,15 +207,15 @@ const SignUpScreen = () => {
   //       studentUniId: studentId.trim(),
   //     };
 
-  //     navigation.navigate('YourRegistrationScreen', { 
+  //     navigation.navigate('YourRegistrationScreen', {
   //       email: email.trim(),
-  //       userData: userDataForNextScreen 
+  //       userData: userDataForNextScreen
   //     });
 
   //   } catch (error) {
   //     console.log(error, 'OTP Error');
   //     let errorMessage = typeof error === 'string' ? error : error.message || 'Failed to send OTP.';
-      
+
   //     if (errorMessage.toLowerCase().includes('already registered')) {
   //       dispatch(
   //         showMessage({
@@ -230,89 +236,100 @@ const SignUpScreen = () => {
   //   }
   // };
 
-   const handleVerify = async () => {
-      Keyboard.dismiss();
-  
-      // if (otp.length !== length) {
-      //   Alert.alert('Invalid OTP', 'Please enter a valid 6-digit code.');
-      //   return;
-      // }
-  
-      setIsLoading(true);
-  
-     
-      // const payload = {
-      //   ...userData, 
-      //   otp: otp    
-      // };
+  const handleVerify = async () => {
+    Keyboard.dismiss();
 
-       const userDataForNextScreen = {
-        name: name.trim(),
-        email: email.toLowerCase().trim(),
-        password,
-        role: 'student',
-        university,
-        college,
-        phoneNumber: mobile,
-        studentUniId: studentId.trim(),
-      };
+    // if (otp.length !== length) {
+    //   Alert.alert('Invalid OTP', 'Please enter a valid 6-digit code.');
+    //   return;
+    // }
 
-  
-      try {
-        const response = await dispatch(registerUser(userDataForNextScreen)).unwrap();
-        dispatch(showMessage({
-          type: 'success',
-          text: response.message || 'Signup successful!',
-        }));
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-  
-      } catch (error) {
-        console.log(error, 'error');
-        let errorMessage = typeof error === 'string' ? error : error.message || 'Signup failed!';
-        
-        console.log(errorMessage, 'errormessage');
-        
-        if (errorMessage.toLowerCase().includes('user already') || errorMessage.toLowerCase().includes('email')) {
-          dispatch(
-            showMessage({
-              type: 'error',
-              text: errorMessage || 'This email is already registered. Please use a different email or try logging in.',
-            })
-          );
-        } else {
-          dispatch(
-            showMessage({
-              type: 'error',
-              text: errorMessage,
-            })
-          );
-        }
-      } finally {
-        setIsLoading(false);
-      }
+    setIsLoading(true);
+
+    // const payload = {
+    //   ...userData,
+    //   otp: otp
+    // };
+
+    const userDataForNextScreen = {
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      password,
+      role: 'student',
+      university,
+      college,
+      phoneNumber: mobile,
+      studentUniId: studentId.trim(),
     };
 
+    try {
+      const response = await dispatch(
+        registerUser(userDataForNextScreen),
+      ).unwrap();
+      dispatch(
+        showMessage({
+          type: 'success',
+          text: response.message || 'Signup successful!',
+        }),
+      );
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (error) {
+      console.log(error, 'error');
+      let errorMessage =
+        typeof error === 'string' ? error : error.message || 'Signup failed!';
 
+      console.log(errorMessage, 'errormessage');
+
+      if (
+        errorMessage.toLowerCase().includes('user already') ||
+        errorMessage.toLowerCase().includes('email')
+      ) {
+        dispatch(
+          showMessage({
+            type: 'error',
+            text:
+              errorMessage ||
+              'This email is already registered. Please use a different email or try logging in.',
+          }),
+        );
+      } else {
+        dispatch(
+          showMessage({
+            type: 'error',
+            text: errorMessage,
+          }),
+        );
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E5B865" />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
-          
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
           {/* Header */}
           <View style={styles.headerSection}>
             <View style={styles.headerRow}>
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Feather name='arrow-left' color={'#FFFFFF'} size={28} />
+                <Feather name="arrow-left" color={'#FFFFFF'} size={28} />
               </TouchableOpacity>
               <Text style={styles.logo}>UGive</Text>
             </View>
             <Text style={styles.tagline}>
-              Sign up to UGive, and make a{'\n'}difference in someone's world{'\n'}today.
+              Sign up to UGive, and make a{'\n'}difference in someone's world
+              {'\n'}today.
             </Text>
           </View>
 
@@ -328,20 +345,27 @@ const SignUpScreen = () => {
                 onBlur={() => handleBlur('name', name)}
                 autoCapitalize="words"
               />
-              {showError('name') && <Text style={styles.errorText}>{errors.name}</Text>}
+              {showError('name') && (
+                <Text style={styles.errorText}>{errors.name}</Text>
+              )}
             </View>
 
             {/* Student ID */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Student Identifier</Text>
               <TextInput
-                style={[styles.input, showError('studentId') && styles.inputError]}
+                style={[
+                  styles.input,
+                  showError('studentId') && styles.inputError,
+                ]}
                 placeholder="Enter your Student ID"
                 value={studentId}
                 onChangeText={setStudentId}
                 onBlur={() => handleBlur('studentId', studentId)}
               />
-              {showError('studentId') && <Text style={styles.errorText}>{errors.studentId}</Text>}
+              {showError('studentId') && (
+                <Text style={styles.errorText}>{errors.studentId}</Text>
+              )}
             </View>
 
             {/* University */}
@@ -350,11 +374,16 @@ const SignUpScreen = () => {
               {universitiesLoading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color="#E5B865" />
-                  <Text style={styles.loadingText}>Loading universities...</Text>
+                  <Text style={styles.loadingText}>
+                    Loading universities...
+                  </Text>
                 </View>
               ) : (
                 <Dropdown
-                  style={[styles.dropdown, showError('university') && styles.inputError]}
+                  style={[
+                    styles.dropdown,
+                    showError('university') && styles.inputError,
+                  ]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   data={universitiesList}
@@ -368,7 +397,9 @@ const SignUpScreen = () => {
                   onChange={handleUniversityChange}
                 />
               )}
-              {showError('university') && <Text style={styles.errorText}>{errors.university}</Text>}
+              {showError('university') && (
+                <Text style={styles.errorText}>{errors.university}</Text>
+              )}
             </View>
 
             {/* College */}
@@ -381,7 +412,10 @@ const SignUpScreen = () => {
                 </View>
               ) : (
                 <Dropdown
-                  style={[styles.dropdown, showError('college') && styles.inputError]}
+                  style={[
+                    styles.dropdown,
+                    showError('college') && styles.inputError,
+                  ]}
                   placeholderStyle={styles.placeholderStyle}
                   selectedTextStyle={styles.selectedTextStyle}
                   data={collegesList}
@@ -389,14 +423,18 @@ const SignUpScreen = () => {
                   maxHeight={300}
                   labelField="name"
                   valueField="_id"
-                  placeholder={university ? 'Select College' : 'First select university'}
+                  placeholder={
+                    university ? 'Select College' : 'First select university'
+                  }
                   searchPlaceholder="Search..."
                   value={college}
                   onChange={handleCollegeChange}
                   disable={!university}
                 />
               )}
-              {showError('college') && <Text style={styles.errorText}>{errors.college}</Text>}
+              {showError('college') && (
+                <Text style={styles.errorText}>{errors.college}</Text>
+              )}
             </View>
 
             {/* Email */}
@@ -411,7 +449,9 @@ const SignUpScreen = () => {
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
-              {showError('email') && <Text style={styles.errorText}>{errors.email}</Text>}
+              {showError('email') && (
+                <Text style={styles.errorText}>{errors.email}</Text>
+              )}
             </View>
 
             {/* Mobile */}
@@ -423,24 +463,31 @@ const SignUpScreen = () => {
                 placeholderTextColor="#C4C4C4"
                 mask="04[00] [000] [000]"
                 value={mobile}
-                onChangeText={(formatted) => {
+                onChangeText={formatted => {
                   setMobile(formatted);
                   if (submitAttempted) validateField('mobile', formatted);
                 }}
                 keyboardType="phone-pad"
               />
-              {showError('mobile') && <Text style={styles.errorText}>{errors.mobile}</Text>}
+              {showError('mobile') && (
+                <Text style={styles.errorText}>{errors.mobile}</Text>
+              )}
             </View>
 
             {/* Password */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Password</Text>
-              <View style={[styles.passwordContainer, showError('password') && styles.inputError]}>
+              <View
+                style={[
+                  styles.passwordContainer,
+                  showError('password') && styles.inputError,
+                ]}
+              >
                 <TextInput
                   style={styles.passwordInput}
                   placeholder="Strong password"
                   value={password}
-                  onChangeText={(text) => {
+                  onChangeText={text => {
                     setPassword(text);
                     if (submitAttempted) validateField('password', text);
                   }}
@@ -448,11 +495,19 @@ const SignUpScreen = () => {
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                 />
-                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                  <Icon name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={20} color="#888" />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Icon
+                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="#888"
+                  />
                 </TouchableOpacity>
               </View>
-              {showError('password') && <Text style={styles.errorText}>{errors.password}</Text>}
+              {showError('password') && (
+                <Text style={styles.errorText}>{errors.password}</Text>
+              )}
             </View>
 
             {/* Terms Checkbox */}
@@ -462,9 +517,9 @@ const SignUpScreen = () => {
                 onPress={() => setIsTermsAccepted(!isTermsAccepted)}
               >
                 <Icon
-                  name={isTermsAccepted ? "checkbox" : "square-outline"}
+                  name={isTermsAccepted ? 'checkbox' : 'square-outline'}
                   size={24}
-                  color={isTermsAccepted ? "#E5B865" : "#C4C4C4"}
+                  color={isTermsAccepted ? '#E5B865' : '#C4C4C4'}
                 />
               </TouchableOpacity>
 
@@ -477,31 +532,38 @@ const SignUpScreen = () => {
                   and{' '}
                   <Text style={styles.termsLink} onPress={handleOpenPrivacy}>
                     Privacy Policy
-                  </Text>.
+                  </Text>
+                  .
                 </Text>
               </View>
             </View>
 
             {submitAttempted && !isTermsAccepted && (
-              <Text style={styles.errorTextCenter}>You must accept the terms to continue.</Text>
+              <Text style={styles.errorTextCenter}>
+                You must accept the terms to continue.
+              </Text>
             )}
 
             {/* Submit Button */}
             <TouchableOpacity
               style={[
                 styles.signUpButton,
-                isLoading && styles.signUpButtonDisabled
+                isLoading && styles.signUpButtonDisabled,
               ]}
               onPress={handleVerify}
               disabled={isLoading}
             >
-              <Text style={styles.signUpButtonText}>{isLoading ? 'Please wait...' : "Sign Up"}</Text>
+              <Text style={styles.signUpButtonText}>
+                {isLoading ? 'Please wait...' : 'Sign Up'}
+              </Text>
             </TouchableOpacity>
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>
                 Already have an account?{' '}
-                <Text style={styles.loginLink} onPress={handleLogin}>Login</Text>
+                <Text style={styles.loginLink} onPress={handleLogin}>
+                  Login
+                </Text>
               </Text>
             </View>
           </View>
@@ -520,26 +582,36 @@ const SignUpScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#E5B865' },
-  scrollContent: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 40, paddingBottom: 40 },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 40,
+  },
   headerSection: { alignItems: 'center', marginBottom: 32 },
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%', 
+    width: '100%',
     marginBottom: 10,
     // Add some paddingRight to balance the back arrow if you want it perfectly centered
-    paddingRight: 28 
+    paddingRight: 28,
   },
-  logo: { 
-    fontSize: 56, 
-    fontWeight: '700', 
-    color: '#FFFFFF', 
-    letterSpacing: -1, 
-    flex: 1, 
-    textAlign: 'center' 
+  logo: {
+    fontSize: 56,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: -1,
+    flex: 1,
+    textAlign: 'center',
   },
-  tagline: { fontSize: 16, color: '#FFFFFF', textAlign: 'center', lineHeight: 24 },
+  tagline: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
@@ -579,11 +651,21 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#FAFAFA',
   },
-  passwordInput: { paddingHorizontal: 16, paddingVertical: 12, fontSize: 15, width: '90%' },
+  passwordInput: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 15,
+    width: '90%',
+  },
   inputError: { borderColor: '#e74c3c' },
   errorText: { color: '#e74c3c', fontSize: 13, marginTop: 6 },
-  errorTextCenter: { color: '#e74c3c', fontSize: 13, marginTop: 6, textAlign: 'center' },
-  
+  errorTextCenter: {
+    color: '#e74c3c',
+    fontSize: 13,
+    marginTop: 6,
+    textAlign: 'center',
+  },
+
   signUpButton: {
     backgroundColor: '#E5B865',
     borderRadius: 50,
@@ -593,14 +675,19 @@ const styles = StyleSheet.create({
   },
   signUpButtonDisabled: { backgroundColor: '#D4D4D4' },
   signUpButtonText: { fontSize: 17, color: '#FFFFFF', fontWeight: '600' },
-  
+
   loginContainer: { alignItems: 'center', marginTop: 16 },
   loginText: { fontSize: 14, color: '#B8B8B8' },
   loginLink: { color: '#E5B865', fontWeight: '600' },
-  
-  loadingContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: 50 },
+
+  loadingContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+  },
   loadingText: { marginLeft: 10, color: '#999' },
-  
+
   loaderOverlay: {
     position: 'absolute',
     top: 0,
@@ -612,7 +699,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 999,
   },
-  
+
   // Terms Styles
   termsContainer: {
     flexDirection: 'row',
@@ -622,7 +709,7 @@ const styles = StyleSheet.create({
   },
   checkboxTouch: {
     marginRight: 10,
-    marginTop: 2, 
+    marginTop: 2,
   },
   termsTextContainer: {
     flex: 1,
