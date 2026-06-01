@@ -1,5 +1,7 @@
 // import React from 'react';
 // import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+// import AppText from '../../../components/AppText';
+// import AppTextInput from '../../../components/AppTextInput';
 // import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 
 // const SendCardSection = ({ onStartWriting }) => {
@@ -7,16 +9,16 @@
 //     <View style={styles.container}>
 //       <View style={styles.content}>
 //         <View style={styles.textContainer}>
-//           <Text style={styles.title}>
+//           <AppText style={styles.title}>
 //             Send a card{'\n'}to a friend{'\n'}on campus!
-//           </Text>
+//           </AppText>
           
 //           <TouchableOpacity
 //             style={styles.button}
 //             onPress={onStartWriting}
 //             activeOpacity={0.8}
 //           >
-//             <Text style={styles.buttonText}>Start Writing</Text>
+//             <AppText style={styles.buttonText}>Start Writing</AppText>
 //           </TouchableOpacity>
 //         </View>
         
@@ -166,6 +168,8 @@
 
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 const { width, height } = Dimensions.get('window');
 
@@ -174,18 +178,18 @@ const SendCardSection = ({ onStartWriting }) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <Text style={styles.title} numberOfLines={3}>
+          <AppText style={styles.title} numberOfLines={3}>
             Send a card{'\n'}to a friend{'\n'}on campus!
-          </Text>
+          </AppText>
 
           <TouchableOpacity
             style={styles.button}
             onPress={onStartWriting}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText} numberOfLines={1} adjustsFontSizeToFit>
+            <AppText style={styles.buttonText} numberOfLines={1} adjustsFontSizeToFit>
               Start Writing
-            </Text>
+            </AppText>
           </TouchableOpacity>
         </View>
          <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />

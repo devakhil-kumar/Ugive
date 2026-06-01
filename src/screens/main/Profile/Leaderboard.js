@@ -9,6 +9,8 @@ import {
   Image,
   Dimensions,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLeaderboard } from '../../../fetures/leaderBoardSlice';
@@ -58,9 +60,9 @@ const Avatar = ({ name, image, size = 44, fontSize = 18 }) => {
         justifyContent: 'center',
       }}
     >
-      <Text style={{ color: '#fff', fontWeight: '800', fontSize }}>
+      <AppText style={{ color: '#fff', fontWeight: '800', fontSize }}>
         {letter}
-      </Text>
+      </AppText>
     </View>
   );
 };
@@ -114,23 +116,23 @@ const TopThreeCard = ({ item, rank }) => {
         { borderColor: badge.color },
       ]}
     >
-      <Text style={styles.badgeEmoji}>{badge.emoji}</Text>
+      <AppText style={styles.badgeEmoji}>{badge.emoji}</AppText>
       <Avatar
         name={item.name}
         image={item.profileImage}
         size={badge.size}
         fontSize={badge.size / 3}
       />
-      <Text
+      <AppText
         style={[styles.podiumName, { fontSize: badge.textSize }]}
         numberOfLines={1}
       >
         {item.name}
-      </Text>
+      </AppText>
       <View style={[styles.podiumChip, { backgroundColor: badge.bg }]}>
-        <Text style={[styles.podiumCards, { color: badge.color }]}>
+        <AppText style={[styles.podiumCards, { color: badge.color }]}>
           {item.cardsSent} cards
-        </Text>
+        </AppText>
       </View>
     </View>
   );
@@ -143,7 +145,7 @@ const TopThreeCard = ({ item, rank }) => {
 const RankRow = ({ item }) => (
   <View style={[styles.rankRow, item.isCurrentUser && styles.rankRowSelf]}>
     <View style={styles.rankNumBox}>
-      <Text style={styles.rankNum}>#{item.rank}</Text>
+      <AppText style={styles.rankNum}>#{item.rank}</AppText>
     </View>
 
     <Avatar
@@ -153,15 +155,15 @@ const RankRow = ({ item }) => (
       fontSize={16}
     />
 
-    <Text style={styles.rankName} numberOfLines={1}>
+    <AppText style={styles.rankName} numberOfLines={1}>
       {item.name}
-      {item.isCurrentUser && <Text style={styles.youBadge}> (You)</Text>}
-    </Text>
+      {item.isCurrentUser && <AppText style={styles.youBadge}> (You)</AppText>}
+    </AppText>
 
     {/* CARDS COUNT */}
     <View style={styles.rankCardsBadge}>
-      <Text style={styles.rankCardsText}>{item.cardsSent}</Text>
-      <Text style={styles.rankCardsLabel}> Cards</Text>
+      <AppText style={styles.rankCardsText}>{item.cardsSent}</AppText>
+      <AppText style={styles.rankCardsLabel}> Cards</AppText>
     </View>
   </View>
 );
@@ -177,8 +179,8 @@ const MyResultCard = ({ myResult }) => {
     <View style={styles.myResultCard}>
       {/* LEFT — rank */}
       <View style={styles.myResultRankBox}>
-        <Text style={styles.myResultRankLabel}>Your Rank</Text>
-        <Text style={styles.myResultRank}>#{myResult.rank}</Text>
+        <AppText style={styles.myResultRankLabel}>Your Rank</AppText>
+        <AppText style={styles.myResultRank}>#{myResult.rank}</AppText>
       </View>
 
       {/* DIVIDER */}
@@ -192,16 +194,16 @@ const MyResultCard = ({ myResult }) => {
         fontSize={18}
       />
       <View style={{ marginLeft: 10, flex: 1 }}>
-        <Text style={styles.myResultName} numberOfLines={1}>
+        <AppText style={styles.myResultName} numberOfLines={1}>
           {myResult.name}
-        </Text>
-        <Text style={styles.myResultSub}>
+        </AppText>
+        <AppText style={styles.myResultSub}>
           {myResult.cardsSent} card{myResult.cardsSent !== 1 ? 's' : ''} sent
-        </Text>
+        </AppText>
       </View>
 
       {/* RIGHT — trophy */}
-      <Text style={styles.myResultTrophy}>🏆</Text>
+      <AppText style={styles.myResultTrophy}>🏆</AppText>
     </View>
   );
 };
@@ -257,11 +259,13 @@ const Leaderboard = () => {
       {/* COLLEGE / UNI INFO */}
       {college && (
         <View style={styles.collegeBox}>
-          <Text style={styles.collegeName}>{college.name}</Text>
+          <AppText style={styles.collegeName}>{college.name}</AppText>
           {university && (
-            <Text style={styles.universityName}>{university.name}</Text>
+            <AppText style={styles.universityName}>{university.name}</AppText>
           )}
-          <Text style={styles.totalEntries}>{totalEntries} participants</Text>
+          <AppText style={styles.totalEntries}>
+            {totalEntries} participants
+          </AppText>
         </View>
       )}
 
@@ -278,7 +282,9 @@ const Leaderboard = () => {
       )}
 
       {/* REST LIST LABEL */}
-      {rest.length > 0 && <Text style={styles.restLabel}>All Rankings</Text>}
+      {rest.length > 0 && (
+        <AppText style={styles.restLabel}>All Rankings</AppText>
+      )}
     </View>
   );
 
@@ -295,9 +301,9 @@ const Leaderboard = () => {
     }
     if (currentPage >= totalPages && data.length > 0) {
       return (
-        <Text style={styles.endText}>
+        <AppText style={styles.endText}>
           You've seen all {totalEntries} participants
-        </Text>
+        </AppText>
       );
     }
     return null;
@@ -337,7 +343,7 @@ const Leaderboard = () => {
           </TouchableOpacity>
 
           {/* TITLE */}
-          <Text style={styles.pageTitle}>Leaderboard 🏆</Text>
+          <AppText style={styles.pageTitle}>Leaderboard 🏆</AppText>
         </View>
 
         {/* CONTENT CARD */}
@@ -345,13 +351,13 @@ const Leaderboard = () => {
           {loading ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color="#6D56A5" />
-              <Text style={styles.loadingText}>Loading rankings...</Text>
+              <AppText style={styles.loadingText}>Loading rankings...</AppText>
             </View>
           ) : error ? (
             <View style={styles.centered}>
-              <Text style={styles.errorText}>{error}</Text>
+              <AppText style={styles.errorText}>{error}</AppText>
               <TouchableOpacity style={styles.retryBtn} onPress={handleRefresh}>
-                <Text style={styles.retryText}>Retry</Text>
+                <AppText style={styles.retryText}>Retry</AppText>
               </TouchableOpacity>
             </View>
           ) : (

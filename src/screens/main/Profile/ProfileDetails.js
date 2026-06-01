@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
@@ -85,44 +87,44 @@ const ProfileDetails = () => {
         />
         <View style={{ marginVertical: 30, alignContent: 'center' }}>
           <View style={styles.textRowStyle}>
-            <Text style={styles.screenTextStyle}>Name:</Text>
-            <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>
+            <AppText style={styles.screenTextStyle}>Name:</AppText>
+            <AppText style={[styles.screenTextStyle, { marginStart: 5 }]}>
               {user?.name}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.textRowStyle, { marginTop: 10 }]}>
-            <Text style={styles.screenTextStyle}>Mobile:</Text>
-            <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>
+            <AppText style={styles.screenTextStyle}>Mobile:</AppText>
+            <AppText style={[styles.screenTextStyle, { marginStart: 5 }]}>
               {user?.phoneNumber}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.textRowStyle, { marginTop: 10 }]}>
-            <Text style={styles.screenTextStyle}>Email:</Text>
-            <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>
+            <AppText style={styles.screenTextStyle}>Email:</AppText>
+            <AppText style={[styles.screenTextStyle, { marginStart: 5 }]}>
               {user?.email}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.textRowStyle, { marginTop: 10 }]}>
-            <Text style={styles.screenTextStyle}>University:</Text>
-            <Text
+            <AppText style={styles.screenTextStyle}>University:</AppText>
+            <AppText
               style={[styles.screenTextStyle, { marginStart: 5, width: '80%' }]}
             >
               {user?.university?.name}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.textRowStyle, { marginTop: 10 }]}>
-            <Text style={styles.screenTextStyle}>College:</Text>
-            <Text
+            <AppText style={styles.screenTextStyle}>College:</AppText>
+            <AppText
               style={[styles.screenTextStyle, { marginStart: 5, width: '50%' }]}
             >
               {user?.college?.name}
-            </Text>
+            </AppText>
           </View>
           <View style={[styles.textRowStyle, { marginTop: 10 }]}>
-            <Text style={styles.screenTextStyle}>USI:</Text>
-            <Text style={[styles.screenTextStyle, { marginStart: 5 }]}>
+            <AppText style={styles.screenTextStyle}>USI:</AppText>
+            <AppText style={[styles.screenTextStyle, { marginStart: 5 }]}>
               {user?.studentUniId}
-            </Text>
+            </AppText>
           </View>
         </View>
 
@@ -133,7 +135,7 @@ const ProfileDetails = () => {
           ]}
           onPress={HandleProfileEdit}
         >
-          <Text style={styles.buttonText}>Edit Profile</Text>
+          <AppText style={styles.buttonText}>Edit Profile</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -142,7 +144,7 @@ const ProfileDetails = () => {
           ]}
           onPress={handleContactFrom}
         >
-          <Text style={styles.buttonText}>Contact From</Text>
+          <AppText style={styles.buttonText}>Contact From</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -151,7 +153,7 @@ const ProfileDetails = () => {
           ]}
           onPress={handleLogout}
         >
-          <Text style={styles.buttonText}>Sign Out</Text>
+          <AppText style={styles.buttonText}>Sign Out</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
@@ -160,7 +162,7 @@ const ProfileDetails = () => {
           ]}
           onPress={() => setConfirmVisible(true)}
         >
-          <Text style={styles.buttonText}>Delete Account</Text>
+          <AppText style={styles.buttonText}>Delete Account</AppText>
         </TouchableOpacity>
       </View>
       <CustomModal

@@ -31,5 +31,8 @@ export const API_ROUTES = {
   RSVP_STUTAS: 'student/events/rsvp',
   DEATILS_BY_ID: 'student/events',
   CONTACT_FROM: 'student/contact-forms/submit',
-  GET_LEADERBOARD: (page, limit) => `student/leaderboard?page=${page}&limit=${limit}`,
+  GET_LEADERBOARD: (page, limit) =>
+    `student/leaderboard?page=${page}&limit=${limit}`,
+  STUDENT_FRIEND: 'student/friends',
+  STUDENT_FETCH: 'student/app-data',
 };

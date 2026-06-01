@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useEffect } from 'react';
 import { Dimensions } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import GradientScreen from "../../common/GradientScreen";
@@ -22,7 +24,7 @@ export const CustomButton = ({ style, title, onPress, disabled, loading }) => {
             {loading ? (
                 <ActivityIndicator size="small" color="white" />
             ) : (
-                <Text style={styles.buttonText}>{title}</Text>
+                <AppText style={styles.buttonText}>{title}</AppText>
             )}
         </TouchableOpacity>
     );
@@ -45,12 +47,12 @@ const ListItem = ({ request, onAccept, onReject, isAccepting, isRejecting }) => 
                 )}
             </View>
             <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={styles.nameTextStyle} numberOfLines={1}>
+                <AppText style={styles.nameTextStyle} numberOfLines={1}>
                     {request?.sender?.name}
-                </Text>
-                <Text style={styles.emailTextStyle} numberOfLines={1}>
+                </AppText>
+                <AppText style={styles.emailTextStyle} numberOfLines={1}>
                     {request?.sender?.email}
-                </Text>
+                </AppText>
             </View>
             <View style={styles.buttonContainer}>
                 <CustomButton 
@@ -108,28 +110,28 @@ const FriendsRequest = () => {
                             style={styles.backIconStyle}
                         />
                     </TouchableOpacity>
-                    <Text style={styles.topBarTextStyle}>Friend Requests</Text>
+                    <AppText style={styles.topBarTextStyle}>Friend Requests</AppText>
                 </View>
 
                 {/* Loading State */}
                 {loading ? (
                     <View style={styles.centerContainer}>
                         <ActivityIndicator size="large" color="#F3B11C" />
-                        <Text style={styles.loadingText}>Loading requests...</Text>
+                        <AppText style={styles.loadingText}>Loading requests...</AppText>
                     </View>
                 ) : error ? (
                     <View style={styles.centerContainer}>
-                        <Text style={styles.errorText}>Error: {error}</Text>
+                        <AppText style={styles.errorText}>Error: {error}</AppText>
                         <TouchableOpacity 
                             style={styles.retryButton}
                             onPress={() => dispatch(fetchReceivedFriendRequests())}
                         >
-                            <Text style={styles.retryButtonText}>Retry</Text>
+                            <AppText style={styles.retryButtonText}>Retry</AppText>
                         </TouchableOpacity>
                     </View>
                 ) : receivedRequests.length === 0 ? (
                     <View style={styles.centerContainer}>
-                        <Text style={styles.emptyText}>No friend requests</Text>
+                        <AppText style={styles.emptyText}>No friend requests</AppText>
                     </View>
                 ) : (
                     <FlatList
@@ -152,6 +154,9 @@ const FriendsRequest = () => {
         </GradientScreen>
     );
 };
+
+
+export default FriendsRequest;
 
 const styles = StyleSheet.create({
     pageBg: {
@@ -273,4 +278,3 @@ const styles = StyleSheet.create({
     },
 });
 
-export default FriendsRequest;

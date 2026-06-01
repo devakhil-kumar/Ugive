@@ -6,6 +6,8 @@ import {
   Image,
   StatusBar,
 } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 
 const SplashScreen = ({ navigation }) => {
 

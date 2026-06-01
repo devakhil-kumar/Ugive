@@ -8,6 +8,8 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { PieChart } from 'react-native-gifted-charts';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,41 +22,40 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Feather from '@react-native-vector-icons/feather';
 import FontAwesome from '@react-native-vector-icons/fontawesome';
 
-
 const { width, height } = Dimensions.get('window');
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { list: rewards, loading, stats } = useSelector((state) => state.rewards);
+  const { list: rewards, loading, stats } = useSelector(state => state.rewards);
   const [open, setOpen] = useState(false);
   const [selectedReward, setSelectedReward] = useState(null);
   const navigation = useNavigation();
 
-
   useFocusEffect(
     useCallback(() => {
       dispatch(fetchRewardsCollages());
-    }, [dispatch])
+    }, [dispatch]),
   );
 
   const handleConfirmClaim = async () => {
     try {
-      if (!selectedReward?.rewardId)
-        return;
-      const response = await dispatch(fetchClaimRewards(selectedReward.rewardId));
+      if (!selectedReward?.rewardId) return;
+      const response = await dispatch(
+        fetchClaimRewards(selectedReward.rewardId),
+      );
       if (fetchClaimRewards.fulfilled.match(response)) {
         dispatch(
           showMessage({
             type: 'success',
             text: 'Reward claimed successfully!',
-          })
+          }),
         );
       } else {
         dispatch(
           showMessage({
             type: 'error',
             text: response?.payload || 'Failed to claim reward.',
-          })
+          }),
         );
       }
     } catch (error) {
@@ -62,7 +63,7 @@ const Home = () => {
         showMessage({
           type: 'error',
           text: 'Something went wrong. Please try again.',
-        })
+        }),
       );
     } finally {
       setOpen(false);
@@ -70,8 +71,7 @@ const Home = () => {
     }
   };
 
-
-  const handleClaimPress = (item) => {
+  const handleClaimPress = item => {
     if (item?.claimed) {
       return;
     }
@@ -81,27 +81,26 @@ const Home = () => {
     }
   };
 
-
   const statss = [
     {
       icon: require('../../../assets/flame.png'),
       value: stats?.currentStreak ?? 0,
-      color: '#FF6B6B'
+      color: '#FF6B6B',
     },
     {
       icon: require('../../../assets/Heart.png'),
       value: stats?.totalCardsSent ?? 0,
-      color: '#8B7BF7'
+      color: '#8B7BF7',
     },
     {
       icon: require('../../../assets/people.png'),
       value: stats?.incomingFriendRequests ?? 0,
-      color: '#54A0FF'
+      color: '#54A0FF',
     },
     {
       icon: require('../../../assets/giftCard.png'),
       value: stats?.totalGiftsSent ?? 0,
-      color: '#FF9F43'
+      color: '#FF9F43',
     },
   ];
 
@@ -122,47 +121,73 @@ const Home = () => {
     );
   };
 
-  const renderRewardItem = (item) => {
-    console.log(item?.completedPoints, item?.totalPoints, 'item+++++++===')
+  const renderRewardItem = item => {
+    console.log(item?.completedPoints, item?.totalPoints, 'item+++++++===');
     const isCompleted = item?.completedPoints === item?.totalPoints;
-    console.log(isCompleted, 'iscompleteed')
+    console.log(isCompleted, 'iscompleteed');
 
     return (
       <View key={item.rewardId} style={styles.rewardItem}>
         <View style={styles.pieChartContainer}>
           {renderPieChart(item.percentage, '#FFB800')}
-          <TouchableOpacity style={styles.iconContainer} onPress={() => handleClaimPress(item)} disabled={!isCompleted || item?.claimed}
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={() => handleClaimPress(item)}
+            disabled={!isCompleted || item?.claimed}
           >
-            {item?.claimed ?
-              <View style={{ width: '90%', backgroundColor: "gray", alignItems: 'center', paddingVertical: 10, borderRadius: 10 }}>
-                <Text style={{ color: '#fff' }} >Clamied</Text>
-              </View> : <Image
+            {item?.claimed ? (
+              <View
+                style={{
+                  width: '90%',
+                  backgroundColor: 'gray',
+                  alignItems: 'center',
+                  paddingVertical: 10,
+                  borderRadius: 10,
+                }}
+              >
+                <AppText style={{ color: '#fff' }}>Clamied</AppText>
+              </View>
+            ) : (
+              <Image
                 source={{ uri: item.rewardImage }}
-                style={{ width: width / 5, height: height / 10, backgroundColor: '#f0f0f0', borderRadius: 20 }}
-              />}
+                style={{
+                  width: width / 5,
+                  height: height / 10,
+                  backgroundColor: '#f0f0f0',
+                  borderRadius: 20,
+                }}
+              />
+            )}
           </TouchableOpacity>
           <View style={styles.starContainer}>
             <View style={styles.starBadge}>
-              <Text style={styles.starNumber}>{item.totalPoints}</Text>
+              <AppText style={styles.starNumber}>{item.totalPoints}</AppText>
               {/* <Image
                 source={require('../../../assets/star.png')}
                 style={styles.starImage}
                 resizeMode="contain"
               /> */}
-              <FontAwesome name='star' color={'#FFB800'} size={45} style={styles.starImage}/>
+              <FontAwesome
+                name="star"
+                color={'#FFB800'}
+                size={45}
+                style={styles.starImage}
+              />
             </View>
           </View>
         </View>
-        <Text style={styles.label}>{item.rewardName}</Text>
-        {/* <Text style={styles.desc}>{item.rewardDescription}</Text> */}
+        <AppText style={styles.label}>{item.rewardName}</AppText>
+        {/* <AppText style={styles.desc}>{item.rewardDescription}</AppText> */}
       </View>
-    )
+    );
   };
 
   if (loading) {
     return (
       <GradientScreen colors={['#fff']}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
           <ActivityIndicator size="large" color="#FFB800" />
         </View>
       </GradientScreen>
@@ -171,26 +196,32 @@ const Home = () => {
 
   return (
     <GradientScreen colors={['#fff']}>
-         <TouchableOpacity onPress={() => navigation.goBack()} style={{paddingHorizontal:15, marginBottom:5}}>
-          <Feather name='arrow-left' color={'#000'} size={30} />
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{ paddingHorizontal: 15, marginBottom: 5 }}
+      >
+        <Feather name="arrow-left" color={'#000'} size={30} />
+      </TouchableOpacity>
       <View style={styles.container}>
-     
         <View style={styles.statsContainer}>
           {statss.map((stat, index) => (
             <View key={index} style={styles.statItem}>
-              <Image source={stat.icon} style={{
-                width: 20, height: 20, alignItems: 'center',
-                justifyContent: 'center',
-              }}
+              <Image
+                source={stat.icon}
+                style={{
+                  width: 20,
+                  height: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
                 resizeMode="contain"
               />
-              <Text style={styles.statValue}>{stat.value}</Text>
+              <AppText style={styles.statValue}>{stat.value}</AppText>
             </View>
           ))}
         </View>
 
-        <Text style={styles.title}>Rewards</Text>
+        <AppText style={styles.title}>Rewards</AppText>
 
         <View style={styles.rewardsContainer}>
           {rewards.length > 0 && (
@@ -199,7 +230,7 @@ const Home = () => {
                 {renderRewardItem(rewards[0])}
               </View>
               <View style={styles.bottomRow}>
-                {rewards.slice(1, 3).map((item) => renderRewardItem(item))}
+                {rewards.slice(1, 3).map(item => renderRewardItem(item))}
               </View>
             </>
           )}
@@ -213,7 +244,7 @@ const Home = () => {
             setOpen(false);
             setSelectedReward(null);
           }}
-          title='Are you sure you want to Claim your Reward?'
+          title="Are you sure you want to Claim your Reward?"
           buttonLabelCancel="No, Cancel"
           buttonLabel="Yes, Claim"
         />
@@ -221,6 +252,8 @@ const Home = () => {
     </GradientScreen>
   );
 };
+
+export default Home;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F5F5F5', paddingTop: 20 },
@@ -240,7 +273,13 @@ const styles = StyleSheet.create({
   },
   statItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   statValue: { fontSize: 16, fontWeight: '600', color: '#333' },
-  title: { fontSize: 24, fontWeight: 'bold', color: '#FFB800', marginLeft: 20, marginVertical: 20 },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFB800',
+    marginLeft: 20,
+    marginVertical: 20,
+  },
   rewardsContainer: { flex: 1, paddingHorizontal: 20 },
   topReward: { alignItems: 'center', marginBottom: 30 },
   bottomRow: { flexDirection: 'row', justifyContent: 'space-around' },
@@ -252,8 +291,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconContainer: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' },
-  starContainer: { position: 'absolute', bottom: -20, left:95 },
+  iconContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  starContainer: { position: 'absolute', bottom: -20, left: 95 },
   starBadge: { alignItems: 'center', justifyContent: 'center' },
   starNumber: {
     fontSize: 14,
@@ -261,20 +308,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     position: 'absolute',
     zIndex: 2,
-    top:15,
+    top: 15,
     // left:5,
-    right:25
-
+    right: 25,
   },
   starImage: { width: width / 8, height: height / 15 },
   label: { fontSize: 18, fontWeight: '700', color: '#8B7BF7', marginTop: 20 },
   desc: { fontSize: 12, color: '#666', marginTop: 4 },
-   backIconStyle: {
-        width: 38,
-        height: 38,
-        marginLeft: 20,
-        // marginTop:50
-    },
+  backIconStyle: {
+    width: 38,
+    height: 38,
+    marginLeft: 20,
+    // marginTop:50
+  },
 });
-
-export default Home;

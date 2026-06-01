@@ -11,6 +11,8 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -265,18 +267,18 @@ const ReadCard = () => {
       >
         {/* CHECKBOX */}
         <View style={[styles.checkbox, selected && styles.checkboxSelected]}>
-          {selected && <Text style={styles.checkmark}>✓</Text>}
+          {selected && <AppText style={styles.checkmark}>✓</AppText>}
         </View>
 
         {/* CARD INFO */}
         <View style={{ flex: 1 }}>
-          <Text style={styles.senderName}>{item.sender_name}</Text>
+          <AppText style={styles.senderName}>{item.sender_name}</AppText>
 
-          <Text style={styles.receiverText}>To: {item.recipient_name}</Text>
+          <AppText style={styles.receiverText}>To: {item.recipient_name}</AppText>
 
-          <Text style={styles.messageText}>{item.message}</Text>
+          <AppText style={styles.messageText}>{item.message}</AppText>
 
-          <Text style={styles.dateTextCard}>{item.date}</Text>
+          <AppText style={styles.dateTextCard}>{item.date}</AppText>
         </View>
       </TouchableOpacity>
     );
@@ -305,7 +307,7 @@ const ReadCard = () => {
         <View style={styles.mainCard}>
           {/* TITLE */}
           <View style={styles.headerRow}>
-            <Text style={styles.title}>Read Cards</Text>
+            <AppText style={styles.title}>Read Cards</AppText>
             {selectedIds.size > 0 && (
               <TouchableOpacity
                 style={styles.exportBtn}
@@ -314,9 +316,9 @@ const ReadCard = () => {
                 {exportLoading ? (
                   <ActivityIndicator color="#fff" size="small" />
                 ) : (
-                  <Text style={styles.exportText}>
+                  <AppText style={styles.exportText}>
                     Export PDF ({selectedIds.size})
-                  </Text>
+                  </AppText>
                 )}
               </TouchableOpacity>
             )}
@@ -328,14 +330,14 @@ const ReadCard = () => {
               <TouchableOpacity
                 onPress={allSelected ? clearSelection : selectAll}
               >
-                <Text style={styles.selectAll}>
+                <AppText style={styles.selectAll}>
                   {allSelected ? 'Deselect All' : 'Select All'}
-                </Text>
+                </AppText>
               </TouchableOpacity>
 
-              <Text style={styles.selectedCount}>
+              <AppText style={styles.selectedCount}>
                 {selectedIds.size} Selected
-              </Text>
+              </AppText>
             </View>
           )}
 
@@ -347,10 +349,10 @@ const ReadCard = () => {
               style={{ marginTop: 40 }}
             />
           ) : error ? (
-            <Text style={styles.errorText}>Failed to load cards</Text>
+            <AppText style={styles.errorText}>Failed to load cards</AppText>
           ) : cards.count === 0 ? (
             <View style={{ height: 200, justifyContent: 'center' }}>
-              <Text style={styles.emtyText}>No Card Send Yet</Text>
+              <AppText style={styles.emtyText}>No Card Send Yet</AppText>
             </View>
           ) : (
             <FlatList

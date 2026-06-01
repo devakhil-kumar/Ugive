@@ -23,6 +23,8 @@ import rsvpReducer from '../fetures/rsvpslice';
 import eventDetailReducer from '../fetures/eventDetailsSlice';
 import contactFormReducer from '../fetures/contactformslice';
 import leaderboardReducer from '../fetures/leaderBoardSlice';
+import friendsReducer from '../fetures/friendsSlice';
+import studentReducer from '../fetures/studentSlice';
 
 const store = configureStore({
   reducer: {
@@ -50,6 +52,8 @@ const store = configureStore({
     eventDetail: eventDetailReducer,
     contactForm: contactFormReducer,
     leaderboard: leaderboardReducer,
+    friendsList: friendsReducer,
+    student: studentReducer,
   },
 });
 

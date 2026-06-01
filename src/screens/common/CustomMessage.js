@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Text, StyleSheet, Dimensions } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,7 +38,7 @@ const CustomMessage = ({ visible, type, text, onHide }) => {
         },
       ]}
     >
-      <Text style={styles.text}>{text}</Text>
+      <AppText style={styles.text}>{text}</AppText>
     </Animated.View>
   );
 };

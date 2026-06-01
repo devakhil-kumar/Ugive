@@ -3,8 +3,7 @@
  * @format
  */
 
-// ✅ Font scale override — system font size change se app affect na ho
-import './src/utils/fontScaleOverride';
+
 
 import React, { useEffect, useState } from 'react';
 import { StatusBar, Platform } from 'react-native';
@@ -19,6 +18,7 @@ import CustomMessage from './src/screens/common/CustomMessage';
 import { hideMessage } from './src/fetures/messageSlice';
 
 import {
+  
   requestNotificationPermission,
   getFCMToken,
   onForegroundMessage,

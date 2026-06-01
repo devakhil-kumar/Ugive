@@ -11,6 +11,8 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 
 const PRIVACY_DATA = [
   {
@@ -115,19 +117,19 @@ const navigation = useNavigation();
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
        <Feather name='arrow-left' size={20} color={'#000'} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Privacy Policy</Text>
+        <AppText style={styles.headerTitle}>Privacy Policy</AppText>
         <View style={styles.headerRightPlaceholder} />
       </View>
       <ScrollView 
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={true}
       >
-        <Text style={styles.lastUpdated}>Last Updated: Feb 2026</Text>
+        <AppText style={styles.lastUpdated}>Last Updated: Feb 2026</AppText>
 
         {PRIVACY_DATA.map((item) => (
           <View key={item.id} style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{item.title}</Text>
-            <Text style={styles.sectionContent}>{item.content}</Text>
+            <AppText style={styles.sectionTitle}>{item.title}</AppText>
+            <AppText style={styles.sectionContent}>{item.content}</AppText>
           </View>
         ))}
 
@@ -136,13 +138,15 @@ const navigation = useNavigation();
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.closeButton} onPress={handleGoBack}>
-          <Text style={styles.closeButtonText}>Close Privacy Policy</Text>
+          <AppText style={styles.closeButtonText}>Close Privacy Policy</AppText>
         </TouchableOpacity>
       </View>
 
     </SafeAreaView>
   );
 };
+
+export default PrivacyPolicyScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -224,4 +228,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PrivacyPolicyScreen;

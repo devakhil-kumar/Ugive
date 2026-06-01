@@ -15,7 +15,7 @@ const HomeNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName='HomeScreen'
+      initialRouteName="HomeScreen"
     >
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="GiftCard" component={GiftCard} />
@@ -23,7 +23,6 @@ const HomeNavigator = () => {
       <Stack.Screen name="RewardStutas" component={RewardStutas} />
       <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Stack.Screen name="RewardsHome" component={Home} />
-
     </Stack.Navigator>
   );
 };

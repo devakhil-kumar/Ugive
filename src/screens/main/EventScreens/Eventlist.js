@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useEffect, useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -79,7 +81,7 @@ const EventList = () => {
             />
           </TouchableOpacity>
 
-          <Text style={styles.topBarTitle}>Events</Text>
+          <AppText style={styles.topBarTitle}>Events</AppText>
 
           <TouchableOpacity
             style={styles.calendarBtn}
@@ -94,30 +96,30 @@ const EventList = () => {
         {loading && !refreshing ? (
           <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color="#F3B11C" />
-            <Text style={styles.loadingText}>Fetching events...</Text>
+            <AppText style={styles.loadingText}>Fetching events...</AppText>
           </View>
         ) : error ? (
           /* Error */
           <View style={styles.centerContainer}>
             <Icon name="warning-outline" size={40} color="#FF6B6B" />
-            <Text style={styles.errorText}>{error}</Text>
+            <AppText style={styles.errorText}>{error}</AppText>
             <TouchableOpacity
               style={styles.retryButton}
               onPress={() =>
                 dispatch(fetchEventList({ page: 1, limit: LIMIT }))
               }
             >
-              <Text style={styles.retryButtonText}>Retry</Text>
+              <AppText style={styles.retryButtonText}>Retry</AppText>
             </TouchableOpacity>
           </View>
         ) : events.length === 0 ? (
           /* Empty */
           <View style={styles.centerContainer}>
             <Icon name="calendar-clear-outline" size={50} color="#ffffff88" />
-            <Text style={styles.emptyText}>No events yet</Text>
-            <Text style={styles.emptySubText}>
+            <AppText style={styles.emptyText}>No events yet</AppText>
+            <AppText style={styles.emptySubText}>
               Check back soon for upcoming events!
-            </Text>
+            </AppText>
           </View>
         ) : (
           /* List */

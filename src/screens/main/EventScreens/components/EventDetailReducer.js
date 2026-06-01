@@ -8,6 +8,8 @@ import {
   Image,
   Linking,
 } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 import { useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -80,8 +82,8 @@ const InfoRow = ({ icon, label, value }) => (
       <Icon name={icon} size={16} color="#F3B11C" />
     </View>
     <View style={styles.infoTextBlock}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value}</Text>
+      <AppText style={styles.infoLabel}>{label}</AppText>
+      <AppText style={styles.infoValue}>{value}</AppText>
     </View>
   </View>
 );
@@ -91,7 +93,7 @@ const InfoRow = ({ icon, label, value }) => (
 const SectionHeader = ({ title }) => (
   <View style={styles.sectionHeader}>
     <View style={styles.sectionAccent} />
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <AppText style={styles.sectionTitle}>{title}</AppText>
   </View>
 );
 
@@ -130,7 +132,7 @@ const AttachmentCard = ({ attachment }) => {
         />
         <View style={styles.attachmentBadge}>
           <Icon name="image" size={10} color="#F3B11C" />
-          <Text style={styles.attachmentBadgeText}>View</Text>
+          <AppText style={styles.attachmentBadgeText}>View</AppText>
         </View>
       </TouchableOpacity>
     );
@@ -144,12 +146,12 @@ const AttachmentCard = ({ attachment }) => {
           <View style={styles.fileIconBox}>
             <Icon name="file-text" size={32} color="#FF5A5A" />
           </View>
-          <Text style={styles.fileCardName} numberOfLines={2}>
+          <AppText style={styles.fileCardName} numberOfLines={2}>
             {attachment.fileName}
-          </Text>
-          <Text style={styles.fileCardSize}>
+          </AppText>
+          <AppText style={styles.fileCardSize}>
             {(attachment.fileSize / 1024).toFixed(1)} KB
-          </Text>
+          </AppText>
         </View>
         <TouchableOpacity
           style={[
@@ -160,9 +162,9 @@ const AttachmentCard = ({ attachment }) => {
           activeOpacity={0.8}
         >
           <Icon name="eye" size={12} color="#FF5A5A" />
-          <Text style={[styles.previewBtnText, { color: '#FF5A5A' }]}>
+          <AppText style={[styles.previewBtnText, { color: '#FF5A5A' }]}>
             Preview PDF
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     );
@@ -176,12 +178,12 @@ const AttachmentCard = ({ attachment }) => {
           <View style={styles.fileIconBox}>
             <Icon name="file" size={32} color="#4A90D9" />
           </View>
-          <Text style={styles.fileCardName} numberOfLines={2}>
+          <AppText style={styles.fileCardName} numberOfLines={2}>
             {attachment.fileName}
-          </Text>
-          <Text style={styles.fileCardSize}>
+          </AppText>
+          <AppText style={styles.fileCardSize}>
             {(attachment.fileSize / 1024).toFixed(1)} KB
-          </Text>
+          </AppText>
         </View>
         <TouchableOpacity
           style={[
@@ -192,9 +194,9 @@ const AttachmentCard = ({ attachment }) => {
           activeOpacity={0.8}
         >
           <Icon name="eye" size={12} color="#4A90D9" />
-          <Text style={[styles.previewBtnText, { color: '#4A90D9' }]}>
+          <AppText style={[styles.previewBtnText, { color: '#4A90D9' }]}>
             Preview DOCX
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </View>
     );
@@ -207,9 +209,9 @@ const AttachmentCard = ({ attachment }) => {
         <View style={styles.fileIconBox}>
           <Icon name="paperclip" size={32} color="#F3B11C" />
         </View>
-        <Text style={styles.fileCardName} numberOfLines={2}>
+        <AppText style={styles.fileCardName} numberOfLines={2}>
           {attachment.fileName}
-        </Text>
+        </AppText>
       </View>
       <TouchableOpacity
         style={[
@@ -220,9 +222,9 @@ const AttachmentCard = ({ attachment }) => {
         activeOpacity={0.8}
       >
         <Icon name="download" size={12} color="#F3B11C" />
-        <Text style={[styles.previewBtnText, { color: '#F3B11C' }]}>
+        <AppText style={[styles.previewBtnText, { color: '#F3B11C' }]}>
           Open File
-        </Text>
+        </AppText>
       </TouchableOpacity>
     </View>
   );
@@ -281,7 +283,7 @@ const EventDetailScreen = () => {
       <GradientScreen colors={['#6955A5']}>
         <View style={styles.centerFull}>
           <ActivityIndicator size="large" color="#F3B11C" />
-          <Text style={styles.loadingText}>Loading event…</Text>
+          <AppText style={styles.loadingText}>Loading event…</AppText>
         </View>
       </GradientScreen>
     );
@@ -293,12 +295,14 @@ const EventDetailScreen = () => {
       <GradientScreen colors={['#6955A5']}>
         <View style={styles.centerFull}>
           <Icon name="alert-triangle" size={44} color="#FF6B6B" />
-          <Text style={styles.errorText}>{error ?? 'Event not found'}</Text>
+          <AppText style={styles.errorText}>
+            {error ?? 'Event not found'}
+          </AppText>
           <TouchableOpacity
             style={styles.retryBtn}
             onPress={() => dispatch(fetchEventDetail(eventId))}
           >
-            <Text style={styles.retryBtnText}>Retry</Text>
+            <AppText style={styles.retryBtnText}>Retry</AppText>
           </TouchableOpacity>
         </View>
       </GradientScreen>
@@ -318,9 +322,9 @@ const EventDetailScreen = () => {
           >
             <Icon name="arrow-left" size={26} color="#FFF" />
           </TouchableOpacity>
-          <Text style={styles.topBarTitle} numberOfLines={1}>
+          <AppText style={styles.topBarTitle} numberOfLines={1}>
             Event Details
-          </Text>
+          </AppText>
           <View style={{ width: 38 }} />
         </View>
 
@@ -348,23 +352,25 @@ const EventDetailScreen = () => {
                   />
                   {/* Emoji overlay on banner */}
                   <View style={styles.heroBannerEmoji}>
-                    <Text style={styles.heroEmojiBadge}>
+                    <AppText style={styles.heroEmojiBadge}>
                       {event.emoji || '📅'}
-                    </Text>
+                    </AppText>
                   </View>
                 </View>
               ) : (
                 <View style={styles.heroImageBox}>
-                  <Text style={styles.heroEmoji}>{event.emoji || '📅'}</Text>
+                  <AppText style={styles.heroEmoji}>
+                    {event.emoji || '📅'}
+                  </AppText>
                 </View>
               )}
 
               {/* Category + Title */}
               <View style={styles.heroCategoryRow}>
                 <View style={styles.categoryPill}>
-                  <Text style={styles.categoryText}>
+                  <AppText style={styles.categoryText}>
                     {event.category?.toUpperCase() || 'EVENT'}
-                  </Text>
+                  </AppText>
                 </View>
 
                 {/* RSVP status chip */}
@@ -380,41 +386,47 @@ const EventDetailScreen = () => {
                       size={12}
                       color={activeConfig.color}
                     />
-                    <Text
+                    <AppText
                       style={[
                         styles.statusChipText,
                         { color: activeConfig.color },
                       ]}
                     >
                       {activeConfig.label}
-                    </Text>
+                    </AppText>
                   </View>
                 )}
               </View>
 
-              <Text style={styles.heroTitle}>{event.title}</Text>
-              <Text style={styles.heroDescription}>{event.description}</Text>
+              <AppText style={styles.heroTitle}>{event.title}</AppText>
+              <AppText style={styles.heroDescription}>
+                {event.description}
+              </AppText>
 
               {/* Stats row */}
               <View style={styles.statsRow}>
                 <View style={styles.statItem}>
                   <Icon name="users" size={14} color="#F3B11C" />
-                  <Text style={styles.statValue}>{event.goingCount ?? 0}</Text>
-                  <Text style={styles.statLabel}>Going</Text>
+                  <AppText style={styles.statValue}>
+                    {event.goingCount ?? 0}
+                  </AppText>
+                  <AppText style={styles.statLabel}>Going</AppText>
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statItem}>
                   <Icon name="list" size={14} color="#F3B11C" />
-                  <Text style={styles.statValue}>{event.rsvpCount ?? 0}</Text>
-                  <Text style={styles.statLabel}>RSVPs</Text>
+                  <AppText style={styles.statValue}>
+                    {event.rsvpCount ?? 0}
+                  </AppText>
+                  <AppText style={styles.statLabel}>RSVPs</AppText>
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statItem}>
                   <Icon name="tag" size={14} color="#F3B11C" />
-                  <Text style={styles.statValue}>
+                  <AppText style={styles.statValue}>
                     {event.tags?.length ?? 0}
-                  </Text>
-                  <Text style={styles.statLabel}>Tags</Text>
+                  </AppText>
+                  <AppText style={styles.statLabel}>Tags</AppText>
                 </View>
               </View>
             </View>
@@ -423,7 +435,9 @@ const EventDetailScreen = () => {
           {/* ── RSVP Section ── */}
           <SectionHeader title="Your Response" />
           <View style={styles.rsvpCard}>
-            <Text style={styles.rsvpPrompt}>Will you attend this event?</Text>
+            <AppText style={styles.rsvpPrompt}>
+              Will you attend this event?
+            </AppText>
             <View style={styles.rsvpRow}>
               {RSVP_OPTIONS.map(opt => {
                 const isActive = activeStatus === opt.status;
@@ -450,14 +464,14 @@ const EventDetailScreen = () => {
                         color={isActive ? opt.color : '#ffffff55'}
                       />
                     )}
-                    <Text
+                    <AppText
                       style={[
                         styles.rsvpBtnText,
                         isActive && { color: opt.color, fontWeight: '700' },
                       ]}
                     >
                       {opt.label}
-                    </Text>
+                    </AppText>
                   </TouchableOpacity>
                 );
               })}
@@ -526,7 +540,7 @@ const EventDetailScreen = () => {
                 {event.tags.map(tag => (
                   <View key={tag} style={styles.tag}>
                     <Icon name="hash" size={11} color="#F3B11C" />
-                    <Text style={styles.tagText}>{tag}</Text>
+                    <AppText style={styles.tagText}>{tag}</AppText>
                   </View>
                 ))}
               </View>
@@ -553,10 +567,10 @@ const EventDetailScreen = () => {
                       <AttachmentCard key={index} attachment={attachment} />
                     ))}
                   </ScrollView>
-                  <Text style={styles.attachmentCount}>
+                  <AppText style={styles.attachmentCount}>
                     {validAttachments.length} attachment
                     {validAttachments.length > 1 ? 's' : ''}
-                  </Text>
+                  </AppText>
                 </View>
               </>
             );

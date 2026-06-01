@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, TextInput } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { ResetPassword } from '../../../fetures/ResetPasswordSlice';
 import { Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
@@ -53,13 +55,13 @@ const ResetPasswordScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Feather name='chevron-left' color={'#000'} size={25} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Forget Password</Text>
+                <AppText style={styles.headerTitle}>Forget Password</AppText>
                 <View style={{ width: 24 }} />
             </View>
-            <Text style={styles.headerTextStyle}>Reset Password</Text>
-            <Text style={styles.descriptionTextStyle}>Enter your email address to receive an OTP.</Text>
+            <AppText style={styles.headerTextStyle}>Reset Password</AppText>
+            <AppText style={styles.descriptionTextStyle}>Enter your email address to receive an OTP.</AppText>
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your Email</Text>
+              <AppText style={styles.label}>Your Email</AppText>
               <TextInput
                 style={styles.input}
                 placeholder="Enter your Email"
@@ -73,12 +75,14 @@ const ResetPasswordScreen = ({ navigation }) => {
             </View>
             <View style={styles.buttonsRowStyle}>
                 <TouchableOpacity style={styles.buttonStyle} onPress={handleSendOtp}>
-                    {loading ? <ActivityIndicator size={'small'} color={'#fff'} /> : <Text style={styles.buttonTextStyle}>Send OTP</Text>}
+                    {loading ? <ActivityIndicator size={'small'} color={'#fff'} /> : <AppText style={styles.buttonTextStyle}>Send OTP</AppText>}
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
     )
 }
+
+export default ResetPasswordScreen;
 
 const styles = StyleSheet.create({
     pageBg: {
@@ -162,4 +166,3 @@ const styles = StyleSheet.create({
       },
 })
 
-export default ResetPasswordScreen;

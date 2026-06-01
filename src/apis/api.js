@@ -273,3 +273,29 @@ export const getLeaderboard = async ({ page = 1, limit = 50 } = {}) => {
     );
   }
 };
+
+export const getFriendsList = async (searchQuery = '') => {
+  const params = searchQuery ? { search: searchQuery } : {};
+  try {
+    const response = await axiosInstance.get(API_ROUTES.STUDENT_FRIEND, {
+      params,
+    });
+    return response.data;
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ?? error.message ?? 'Failed to update RSVP'
+    );
+  }
+};
+
+export const StudentGetData = async () => {
+  try {
+    return axiosInstance.get(API_ROUTES.STUDENT_FETCH);
+  } catch (error) {
+    throw (
+      error?.response?.data?.message ??
+      error.message ??
+      'Failed to fetch student data'
+    );
+  }
+};

@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Dimensions } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -36,12 +38,12 @@ const ListItem = ({ friend }) => {
         )}
       </View>
       <View style={{ marginStart: 16, flex: 1 }}>
-        <Text style={styles.nameTextStyle}>{friend.name}</Text>
-        <Text style={styles.emailTextStyle}>{friend.email}</Text>
+        <AppText style={styles.nameTextStyle}>{friend.name}</AppText>
+        <AppText style={styles.emailTextStyle}>{friend.email}</AppText>
         {friend.university && (
-          <Text style={styles.universityTextStyle}>
+          <AppText style={styles.universityTextStyle}>
             {friend.university.name}
-          </Text>
+          </AppText>
         )}
       </View>
     </View>
@@ -90,7 +92,7 @@ const FriendsList = () => {
               style={styles.backIconStyle}
             />
           </TouchableOpacity>
-          <Text style={styles.topBarTextStyle}>Friends List</Text>
+          <AppText style={styles.topBarTextStyle}>Friends List</AppText>
           <TouchableOpacity onPress={handleFriendList}>
             <FontAwesome name="user-plus" color={'#F3B11C'} size={28} />
           </TouchableOpacity>
@@ -102,7 +104,7 @@ const FriendsList = () => {
               source={require('../../../assets/search.png')}
               style={styles.searchIconStyle}
             />
-            <TextInput
+            <AppTextInput
               style={styles.serachTextInputStyle}
               placeholder="Search Friends"
               placeholderTextColor={'#6955A5'}
@@ -113,32 +115,32 @@ const FriendsList = () => {
         </View>
 
         <View style={styles.filterRowStyle}>
-          <Text style={styles.filterText}>
+          <AppText style={styles.filterText}>
             Friends{' '}
             {filteredFriends.length > 0 && `(${filteredFriends.length})`}
-          </Text>
+          </AppText>
         </View>
 
         {loading ? (
           <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color="#F3B11C" />
-            <Text style={styles.loadingText}>Loading friends...</Text>
+            <AppText style={styles.loadingText}>Loading friends...</AppText>
           </View>
         ) : error ? (
           <View style={styles.centerContainer}>
-            <Text style={styles.errorText}>Error: {error}</Text>
+            <AppText style={styles.errorText}>Error: {error}</AppText>
             <TouchableOpacity
               style={styles.retryButton}
               onPress={() => dispatch(fetchFriendList())}
             >
-              <Text style={styles.retryButtonText}>Retry</Text>
+              <AppText style={styles.retryButtonText}>Retry</AppText>
             </TouchableOpacity>
           </View>
         ) : filteredFriends.length === 0 ? (
           <View style={styles.centerContainer}>
-            <Text style={styles.emptyText}>
+            <AppText style={styles.emptyText}>
               {searchText ? 'No friends found' : 'No friends yet'}
-            </Text>
+            </AppText>
           </View>
         ) : (
           <FlatList

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { CardSendRemaining } from '../apis/service'; 
 
-export const fetchCardSendRemaining = createAsyncThunk(
+export const  fetchCardSendRemaining = createAsyncThunk(
   'card/fetchSendRemaining',
   async (_, { rejectWithValue }) => {
     try {

@@ -1,29 +1,37 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
-import { fetchProfile } from '../../../fetures/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
+import { fetchStudentProfile } from '../../../fetures/studentSlice';
 
 const WelcomeHeader = ({ userName, onProfilePress }) => {
   const dispatch = useDispatch();
 
-
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(fetchProfile());
-    }, [dispatch])
-  )
+      dispatch(fetchStudentProfile());
+    }, [dispatch]),
+  );
 
-  const { user, loading } = useSelector(state => state.profile);
+  const { user, loading } = useSelector(state => state.student);
+  console.log(user, 'user in welcome header');
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <View style={{ justifyContent: 'space-between', flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.logo}>UGive</Text>
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <AppText style={styles.logo}>UGive</AppText>
             <TouchableOpacity
               style={styles.profileButton}
               onPress={onProfilePress}
@@ -40,14 +48,13 @@ const WelcomeHeader = ({ userName, onProfilePress }) => {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.welcomeText}>
-            Welcome, <Text style={styles.userName}>{user?.name}</Text>!
-          </Text>
-          <Text style={styles.tagline}>
+          <AppText style={styles.welcomeText}>
+            Welcome, <AppText style={styles.userName}>{user?.name}</AppText>!
+          </AppText>
+          <AppText style={styles.tagline}>
             Be the difference in{'\n'}someone's world today
-          </Text>
+          </AppText>
         </View>
-
       </View>
     </View>
   );
@@ -100,12 +107,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFFFFF',
   },
-   profileStyle: {
-        width: 40,
-        height: 40,
-        alignSelf: 'center',
-        borderRadius:80
-    },
+  profileStyle: {
+    width: 40,
+    height: 40,
+    alignSelf: 'center',
+    borderRadius: 80,
+  },
 });
 
 export default WelcomeHeader;

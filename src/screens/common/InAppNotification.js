@@ -8,6 +8,8 @@ import {
   View,
   Platform,
 } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
@@ -81,13 +83,13 @@ const InAppNotification = ({ visible, title, body, onHide, onPress }) => {
       >
         <View style={styles.header}>
           <View style={styles.appIconPlaceholder}>
-            <Text style={styles.appIconText}>U</Text>
+            <AppText style={styles.appIconText}>U</AppText>
           </View>
-          <Text style={styles.appName}>UGive</Text>
-          <Text style={styles.time}>now</Text>
+          <AppText style={styles.appName}>UGive</AppText>
+          <AppText style={styles.time}>now</AppText>
         </View>
-        {title ? <Text style={styles.title} numberOfLines={1}>{title}</Text> : null}
-        {body ? <Text style={styles.body} numberOfLines={2}>{body}</Text> : null}
+        {title ? <AppText style={styles.title} numberOfLines={1}>{title}</AppText> : null}
+        {body ? <AppText style={styles.body} numberOfLines={2}>{body}</AppText> : null}
       </TouchableOpacity>
     </Animated.View>
   );

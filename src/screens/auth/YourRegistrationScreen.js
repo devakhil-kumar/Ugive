@@ -10,28 +10,29 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  Alert,
 } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from '@react-native-vector-icons/feather';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 // Make sure to import these from your actual file paths
-import { registerUser } from '../../fetures/authSlice'; 
+import { registerUser } from '../../fetures/authSlice';
 import { showMessage } from '../../fetures/messageSlice';
 
 const VerifyOTPScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const dispatch = useDispatch();
-  
+
   // Get the form data passed from the SignUpScreen
-  const { userData, email } = route.params || {}; 
+  const { userData, email } = route.params || {};
 
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
-  
+
   const inputRef = useRef(null);
   const length = 6; // OTP Length
 
@@ -52,42 +53,48 @@ const VerifyOTPScreen = () => {
 
     setIsLoading(true);
 
-   
     const payload = {
-      ...userData, 
-      otp: otp    
+      ...userData,
+      otp: otp,
     };
 
     try {
       const response = await dispatch(registerUser(payload)).unwrap();
-      dispatch(showMessage({
-        type: 'success',
-        text: response.message || 'Signup successful!',
-      }));
+      dispatch(
+        showMessage({
+          type: 'success',
+          text: response.message || 'Signup successful!',
+        }),
+      );
       navigation.reset({
         index: 0,
         routes: [{ name: 'Login' }],
       });
-
     } catch (error) {
       console.log(error, 'error');
-      let errorMessage = typeof error === 'string' ? error : error.message || 'Signup failed!';
-      
+      let errorMessage =
+        typeof error === 'string' ? error : error.message || 'Signup failed!';
+
       console.log(errorMessage, 'errormessage');
-      
-      if (errorMessage.toLowerCase().includes('user already') || errorMessage.toLowerCase().includes('email')) {
+
+      if (
+        errorMessage.toLowerCase().includes('user already') ||
+        errorMessage.toLowerCase().includes('email')
+      ) {
         dispatch(
           showMessage({
             type: 'error',
-            text: errorMessage || 'This email is already registered. Please use a different email or try logging in.',
-          })
+            text:
+              errorMessage ||
+              'This email is already registered. Please use a different email or try logging in.',
+          }),
         );
       } else {
         dispatch(
           showMessage({
             type: 'error',
             text: errorMessage,
-          })
+          }),
         );
       }
     } finally {
@@ -98,57 +105,63 @@ const VerifyOTPScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E5B865" />
-      <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
         <View style={styles.content}>
-          
           {/* Header */}
           <View style={styles.headerRow}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Feather name='arrow-left' color={'#FFFFFF'} size={28} />
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
+              <Feather name="arrow-left" color={'#FFFFFF'} size={28} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Verification</Text>
-            <View style={{ width: 28 }} /> 
+            <AppText style={styles.headerTitle}>Verification</AppText>
+            <View style={{ width: 28 }} />
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.title}>Enter OTP</Text>
-            <Text style={styles.subtitle}>
+            <AppText style={styles.title}>Enter OTP</AppText>
+            <AppText style={styles.subtitle}>
               We have sent a 6-digit verification code to {'\n'}
-              <Text style={styles.emailText}>{email || userData?.email || 'your email'}</Text>
-            </Text>
+              <AppText style={styles.emailText}>
+                {email || userData?.email || 'your email'}
+              </AppText>
+            </AppText>
 
             {/* OTP Input Section */}
             <View style={styles.otpContainer}>
               {/* Visible Boxes */}
               <View style={styles.otpBoxesContainer}>
-                {Array(length).fill(0).map((_, index) => {
-                  const digit = otp[index];
-                  const isFocused = index === otp.length;
-                  return (
-                    <TouchableOpacity 
-                      key={index} 
-                      style={[
-                        styles.otpBox,
-                        isFocused && styles.otpBoxFocused,
-                        digit && styles.otpBoxFilled
-                      ]}
-                      onPress={() => inputRef.current?.focus()}
-                      activeOpacity={1}
-                    >
-                      <Text style={styles.otpText}>{digit || ''}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
+                {Array(length)
+                  .fill(0)
+                  .map((_, index) => {
+                    const digit = otp[index];
+                    const isFocused = index === otp.length;
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        style={[
+                          styles.otpBox,
+                          isFocused && styles.otpBoxFocused,
+                          digit && styles.otpBoxFilled,
+                        ]}
+                        onPress={() => inputRef.current?.focus()}
+                        activeOpacity={1}
+                      >
+                        <AppText style={styles.otpText}>{digit || ''}</AppText>
+                      </TouchableOpacity>
+                    );
+                  })}
               </View>
 
               {/* Hidden Actual Input */}
               <TextInput
                 ref={inputRef}
                 value={otp}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   // Only allow numbers
                   if (/^\d*$/.test(text)) {
                     setOtp(text);
@@ -163,7 +176,8 @@ const VerifyOTPScreen = () => {
             <TouchableOpacity
               style={[
                 styles.verifyButton,
-                (otp.length !== length || isLoading) && styles.verifyButtonDisabled
+                (otp.length !== length || isLoading) &&
+                  styles.verifyButtonDisabled,
               ]}
               onPress={handleVerify}
               disabled={isLoading || otp.length !== length}
@@ -171,7 +185,7 @@ const VerifyOTPScreen = () => {
               {isLoading ? (
                 <ActivityIndicator color="#FFF" />
               ) : (
-                <Text style={styles.verifyButtonText}>Verify Otp</Text>
+                <AppText style={styles.verifyButtonText}>Verify Otp</AppText>
               )}
             </TouchableOpacity>
           </View>
@@ -181,10 +195,12 @@ const VerifyOTPScreen = () => {
   );
 };
 
+export default VerifyOTPScreen;
+
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#E5B865' 
+  container: {
+    flex: 1,
+    backgroundColor: '#E5B865',
   },
   content: {
     flex: 1,
@@ -230,7 +246,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  
+
   // OTP Styles
   otpContainer: {
     width: '100%',
@@ -290,7 +306,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
   },
-  
+
   // Resend
   resendContainer: {
     flexDirection: 'row',
@@ -305,5 +321,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-
-export default VerifyOTPScreen;

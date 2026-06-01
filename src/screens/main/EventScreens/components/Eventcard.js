@@ -1,5 +1,7 @@
 // ─── components/events/EventCard.js ──────────────────────────────────────────
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from '@react-native-vector-icons/feather';
@@ -68,8 +70,6 @@ const EventCard = ({ item, onPress }) => {
   const [pendingStatus, setPendingStatus] = useState(null); // which button tapped
   const [modalVisible, setModalVisible] = useState(false);
 
- 
-
   const handleRsvpTap = status => {
     if (isSubmitting) return;
     setPendingStatus(status);
@@ -117,7 +117,7 @@ const EventCard = ({ item, onPress }) => {
               {item.image ? (
                 <Image source={{ uri: item.image }} style={styles.cardImage} />
               ) : (
-                <Text style={styles.cardEmoji}>{item.emoji || '📅'}</Text>
+                <AppText style={styles.cardEmoji}>{item.emoji || '📅'}</AppText>
               )}
             </View>
 
@@ -125,37 +125,39 @@ const EventCard = ({ item, onPress }) => {
             <View style={styles.cardContent}>
               <View style={styles.headerRow}>
                 <View style={styles.categoryPill}>
-                  <Text style={styles.categoryText}>
+                  <AppText style={styles.categoryText}>
                     {item.category?.toUpperCase() || 'EVENT'}
-                  </Text>
+                  </AppText>
                 </View>
 
                 {/* Going count badge */}
                 <View style={styles.goingBadge}>
                   <Icon name="users" size={11} color="#F3B11C" />
-                  <Text style={styles.goingCount}>{item.goingCount ?? 0}</Text>
+                  <AppText style={styles.goingCount}>
+                    {item.goingCount ?? 0}
+                  </AppText>
                 </View>
               </View>
 
-              <Text style={styles.cardTitle} numberOfLines={1}>
+              <AppText style={styles.cardTitle} numberOfLines={1}>
                 {item.title}
-              </Text>
+              </AppText>
 
-              <Text style={styles.cardDescription} numberOfLines={2}>
+              <AppText style={styles.cardDescription} numberOfLines={2}>
                 {item.description}
-              </Text>
+              </AppText>
 
               {/* Date & Time */}
               <View style={styles.metaRow}>
                 <View style={styles.metaItem}>
                   <Icon name="calendar" size={11} color="#ffffffbb" />
-                  <Text style={styles.metaText}>{startDate}</Text>
+                  <AppText style={styles.metaText}>{startDate}</AppText>
                 </View>
                 <View style={styles.metaItem}>
                   <Icon name="clock" size={11} color="#ffffffbb" />
-                  <Text style={styles.metaText}>
+                  <AppText style={styles.metaText}>
                     {startTime} – {endTime}
-                  </Text>
+                  </AppText>
                 </View>
               </View>
 
@@ -167,11 +169,11 @@ const EventCard = ({ item, onPress }) => {
                     size={11}
                     color="#ffffffbb"
                   />
-                  <Text style={styles.metaText} numberOfLines={1}>
+                  <AppText style={styles.metaText} numberOfLines={1}>
                     {isOnline
                       ? 'Online'
                       : item?.location?.address || 'Location TBD'}
-                  </Text>
+                  </AppText>
                 </View>
               </View>
 
@@ -180,7 +182,7 @@ const EventCard = ({ item, onPress }) => {
                 <View style={styles.tagsRow}>
                   {item.tags.slice(0, 3).map(tag => (
                     <View key={tag} style={styles.tag}>
-                      <Text style={styles.tagText}>#{tag}</Text>
+                      <AppText style={styles.tagText}>#{tag}</AppText>
                     </View>
                   ))}
                 </View>
@@ -209,14 +211,14 @@ const EventCard = ({ item, onPress }) => {
                     size={15}
                     color={isActive ? opt.activeColor : '#ffffff66'}
                   />
-                  <Text
+                  <AppText
                     style={[
                       styles.rsvpBtnText,
                       isActive && { color: opt.activeColor, fontWeight: '700' },
                     ]}
                   >
                     {opt.label}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               );
             })}

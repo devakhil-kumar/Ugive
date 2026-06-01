@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 import Icon from '@react-native-vector-icons/ionicons';
 
 const formatTime = iso => {
@@ -17,20 +19,20 @@ const CalendarEventMiniCard = ({ item }) => {
       {/* Left: emoji + text */}
       <View style={styles.miniCardLeft}>
         <View style={styles.miniEmojiBox}>
-          <Text style={styles.miniEmoji}>{item.emoji || '📅'}</Text>
+          <AppText style={styles.miniEmoji}>{item.emoji || '📅'}</AppText>
         </View>
 
         <View style={styles.miniCardTextBlock}>
-          <Text style={styles.miniCardTitle} numberOfLines={1}>
+          <AppText style={styles.miniCardTitle} numberOfLines={1}>
             {item.title}
-          </Text>
+          </AppText>
 
           <View style={styles.miniCardMeta}>
             <View style={styles.miniMetaRow}>
               <Icon name="time-outline" size={10} color="#ffffffaa" />
-              <Text style={styles.miniMetaText}>
+              <AppText style={styles.miniMetaText}>
                 {startTime} – {endTime}
-              </Text>
+              </AppText>
             </View>
             <View style={styles.miniMetaRow}>
               <Icon
@@ -38,17 +40,17 @@ const CalendarEventMiniCard = ({ item }) => {
                 size={10}
                 color="#ffffffaa"
               />
-              <Text style={styles.miniMetaText}>
+              <AppText style={styles.miniMetaText}>
                 {isOnline ? 'Online' : item?.location?.address || 'TBD'}
-              </Text>
+              </AppText>
             </View>
           </View>
 
           {item.category && (
             <View style={styles.miniCategoryPill}>
-              <Text style={styles.miniCategoryText}>
+              <AppText style={styles.miniCategoryText}>
                 {item.category.toUpperCase()}
-              </Text>
+              </AppText>
             </View>
           )}
         </View>
@@ -57,8 +59,8 @@ const CalendarEventMiniCard = ({ item }) => {
       {/* Right: going count */}
       <View style={styles.miniRsvp}>
         <Icon name="people-outline" size={12} color="#F3B11C" />
-        <Text style={styles.miniRsvpCount}>{item.goingCount ?? 0}</Text>
-        <Text style={styles.miniRsvpLabel}>Going</Text>
+        <AppText style={styles.miniRsvpCount}>{item.goingCount ?? 0}</AppText>
+        <AppText style={styles.miniRsvpLabel}>Going</AppText>
       </View>
     </View>
   );

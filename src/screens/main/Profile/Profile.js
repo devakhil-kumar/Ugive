@@ -8,11 +8,14 @@ import {
   Share,
   Platform,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Feather from '@react-native-vector-icons/feather';
+import { fetchProfile } from '../../../fetures/profileSlice';
 
 // ── App store links ──
 const APP_LINKS = {
@@ -23,7 +26,7 @@ const APP_LINKS = {
 
 const Profile = () => {
   const navigation = useNavigation();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   // // ── Load profile every time screen is focused ──
   // useFocusEffect(
@@ -31,6 +34,10 @@ const Profile = () => {
   //     dispatch(fetchProfile());
   //   }, [dispatch]),
   // );
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   const { user, loading } = useSelector(state => state.profile);
   console.log(user, 'suserrer===-==');
@@ -102,40 +109,40 @@ const Profile = () => {
           }
           style={styles.profileStyle}
         />
-        <Text
+        <AppText
           style={[
             styles.screenTextStyle,
             { color: 'white', textAlign: 'center' },
           ]}
         >
           Hey,{' '}
-          <Text
+          <AppText
             style={[
               styles.screenTextStyle,
               { color: '#E9B243', textAlign: 'center' },
             ]}
           >
             {user?.name}
-          </Text>
+          </AppText>
           !
-        </Text>
+        </AppText>
         <TouchableOpacity
           style={styles.butoonStyle}
           onPress={handleProfileDetails}
         >
-          <Text style={styles.buttonText}>Profile Info</Text>
+          <AppText style={styles.buttonText}>Profile Info</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.butoonStyle} onPress={handleYourPoint}>
-          <Text style={styles.buttonText}>Your Points</Text>
+          <AppText style={styles.buttonText}>Your Points</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.butoonStyle} onPress={handleCardSent}>
-          <Text style={styles.buttonText}>Cards Sent</Text>
+          <AppText style={styles.buttonText}>Cards Sent</AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.butoonStyle}
           onPress={handleLeaderBoard}
         >
-          <Text style={styles.buttonText}>LeaderBorad</Text>
+          <AppText style={styles.buttonText}>LeaderBorad</AppText>
         </TouchableOpacity>
       </View>
     </GradientScreen>

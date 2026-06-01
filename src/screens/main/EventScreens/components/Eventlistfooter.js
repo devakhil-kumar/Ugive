@@ -1,4 +1,6 @@
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 
 const EventListFooter = ({ loadingMore }) => {
   if (!loadingMore) return null;
@@ -6,7 +8,7 @@ const EventListFooter = ({ loadingMore }) => {
   return (
     <View style={styles.footerLoader}>
       <ActivityIndicator size="small" color="#F3B11C" />
-      <Text style={styles.footerText}>Loading more…</Text>
+      <AppText style={styles.footerText}>Loading more…</AppText>
     </View>
   );
 };

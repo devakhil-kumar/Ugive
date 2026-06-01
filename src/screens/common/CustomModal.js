@@ -1,5 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 import { Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 
@@ -22,18 +24,18 @@ const CustomModal = ({
         >
             <View style={styles.overlay}>
                 <View style={styles.modalContainer}>
-                    {title && <Text style={styles.title}>{title}</Text>}
+                    {title && <AppText style={styles.title}>{title}</AppText>}
                     <View style={{ marginVertical: 10, width: width * 0.5, alignSelf: 'center' }}>
                         {children}
                     </View>
                     {
                         confirmModal && <TouchableOpacity style={styles.closeBtn} onPress={handleClose}>
-                            <Text style={styles.closeText}>{buttonLabelCancel}</Text>
+                            <AppText style={styles.closeText}>{buttonLabelCancel}</AppText>
                         </TouchableOpacity>
                     }
                     {showClose && (
                         <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-                            <Text style={styles.closeText}>{buttonLabel}</Text>
+                            <AppText style={styles.closeText}>{buttonLabel}</AppText>
                         </TouchableOpacity>
                     )}
                 </View>

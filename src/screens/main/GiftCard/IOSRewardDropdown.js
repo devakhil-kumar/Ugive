@@ -7,6 +7,8 @@ import {
   FlatList,
   StyleSheet
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 
 const IOSRewardDropdown = ({ data, selectedValue, onSelect }) => {
   const [visible, setVisible] = useState(false);
@@ -21,7 +23,7 @@ const IOSRewardDropdown = ({ data, selectedValue, onSelect }) => {
         style={styles.dropdown}
         onPress={() => setVisible(true)}
       >
-        <Text style={styles.dropdownText}>{selectedLabel}</Text>
+        <AppText style={styles.dropdownText}>{selectedLabel}</AppText>
       </TouchableOpacity>
 
 
@@ -47,12 +49,12 @@ const IOSRewardDropdown = ({ data, selectedValue, onSelect }) => {
                     setVisible(false);
                   }}
                 >
-                  <Text style={styles.itemText}>
+                  <AppText style={styles.itemText}>
                     {item.rewardName}
                     {!item.unlocked && ' (Locked)'}
                     {item.unlocked && !item.claimed && ' (Not Claimed)'}
                     {item.sent && ' (Sent)'}
-                  </Text>
+                  </AppText>
                 </TouchableOpacity>
               )}
             />

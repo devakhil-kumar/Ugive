@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -36,7 +38,7 @@ const InputField = ({
   error,
 }) => (
   <View style={styles.fieldWrapper}>
-    <Text style={styles.fieldLabel}>{label}</Text>
+    <AppText style={styles.fieldLabel}>{label}</AppText>
     <View
       style={[
         styles.inputBox,
@@ -63,7 +65,7 @@ const InputField = ({
         autoCapitalize={keyboardType === 'email-address' ? 'none' : 'words'}
       />
     </View>
-    {error ? <Text style={styles.fieldError}>{error}</Text> : null}
+    {error ? <AppText style={styles.fieldError}>{error}</AppText> : null}
   </View>
 );
 
@@ -72,18 +74,18 @@ const SuccessView = ({ onDone }) => (
     <View style={styles.successIconCircle}>
       <Icon name="check" size={44} color="#4CAF50" />
     </View>
-    <Text style={styles.successTitle}>Submitted!</Text>
-    <Text style={styles.successSubtitle}>
+    <AppText style={styles.successTitle}>Submitted!</AppText>
+    <AppText style={styles.successSubtitle}>
       Your contact form has been submitted successfully. We'll get back to you
       soon.
-    </Text>
+    </AppText>
     <TouchableOpacity
       style={styles.doneBtn}
       onPress={onDone}
       activeOpacity={0.85}
     >
       <Icon name="arrow-left" size={18} color="#FFF" />
-      <Text style={styles.doneBtnText}>Back</Text>
+      <AppText style={styles.doneBtnText}>Back</AppText>
     </TouchableOpacity>
   </View>
 );
@@ -155,7 +157,7 @@ const ContactFormScreen = () => {
             >
               <Icon name="arrow-left" size={30} color="#FFF" />
             </TouchableOpacity>
-            <Text style={styles.topBarTitle}>Contact Us</Text>
+            <AppText style={styles.topBarTitle}>Contact Us</AppText>
             <View style={{ width: 38 }} />
           </View>
 
@@ -176,11 +178,11 @@ const ContactFormScreen = () => {
                   <Icon name="mail" size={28} color="#F3B11C" />
                 </View>
                 <View style={styles.headerTextBlock}>
-                  <Text style={styles.headerTitle}>Get in Touch</Text>
-                  <Text style={styles.headerSubtitle}>
+                  <AppText style={styles.headerTitle}>Get in Touch</AppText>
+                  <AppText style={styles.headerSubtitle}>
                     Fill in the form below and we'll respond as soon as
                     possible.
-                  </Text>
+                  </AppText>
                 </View>
               </View>
 
@@ -242,7 +244,7 @@ const ContactFormScreen = () => {
                 {error ? (
                   <View style={styles.errorBanner}>
                     <Icon name="alert-triangle" size={15} color="#FF6B6B" />
-                    <Text style={styles.errorBannerText}>{error}</Text>
+                    <AppText style={styles.errorBannerText}>{error}</AppText>
                   </View>
                 ) : null}
 
@@ -261,7 +263,7 @@ const ContactFormScreen = () => {
                   ) : (
                     <>
                       <Icon name="send" size={16} color="#FFF" />
-                      <Text style={styles.submitBtnText}>Submit</Text>
+                      <AppText style={styles.submitBtnText}>Submit</AppText>
                     </>
                   )}
                 </TouchableOpacity>

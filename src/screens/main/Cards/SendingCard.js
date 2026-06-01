@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -22,23 +24,23 @@ const SendingCard = () => {
                 </TouchableOpacity>
                 <View style={styles.main}>
                     <View>
-                        <Text style={styles.header}>
-                            Your <Text style={{ color: "#D99656" }}>Card</Text> is on {"\n"}its way!
-                        </Text>
-                        <Text style={styles.subHeader}>
+                        <AppText style={styles.header}>
+                            Your <AppText style={{ color: "#D99656" }}>Card</AppText> is on {"\n"}its way!
+                        </AppText>
+                        <AppText style={styles.subHeader}>
                             Note : Your Card will be delivered in the next week.
-                        </Text>
+                        </AppText>
                     </View>
                     <Image source={require('../../../assets/sendMesg.png')} style={styles.imageStyle} />
                     <View style={{ width: "100%" }}>
-                        <Text style={styles.lastHeader}>
+                        <AppText style={styles.lastHeader}>
                             Thank you for making a{"\n"}
                             difference in someone’s{"\n"}
                             world today!
-                        </Text>
+                        </AppText>
                     </View>
                     <TouchableOpacity style={styles.btnLets} onPress={handleOnPress}>
-                        <Text style={styles.txtBtn}>Let's go!</Text>
+                        <AppText style={styles.txtBtn}>Let's go!</AppText>
                     </TouchableOpacity>
                 </View>
             </View>

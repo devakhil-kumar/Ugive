@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Calendar } from 'react-native-calendars';
@@ -121,7 +123,7 @@ const CalendarModal = ({ visible, onClose }) => {
         activeOpacity={0.7}
       >
         {/* Date number */}
-        <Text
+        <AppText
           style={[
             styles.dayNumber,
             state === 'disabled' && styles.dayNumberDisabled,
@@ -130,15 +132,15 @@ const CalendarModal = ({ visible, onClose }) => {
           ]}
         >
           {date.day}
-        </Text>
+        </AppText>
 
         {/* Emoji + overflow badge */}
         {hasEvents ? (
           <View style={styles.dayEmojiRow}>
-            <Text style={styles.dayEmoji}>{emoji}</Text>
+            <AppText style={styles.dayEmoji}>{emoji}</AppText>
             {extraCount > 0 && (
               <View style={styles.extraBadge}>
-                <Text style={styles.extraBadgeText}>+{extraCount}</Text>
+                <AppText style={styles.extraBadgeText}>+{extraCount}</AppText>
               </View>
             )}
           </View>
@@ -191,7 +193,7 @@ const CalendarModal = ({ visible, onClose }) => {
           <View style={styles.modalHeader}>
             <View style={styles.modalTitleRow}>
               <Icon name="calendar" size={20} color="#F3B11C" />
-              <Text style={styles.modalTitle}>Event Calendar</Text>
+              <AppText style={styles.modalTitle}>Event Calendar</AppText>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <Icon name="close" size={16} color="#FFFFFF" />
@@ -226,7 +228,7 @@ const CalendarModal = ({ visible, onClose }) => {
           {calLoading && (
             <View style={styles.calLoader}>
               <ActivityIndicator size="small" color="#F3B11C" />
-              <Text style={styles.calLoaderText}>Loading events…</Text>
+              <AppText style={styles.calLoaderText}>Loading events…</AppText>
             </View>
           )}
 
@@ -242,21 +244,21 @@ const CalendarModal = ({ visible, onClose }) => {
                 {/* Panel header */}
                 <View style={styles.eventPanelHeader}>
                   {/* <Icon name="list-outline" size={14} color="#F3B11C" /> */}
-                  <Text style={styles.eventPanelTitle}>
+                  <AppText style={styles.eventPanelTitle}>
                     {selectedEvents.length > 0
                       ? `${selectedEvents.length} Event${
                           selectedEvents.length > 1 ? 's' : ''
                         } on ${selectedDate}`
                       : `No events on ${selectedDate}`}
-                  </Text>
+                  </AppText>
                 </View>
 
                 {selectedEvents.length === 0 ? (
                   <View style={styles.noEventRow}>
                     <Icon name="calendar-outline" size={20} color="#ffffff44" />
-                    <Text style={styles.noEventText}>
+                    <AppText style={styles.noEventText}>
                       Nothing scheduled for this day
-                    </Text>
+                    </AppText>
                   </View>
                 ) : (
                   <ScrollView

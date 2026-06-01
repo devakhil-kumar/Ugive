@@ -1,73 +1,80 @@
 import React, { useEffect } from 'react';
-import { View, ScrollView, StatusBar, StyleSheet, Platform } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import WelcomeHeader from './components/WelcomeHeader';
 import SendCardSection from './components/SendCardSection';
 import RewardSection from './components/RewardSection';
 import { hp } from '../../utils/responsive';
 import GradientScreen from '../common/GradientScreen';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchCardSendRemaining } from '../../fetures/CardSendRemainingSlice';
 
 const HomeScreen = ({ navigation, userName = 'Annie' }) => {
-
-  const cardsSent = 1; 
-  const totalCardsNeeded = 5;
-  const progressPercentage = Math.round((cardsSent / totalCardsNeeded) * 100);
-  const cardsRemaining = totalCardsNeeded - cardsSent;
-  const handleStartWriting = () => {
-    navigation.navigate('GiftCard')
-  };
-
-  const handleRewardAction = () => {
-    navigation.navigate('RewardsHome')
-  };
-
-  const handleProfilePress = () => {
-    navigation.navigate('ProfileNavigator')
-  };
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-      dispatch(fetchCardSendRemaining());
+    dispatch(fetchCardSendRemaining());
   }, [dispatch]);
 
+  const { loading } = useSelector(state => state.cardRemaning);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="yellow" />
+      </SafeAreaView>
+    );
+  }
+
+  const cardsSent = 1;
+  const totalCardsNeeded = 5;
+  const progressPercentage = Math.round((cardsSent / totalCardsNeeded) * 100);
+  const cardsRemaining = totalCardsNeeded - cardsSent;
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:'#6955A5'}} edges={['top']}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: '#6955A5' }}
+      edges={['top']}
+    >
       <StatusBar barStyle="light-content" backgroundColor="#6B5B95" />
-      <View style={styles.mainContent}>
-          <WelcomeHeader
-            userName={userName}
-            onProfilePress={handleProfilePress}
-          />
 
-          <SendCardSection onStartWriting={handleStartWriting} />
+      <View style={styles.mainContent}>
+        <WelcomeHeader
+          userName={userName}
+          onProfilePress={() => navigation.navigate('ProfileNavigator')}
+        />
+
+        <SendCardSection
+          onStartWriting={() => navigation.navigate('GiftCard')}
+        />
 
         <View style={styles.fixedBottom}>
-          <RewardSection 
-          onPress={handleRewardAction} 
-          cardsRemaining={cardsRemaining}
-          progressPercentage={progressPercentage}
-         />
+          <RewardSection
+            onPress={() => navigation.navigate('RewardsHome')}
+            cardsRemaining={cardsRemaining}
+            progressPercentage={progressPercentage}
+          />
         </View>
       </View>
-      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  loaderContainer: {
     flex: 1,
-    backgroundColor: '#6B5B95',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mainContent: {
     flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: hp(2),
   },
   fixedBottom: {
     position: 'absolute',
@@ -78,6 +85,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-
-

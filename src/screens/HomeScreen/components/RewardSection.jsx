@@ -1,112 +1,122 @@
-
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import AppText from '../../../components/AppText';
+import AppTextInput from '../../../components/AppTextInput';
 import Svg, { Circle, G } from 'react-native-svg';
 import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { PieChart } from 'react-native-gifted-charts';
 import { fetchCardSendRemaining } from '../../../fetures/CardSendRemainingSlice';
 
- const ProgressPieChart = ({ percentage = 20 }) => {
-    const pieData = [
-        {
-            value: percentage,
-            color: '#F3B11C',
-            focused: false,
-        },
-        {
-            value: 100 - percentage,
-            color:"#FFFFFF",
-            strokeColor: '#F3B11C',
-            strokeWidth: 2,
-        },
-    ];
+const ProgressPieChart = ({ percentage = 20 }) => {
+  const pieData = [
+    {
+      value: percentage,
+      color: '#F3B11C',
+      focused: false,
+    },
+    {
+      value: 100 - percentage,
+      color: '#FFFFFF',
+      strokeColor: '#F3B11C',
+      strokeWidth: 2,
+    },
+  ];
 
-    return (
-        <View style={styles.containersen}>
-            <View style={styles.chartContainer}>
-                <PieChart
-                    data={pieData}
-                    donut
-                    radius={60}
-                    innerRadius={53}
-                    // innerCircleColor="#6D5B98"
-                    strokeColor="#EBB142"
-                    strokeWidth={1}
-                    showText={false}
-                    showGradient={false}
-                    innerCircleBorderWidth={2}
-                    innerCircleBorderColor={'#EBB142'}
-                    
-                />
-                <View style={styles.centerTextContainer}>
-                    <Text style={styles.percentageText}>{percentage}%</Text>
-                </View>
-            </View>
+  return (
+    <View style={styles.containersen}>
+      <View style={styles.chartContainer}>
+        <PieChart
+          data={pieData}
+          donut
+          radius={60}
+          innerRadius={53}
+          // innerCircleColor="#6D5B98"
+          strokeColor="#EBB142"
+          strokeWidth={1}
+          showText={false}
+          showGradient={false}
+          innerCircleBorderWidth={2}
+          innerCircleBorderColor={'#EBB142'}
+        />
+        <View style={styles.centerTextContainer}>
+          <AppText style={styles.percentageText}>{percentage}%</AppText>
         </View>
-    );
+      </View>
+    </View>
+  );
 };
 
 const RewardSection = ({ onPress }) => {
   const circleSize = isTablet ? moderateScale(140) : moderateScale(120);
-  const { currentReward, loading, error, data} = useSelector(state => state.cardRemaning);
+  const { currentReward, loading, error, data } = useSelector(
+    state => state.cardRemaning,
+  );
   const percentage = currentReward?.percentage || 0;
-  const remainingCards = currentReward 
-  ? currentReward.totalPoints - currentReward.completedPoints 
-  : 0;
+  const remainingCards = currentReward
+    ? currentReward.totalPoints - currentReward.completedPoints
+    : 0;
 
-console.log(currentReward ,data, "rewards++++++" )
+  console.log(currentReward, data, 'rewards++++++');
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          {/* <Text style={styles.title}>
+          {/* <AppText style={styles.title}>
             You're close to unlocking a gift! 
-          </Text> */}
-          
-          {/* <Text style={styles.subtitle}>
-            Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
-            <Text style={styles.action}>cards</Text> to{'\n'}
-            <Text style={styles.receive}>unlock a  <Text style={styles.item}>coffee</Text> voucher {'\n'}for a friend.</Text> 
-          </Text> */}
+          </AppText> */}
 
-       {
-  data?.message === "No rewards found" ? (
-    <Text style={styles.subtitle}>
-      <Text style={styles.receive}>No rewards available right now</Text>{'\n'}
-      <Text style={styles.number}>You can still send cards to your friends!</Text>
-    </Text>
-  ) : remainingCards === 0 ? (
-    <Text style={styles.subtitle}>
-      <Text style={styles.receive}>Your reward has unlocked!</Text>{'\n'}
-      <Text style={styles.number}>
-        Please visit the rewards section to claim your reward.
-      </Text>
-    </Text>
-  ) : (
-    <>
-      <Text style={styles.title}>
-        You're close to unlocking a gift!
-      </Text>
+          {/* <AppText style={styles.subtitle}>
+            Send <AppText style={styles.number}>{remainingCards} more</AppText>{' '}
+            <AppText style={styles.action}>cards</AppText> to{'\n'}
+            <AppText style={styles.receive}>unlock a  <AppText style={styles.item}>coffee</AppText> voucher {'\n'}for a friend.</AppText> 
+          </AppText> */}
 
-      <Text style={styles.subtitle}>
-        Send <Text style={styles.number}>{remainingCards} more</Text>{' '}
-        <Text style={styles.action}>cards</Text> to{'\n'}
-        <Text style={styles.receive}>
-          unlock a <Text style={styles.item}>coffee</Text> voucher {'\n'}
-          for a friend.
-        </Text>
-      </Text>
-    </>
-  )
-}
+          {data?.message === 'No rewards found' ? (
+            <AppText style={styles.subtitle}>
+              <AppText style={styles.receive}>
+                No rewards available right now
+              </AppText>
+              {'\n'}
+              <AppText style={styles.number}>
+                You can still send cards to your friends!
+              </AppText>
+            </AppText>
+          ) : remainingCards === 0 ? (
+            <AppText style={styles.subtitle}>
+              <AppText style={styles.receive}>
+                Your reward has unlocked!
+              </AppText>
+              {'\n'}
+              <AppText style={styles.number}>
+                Please visit the rewards section to claim your reward.
+              </AppText>
+            </AppText>
+          ) : (
+            <>
+              <AppText style={styles.title}>
+                You're close to unlocking a gift!
+              </AppText>
+
+              <AppText style={styles.subtitle}>
+                Send{' '}
+                <AppText style={styles.number}>{remainingCards} more</AppText>{' '}
+                <AppText style={styles.action}>cards</AppText> to{'\n'}
+                <AppText style={styles.receive}>
+                  unlock a <AppText style={styles.item}>coffee</AppText> voucher{' '}
+                  {'\n'}
+                  for a friend.
+                </AppText>
+              </AppText>
+            </>
+          )}
           <TouchableOpacity
             style={styles.button}
             onPress={onPress}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>Let's go!</Text>
+            <AppText style={styles.buttonText}>Let's go!</AppText>
           </TouchableOpacity>
         </View>
         <ProgressPieChart percentage={percentage} />
@@ -209,32 +219,30 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-},
-containersen: {
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-chartContainer: {
-  justifyContent: 'center',
-  alignItems: 'center',
-  position: 'relative',
-  padding:2
-},
-percentageText: {
-  fontSize:30,
-  fontWeight: '800',
-  color: '#EBB142',
-},
+  },
+  containersen: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chartContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    padding: 2,
+  },
+  percentageText: {
+    fontSize: 30,
+    fontWeight: '800',
+    color: '#EBB142',
+  },
 });
 
 export default RewardSection;
 
-
-
-
-
 // import React from 'react';
 // import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+// import AppText from '../../../components/AppText';
+// import AppTextInput from '../../../components/AppTextInput';
 // import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 
 // const RewardSection = ({ onPress, cardsRemaining = 5, progressPercentage = 0 }) => {
@@ -242,30 +250,30 @@ export default RewardSection;
 //     <View style={styles.container}>
 //       <View style={styles.content}>
 //         <View style={styles.textContainer}>
-//           <Text style={styles.title}>
+//           <AppText style={styles.title}>
 //             You're close to{'\n'}a reward!
-//           </Text>
-          
-//           <Text style={styles.subtitle}>
-//             Send <Text style={styles.number}>{cardsRemaining} more</Text>{' '}
-//             <Text style={styles.action}>cards</Text> to{'\n'}
-//             <Text style={styles.receive}>receive</Text> a free{' '}
-//             <Text style={styles.item}>coffee.</Text>
-//           </Text>
-          
+//           </AppText>
+
+//           <AppText style={styles.subtitle}>
+//             Send <AppText style={styles.number}>{cardsRemaining} more</AppText>{' '}
+//             <AppText style={styles.action}>cards</AppText> to{'\n'}
+//             <AppText style={styles.receive}>receive</AppText> a free{' '}
+//             <AppText style={styles.item}>coffee.</AppText>
+//           </AppText>
+
 //           <TouchableOpacity
 //             style={styles.button}
 //             onPress={onPress}
 //             activeOpacity={0.8}
 //           >
-//             <Text style={styles.buttonText}>Let's go!</Text>
+//             <AppText style={styles.buttonText}>Let's go!</AppText>
 //           </TouchableOpacity>
 //         </View>
-        
+
 //         <View style={styles.progressContainer}>
 //           <View style={styles.progressCircle}>
 //             <View style={styles.progressRing} />
-//             <Text style={styles.progressText}>{progressPercentage}%</Text>
+//             <AppText style={styles.progressText}>{progressPercentage}%</AppText>
 //           </View>
 //         </View>
 //       </View>
@@ -378,13 +386,10 @@ export default RewardSection;
 
 // export default RewardSection;
 
-
-
-
-
-
 // import React from 'react';
 // import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+// import AppText from '../../../components/AppText';
+// import AppTextInput from '../../../components/AppTextInput';
 // import { wp, hp, moderateScale, isTablet } from '../../../utils/responsive';
 
 // const RewardSection = ({ onPress, cardsRemaining = 5, progressPercentage = 0 }) => {
@@ -435,23 +440,23 @@ export default RewardSection;
 //     <View style={styles.container}>
 //       <View style={styles.content}>
 //         <View style={styles.textContainer}>
-//           <Text style={styles.title}>
+//           <AppText style={styles.title}>
 //             You're close to{'\n'}a reward!
-//           </Text>
+//           </AppText>
 
-//           <Text style={styles.subtitle}>
-//             Send <Text style={styles.number}>{cardsRemaining} more</Text>{' '}
-//             <Text style={styles.action}>cards</Text> to{'\n'}
-//             <Text style={styles.receive}>receive</Text> a free{' '}
-//             <Text style={styles.item}>coffee.</Text>
-//           </Text>
+//           <AppText style={styles.subtitle}>
+//             Send <AppText style={styles.number}>{cardsRemaining} more</AppText>{' '}
+//             <AppText style={styles.action}>cards</AppText> to{'\n'}
+//             <AppText style={styles.receive}>receive</AppText> a free{' '}
+//             <AppText style={styles.item}>coffee.</AppText>
+//           </AppText>
 
 //           <TouchableOpacity
 //             style={styles.button}
 //             onPress={onPress}
 //             activeOpacity={0.8}
 //           >
-//             <Text style={styles.buttonText}>Let's go!</Text>
+//             <AppText style={styles.buttonText}>Let's go!</AppText>
 //           </TouchableOpacity>
 //         </View>
 
@@ -489,7 +494,7 @@ export default RewardSection;
 //               ]}
 //             />
 
-//             <Text style={styles.progressText}>{progressPercentage}%</Text>
+//             <AppText style={styles.progressText}>{progressPercentage}%</AppText>
 //           </View>
 //         </View>
 //       </View>

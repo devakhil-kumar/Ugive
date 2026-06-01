@@ -7,6 +7,8 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import AppText from '../../../../components/AppText';
+import AppTextInput from '../../../../components/AppTextInput';
 import Icon from '@react-native-vector-icons/ionicons';
 
 // ─── Config for each status option ───────────────────────────────────────────
@@ -70,21 +72,21 @@ const RsvpConfirmModal = ({
           </View>
 
           {/* Title */}
-          <Text style={styles.title}>
+          <AppText style={styles.title}>
             Mark as{' '}
-            <Text style={[styles.statusLabel, { color: config.iconColor }]}>
+            <AppText style={[styles.statusLabel, { color: config.iconColor }]}>
               {config.label}
-            </Text>
+            </AppText>
             ?
-          </Text>
+          </AppText>
 
           {/* Event name */}
-          <Text style={styles.eventName} numberOfLines={2}>
+          <AppText style={styles.eventName} numberOfLines={2}>
             {eventTitle}
-          </Text>
+          </AppText>
 
           {/* Description */}
-          <Text style={styles.description}>{config.description}</Text>
+          <AppText style={styles.description}>{config.description}</AppText>
 
           {/* Divider */}
           <View style={styles.divider} />
@@ -99,7 +101,7 @@ const RsvpConfirmModal = ({
               activeOpacity={0.7}
             >
               <Icon name="close" size={16} color="#ffffffaa" />
-              <Text style={styles.cancelBtnText}>Cancel</Text>
+              <AppText style={styles.cancelBtnText}>Cancel</AppText>
             </TouchableOpacity>
 
             {/* Confirm */}
@@ -114,9 +116,9 @@ const RsvpConfirmModal = ({
               ) : (
                 <>
                   <Icon name="checkmark" size={16} color="#fff" />
-                  <Text style={styles.confirmBtnText}>
+                  <AppText style={styles.confirmBtnText}>
                     {config.confirmLabel}
-                  </Text>
+                  </AppText>
                 </>
               )}
             </TouchableOpacity>

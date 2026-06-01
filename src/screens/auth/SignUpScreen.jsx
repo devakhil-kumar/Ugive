@@ -13,6 +13,8 @@ import {
   Alert,
   Keyboard,
 } from 'react-native';
+import AppText from '../../components/AppText';
+import AppTextInput from '../../components/AppTextInput';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from '@react-native-vector-icons/ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -325,18 +327,18 @@ const SignUpScreen = () => {
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Feather name="arrow-left" color={'#FFFFFF'} size={28} />
               </TouchableOpacity>
-              <Text style={styles.logo}>UGive</Text>
+              <AppText style={styles.logo}>UGive</AppText>
             </View>
-            <Text style={styles.tagline}>
+            <AppText style={styles.tagline}>
               Sign up to UGive, and make a{'\n'}difference in someone's world
               {'\n'}today.
-            </Text>
+            </AppText>
           </View>
 
           <View style={styles.card}>
             {/* Name */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your Name</Text>
+              <AppText style={styles.label}>Your Name</AppText>
               <TextInput
                 style={[styles.input, showError('name') && styles.inputError]}
                 placeholder="Enter your name"
@@ -346,13 +348,13 @@ const SignUpScreen = () => {
                 autoCapitalize="words"
               />
               {showError('name') && (
-                <Text style={styles.errorText}>{errors.name}</Text>
+                <AppText style={styles.errorText}>{errors.name}</AppText>
               )}
             </View>
 
             {/* Student ID */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Student Identifier</Text>
+              <AppText style={styles.label}>Student Identifier</AppText>
               <TextInput
                 style={[
                   styles.input,
@@ -364,19 +366,19 @@ const SignUpScreen = () => {
                 onBlur={() => handleBlur('studentId', studentId)}
               />
               {showError('studentId') && (
-                <Text style={styles.errorText}>{errors.studentId}</Text>
+                <AppText style={styles.errorText}>{errors.studentId}</AppText>
               )}
             </View>
 
             {/* University */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your University</Text>
+              <AppText style={styles.label}>Your University</AppText>
               {universitiesLoading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color="#E5B865" />
-                  <Text style={styles.loadingText}>
+                  <AppText style={styles.loadingText}>
                     Loading universities...
-                  </Text>
+                  </AppText>
                 </View>
               ) : (
                 <Dropdown
@@ -398,17 +400,17 @@ const SignUpScreen = () => {
                 />
               )}
               {showError('university') && (
-                <Text style={styles.errorText}>{errors.university}</Text>
+                <AppText style={styles.errorText}>{errors.university}</AppText>
               )}
             </View>
 
             {/* College */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Your College</Text>
+              <AppText style={styles.label}>Your College</AppText>
               {collegesLoading ? (
                 <View style={styles.loadingContainer}>
                   <ActivityIndicator size="small" color="#E5B865" />
-                  <Text style={styles.loadingText}>Loading colleges...</Text>
+                  <AppText style={styles.loadingText}>Loading colleges...</AppText>
                 </View>
               ) : (
                 <Dropdown
@@ -433,13 +435,13 @@ const SignUpScreen = () => {
                 />
               )}
               {showError('college') && (
-                <Text style={styles.errorText}>{errors.college}</Text>
+                <AppText style={styles.errorText}>{errors.college}</AppText>
               )}
             </View>
 
             {/* Email */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>University Email</Text>
+              <AppText style={styles.label}>University Email</AppText>
               <TextInput
                 style={[styles.input, showError('email') && styles.inputError]}
                 placeholder="name@usq.edu.au"
@@ -450,13 +452,13 @@ const SignUpScreen = () => {
                 autoCapitalize="none"
               />
               {showError('email') && (
-                <Text style={styles.errorText}>{errors.email}</Text>
+                <AppText style={styles.errorText}>{errors.email}</AppText>
               )}
             </View>
 
             {/* Mobile */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Mobile Number</Text>
+              <AppText style={styles.label}>Mobile Number</AppText>
               <MaskedTextInput
                 style={styles.input}
                 placeholder="Enter Your Mobile Number"
@@ -470,13 +472,13 @@ const SignUpScreen = () => {
                 keyboardType="phone-pad"
               />
               {showError('mobile') && (
-                <Text style={styles.errorText}>{errors.mobile}</Text>
+                <AppText style={styles.errorText}>{errors.mobile}</AppText>
               )}
             </View>
 
             {/* Password */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Password</Text>
+              <AppText style={styles.label}>Password</AppText>
               <View
                 style={[
                   styles.passwordContainer,
@@ -506,7 +508,7 @@ const SignUpScreen = () => {
                 </TouchableOpacity>
               </View>
               {showError('password') && (
-                <Text style={styles.errorText}>{errors.password}</Text>
+                <AppText style={styles.errorText}>{errors.password}</AppText>
               )}
             </View>
 
@@ -524,24 +526,24 @@ const SignUpScreen = () => {
               </TouchableOpacity>
 
               <View style={styles.termsTextContainer}>
-                <Text style={styles.termsTextBase}>
+                <AppText style={styles.termsTextBase}>
                   I agree to the{' '}
-                  <Text style={styles.termsLink} onPress={handleOpenTerms}>
+                  <AppText style={styles.termsLink} onPress={handleOpenTerms}>
                     Terms & Conditions
-                  </Text>{' '}
+                  </AppText>{' '}
                   and{' '}
-                  <Text style={styles.termsLink} onPress={handleOpenPrivacy}>
+                  <AppText style={styles.termsLink} onPress={handleOpenPrivacy}>
                     Privacy Policy
-                  </Text>
+                  </AppText>
                   .
-                </Text>
+                </AppText>
               </View>
             </View>
 
             {submitAttempted && !isTermsAccepted && (
-              <Text style={styles.errorTextCenter}>
+              <AppText style={styles.errorTextCenter}>
                 You must accept the terms to continue.
-              </Text>
+              </AppText>
             )}
 
             {/* Submit Button */}
@@ -553,18 +555,18 @@ const SignUpScreen = () => {
               onPress={handleVerify}
               disabled={isLoading}
             >
-              <Text style={styles.signUpButtonText}>
+              <AppText style={styles.signUpButtonText}>
                 {isLoading ? 'Please wait...' : 'Sign Up'}
-              </Text>
+              </AppText>
             </TouchableOpacity>
 
             <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>
+              <AppText style={styles.loginText}>
                 Already have an account?{' '}
-                <Text style={styles.loginLink} onPress={handleLogin}>
+                <AppText style={styles.loginLink} onPress={handleLogin}>
                   Login
-                </Text>
-              </Text>
+                </AppText>
+              </AppText>
             </View>
           </View>
         </ScrollView>
