@@ -8,25 +8,28 @@ export const sendCardToFriend = createAsyncThunk(
       const response = await SendCardsFriends(cardData);
       return response.data;
     } catch (error) {
+      console.log(error.response?.data?.message, 'error in sending card');
       return rejectWithValue(
-        error.response?.data?.message || 'Failed to send card'
+        error.response?.data?.message || 'Failed to send card',
       );
     }
-  }
+  },
 );
 
 export const checkBanWords = createAsyncThunk(
   'card/checkforbanWords',
   async (message, { rejectWithValue }) => {
     try {
-      console.log("Data from slice :" , message)
+      console.log('Data from slice :', message);
       const response = await checkBanWordsApi(message);
       return response.data;
     } catch (error) {
-      console.log("Error from slice :" ,error)
-      return rejectWithValue(error.response?.data || "Message Validation Failed")
+      console.log('Error from slice :', error.response?.data);
+      return rejectWithValue(
+        error.response?.data || 'Message Validation Failed',
+      );
     }
-  }
+  },
 );
 
 const initialState = {
@@ -34,14 +37,14 @@ const initialState = {
   success: false,
   error: null,
   sentCard: null,
-  banWordError: null
+  banWordError: null,
 };
 
 const cardSendSlice = createSlice({
   name: 'cards',
   initialState,
   reducers: {
-    resetCardState: (state) => {
+    resetCardState: state => {
       state.loading = false;
       state.success = false;
       state.error = null;
@@ -49,9 +52,9 @@ const cardSendSlice = createSlice({
       state.banWordError = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(sendCardToFriend.pending, (state) => {
+      .addCase(sendCardToFriend.pending, state => {
         state.loading = true;
         state.success = false;
         state.error = null;
@@ -67,7 +70,7 @@ const cardSendSlice = createSlice({
         state.success = false;
         state.error = action.payload;
       })
-      .addCase(checkBanWords.pending, (state) => {
+      .addCase(checkBanWords.pending, state => {
         state.loading = true;
         state.error = false;
         state.banWordError = null;

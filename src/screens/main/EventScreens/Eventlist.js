@@ -10,11 +10,11 @@ import {
   RefreshControl,
 } from 'react-native';
 import AppText from '../../../components/AppText';
-import AppTextInput from '../../../components/AppTextInput';
 import { useEffect, useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from '@react-native-vector-icons/ionicons';
+import FontAwesome from '@react-native-vector-icons/fontawesome';
 import GradientScreen from '../../common/GradientScreen';
 import { fetchEventList, resetEvents } from '../../../fetures/eventListSlice';
 import EventCard from './components/Eventcard';
@@ -88,7 +88,7 @@ const EventList = () => {
             onPress={() => setCalendarVisible(true)}
             activeOpacity={0.75}
           >
-            <Icon name="calendar-outline" size={20} color="#F3B11C" />
+            <FontAwesome name="calendar" size={20} color="#F3B11C" />
           </TouchableOpacity>
         </View>
 
@@ -112,22 +112,11 @@ const EventList = () => {
               <AppText style={styles.retryButtonText}>Retry</AppText>
             </TouchableOpacity>
           </View>
-        ) : events.length === 0 ? (
-          /* Empty */
-          <View style={styles.centerContainer}>
-            <Icon name="calendar-clear-outline" size={50} color="#ffffff88" />
-            <AppText style={styles.emptyText}>No events yet</AppText>
-            <AppText style={styles.emptySubText}>
-              Check back soon for upcoming events!
-            </AppText>
-          </View>
         ) : (
           /* List */
           <FlatList
             data={events}
             keyExtractor={item => item._id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
               <EventCard item={item} onPress={handleEventPress} />
             )}
@@ -141,7 +130,29 @@ const EventList = () => {
             }
             onEndReached={onEndReached}
             onEndReachedThreshold={0.4}
-            ListFooterComponent={<EventListFooter loadingMore={loadingMore} />}
+            ListFooterComponent={
+              events.length > 0 ? (
+                <EventListFooter loadingMore={loadingMore} />
+              ) : null
+            }
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Icon
+                  name="calendar-clear-outline"
+                  size={50}
+                  color="#ffffff88"
+                />
+                <AppText style={styles.emptyText}>No events yet</AppText>
+                <AppText style={styles.emptySubText}>
+                  Check back soon for upcoming events!
+                </AppText>
+              </View>
+            }
+            contentContainerStyle={[
+              styles.listContent,
+              events.length === 0 && { flex: 1, justifyContent: 'center' },
+            ]}
+            showsVerticalScrollIndicator={false}
           />
         )}
         <CalendarModal
@@ -192,7 +203,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginHorizontal: 30,
   },
-  emptyText: { color: 'white', fontSize: 20, fontWeight: '800' },
+  emptyText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
   emptySubText: {
     color: '#ffffff88',
     fontSize: 14,

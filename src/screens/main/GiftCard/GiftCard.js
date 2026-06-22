@@ -16,7 +16,7 @@ import {
 } from 'react-native';
 import AppText from '../../../components/AppText';
 import AppTextInput from '../../../components/AppTextInput';
-import AppDropdown from '../../../components/AppTextInput'; // apna path check karo
+import AppDropdown from '../../main/Profile/Appdropdown'; // apna path check karo
 import { Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -97,6 +97,7 @@ const BgCard = ({ onPress, sendCardLoading, collegesLoading, colleges }) => {
   const [selectedReward, setSelectedReward] = useState(null);
   const [charCount, setCharCount] = useState(0);
   const [college, setCollege] = useState(null);
+  console.log(colleges, 'colleges in bg card');
 
   // ─── Friends Search State ─────────────────────────────────────────────────
   const [showDropdown, setShowDropdown] = useState(false);
@@ -371,6 +372,7 @@ const BgCard = ({ onPress, sendCardLoading, collegesLoading, colleges }) => {
               data={colleges}
               search
               maxHeight={300}
+              labelField="name"
               valueField="_id"
               placeholder="Select College"
               searchPlaceholder="Search..."
@@ -464,6 +466,8 @@ const GiftCard = () => {
     state => state.universities,
   );
 
+  console.log(colleges, 'colleges');
+
   useFocusEffect(
     React.useCallback(() => {
       dispatch(fetchProfile());
@@ -482,7 +486,7 @@ const GiftCard = () => {
 
   useEffect(() => {
     dispatch(fetchColleges(user?.university?._id));
-  }, [dispatch]);
+  }, [dispatch, user?.university?._id]);
 
   useEffect(() => {
     if (!loading && eligible === false && error?.message) {
@@ -515,6 +519,7 @@ const GiftCard = () => {
       navigation.navigate('SendingCard');
     } catch (error) {
       dispatch(
+        console.log(error, 'error in sending card'),
         showMessage({
           type: 'error',
           text: error || 'Failed to send card. Please try again.',

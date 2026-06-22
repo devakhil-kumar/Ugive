@@ -12,6 +12,7 @@ import {
 import AppText from '../../components/AppText';
 import AppTextInput from '../../components/AppTextInput';
 import Icon from '@react-native-vector-icons/ionicons';
+import Feather from '@react-native-vector-icons/feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../fetures/authSlice';
@@ -210,8 +211,8 @@ const LoginScreen = () => {
                   style={styles.eyeIcon}
                   onPress={() => setShowPassword(!showPassword)}
                 >
-                  <Icon
-                    name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  <Feather
+                    name={showPassword ? 'eye' : 'eye-off'}
                     size={20}
                     color="#C4C4C4"
                   />
@@ -350,6 +351,7 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     paddingHorizontal: 12,
+    // backgroundColor: '#FAFAFA',
   },
   forgotPassword: {
     alignSelf: 'flex-end',

@@ -5,11 +5,11 @@ import store from '../fetures/store';
 import { logout } from '../fetures/authSlice';
 import { showMessage } from '../fetures/messageSlice';
 
-const BASE_URL = 'http://49.13.70.253:5000/api/';
-const NEW_BASE_URL = 'https://ugive.com.au/';
+const BASE_URL = 'https://ugive.com.au/';
+const NEW_BASE_URL = 'https://ugive.com.au/api/';
 
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: NEW_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -62,7 +62,7 @@ export const registerStudent = userData => {
 };
 
 export const loginAPI = userData => {
-  console.log(`${BASE_URL}${API_ROUTES.STUDENTLOGIN}`);
+  console.log(`${NEW_BASE_URL}${API_ROUTES.STUDENTLOGIN}`);
   return axiosInstance.post(API_ROUTES.STUDENTLOGIN, userData);
 };
 
@@ -72,7 +72,7 @@ export const profileGetData = () => {
 
 export const editProfileAPI = async formData => {
   const { token } = await getUserData();
-  return axios.put(`${BASE_URL}${API_ROUTES.EDITPROFILE}`, formData, {
+  return axios.put(`${NEW_BASE_URL}${API_ROUTES.EDITPROFILE}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${token}`,
@@ -168,7 +168,7 @@ export const GetListCards = () => {
 export const checkBanWordsApi = async message => {
   console.log('Data from api :', message);
   const { token } = await getUserData();
-  return axios.post(`${NEW_BASE_URL}${API_ROUTES.CHECKBANWORDS}`, message, {
+  return axios.post(`${BASE_URL}${API_ROUTES.CHECKBANWORDS}`, message, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,

@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Calendar } from 'react-native-calendars';
 import Icon from '@react-native-vector-icons/ionicons';
+import FontAwesome from '@react-native-vector-icons/fontawesome';
 
 import {
   fetchCalendarEvents,
@@ -192,11 +193,11 @@ const CalendarModal = ({ visible, onClose }) => {
           {/* Header */}
           <View style={styles.modalHeader}>
             <View style={styles.modalTitleRow}>
-              <Icon name="calendar" size={20} color="#F3B11C" />
+              <FontAwesome name="calendar" size={20} color="#F3B11C" />
               <AppText style={styles.modalTitle}>Event Calendar</AppText>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Icon name="close" size={16} color="#FFFFFF" />
+              <FontAwesome name="close" size={16} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
