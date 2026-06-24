@@ -224,6 +224,9 @@ const styles = StyleSheet.create({
   },
   retryButtonText: { color: '#6955A5', fontSize: 15, fontWeight: '700' },
   listContent: { paddingBottom: 30 },
+  emptyContainer: {
+    alignItems: 'center',
+  },
 });
 
 export default EventList;
