@@ -25,23 +25,8 @@ import QRCode from 'react-native-qrcode-svg';
 
 const { width, height } = Dimensions.get('window');
 
-// ─── Load bundled image as base64 (Android & iOS — no manual asset copy needed) ───
-const getBase64Image = async imageRequire => {
-  // resolveAssetSource gives the correct URI that Metro bundler exposes
-  const asset = Image.resolveAssetSource(imageRequire);
-  const uri = asset.uri;
-
-  // fetch works on both Android (asset:// or http://localhost) and iOS
-  const response = await fetch(uri);
-  const blob = await response.blob();
-
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result); // returns "data:image/png;base64,..."
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-};
+// ─── The image is now imported directly as base64 to prevent release mode issues ───
+import { sendMesgBase64 } from '../../../assets/sendMesgBase64';
 
 // ─────────────────────────────────────────────────────────────
 // WEBSITE LINK FOR QR
@@ -193,10 +178,8 @@ const ReadCard = () => {
         selectedIds.has(item._id),
       );
 
-      // LOAD ENVELOPE IMAGE AS BASE64 (inside function — no top-level await)
-      const envelopeBase64 = await getBase64Image(
-        require('../../../assets/sendMesg.png'),
-      );
+      // USE PRE-LOADED BASE64 ENVELOPE IMAGE
+      const envelopeBase64 = sendMesgBase64;
 
       // BUILD PDF PAGES — pass envelopeBase64 to each card
       const pages = selectedCards.map((card, index) =>

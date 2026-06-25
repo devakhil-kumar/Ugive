@@ -37,6 +37,8 @@ const Home = () => {
     }, [dispatch]),
   );
 
+  console.log(selectedReward?.rewardId, 'bckhbckshjdb')
+
   const handleConfirmClaim = async () => {
     try {
       if (!selectedReward?.rewardId) return;

@@ -245,12 +245,13 @@ export const CardSendRemaining = async () => {
 };
 
 export const CalimRewards = async rewardId => {
+  console.log(rewardId, 'rewardId++++++ +');
   try {
     const response = await claimRewards(rewardId);
-    console.log(response, 'response++++');
+    console.log(response.data, 'response++++');
     return response;
   } catch (error) {
-    console.log(error, 'errorr +++++');
+    console.log(error?.response?.data || error.message, 'errorr +++++');
     throw error;
   }
 };
