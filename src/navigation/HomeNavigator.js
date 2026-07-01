@@ -6,6 +6,9 @@ import SendingCard from '../screens/main/Cards/SendingCard';
 import RewardStutas from '../screens/main/Cards/RewardStatus';
 import ProfileNavigator from '../navigation/ProfileNavigator';
 import Home from '../screens/main/RewardsHome/Home';
+import Leaderboard from '../screens/main/Profile/Leaderboard';
+import EventList from '../screens/main/EventScreens/Eventlist';
+import EventDetailScreen from '../screens/main/EventScreens/components/EventDetailReducer';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +26,9 @@ const HomeNavigator = () => {
       <Stack.Screen name="RewardStutas" component={RewardStutas} />
       <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Stack.Screen name="RewardsHome" component={Home} />
+      <Stack.Screen name="Leaderboard" component={Leaderboard} />
+      <Stack.Screen name="Events" component={EventList} />
+      <Stack.Screen name="EventDetail" component={EventDetailScreen} />
     </Stack.Navigator>
   );
 };

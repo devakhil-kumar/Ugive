@@ -54,7 +54,11 @@ const MainNavigator = () => {
               routeName === 'GiftCard' ||
               routeName === 'SendingCard' ||
               routeName === 'RewardStutas' ||
-              routeName === 'ProfileNavigator'
+              routeName === 'ProfileNavigator' ||
+              routeName === 'RewardsHome' ||
+              routeName === 'Leaderboard' ||
+              routeName === 'Events' ||
+              routeName === 'EventDetail'
             ) {
               return { display: 'none' };
             }

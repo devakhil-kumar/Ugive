@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Image,
   Dimensions,
@@ -9,9 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AppText from '../../../components/AppText';
-import AppTextInput from '../../../components/AppTextInput';
 import { PieChart } from 'react-native-gifted-charts';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRewardsCollages } from '../../../fetures/getRewardsSlice';
 import GradientScreen from '../../common/GradientScreen';
@@ -37,7 +34,7 @@ const Home = () => {
     }, [dispatch]),
   );
 
-  console.log(selectedReward?.rewardId, 'bckhbckshjdb')
+  console.log(selectedReward?.rewardId, 'bckhbckshjdb');
 
   const handleConfirmClaim = async () => {
     try {

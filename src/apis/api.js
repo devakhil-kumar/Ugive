@@ -5,8 +5,11 @@ import store from '../fetures/store';
 import { logout } from '../fetures/authSlice';
 import { showMessage } from '../fetures/messageSlice';
 
-const BASE_URL = 'https://ugive.com.au/';
-const NEW_BASE_URL = 'https://ugive.com.au/api/';
+// const BASE_URL = 'https://ugive.com.au/';
+// const NEW_BASE_URL = 'https://ugive.com.au/api/';
+
+const BASE_URL = 'http://49.13.70.253:5000/';
+const NEW_BASE_URL = 'http://49.13.70.253:5000/api/';
 
 const axiosInstance = axios.create({
   baseURL: NEW_BASE_URL,
@@ -201,8 +204,14 @@ export const logoutDevice = fcmToken => {
   });
 };
 
-export const getAllEventList = () => {
-  return axiosInstance.get(API_ROUTES.GETALL_EVENT_LIST);
+export const getAllEventList = ({ page, limit, category } = {}) => {
+  return axiosInstance.get(API_ROUTES.GETALL_EVENT_LIST, {
+    params: {
+      page,
+      limit,
+      category,
+    },
+  });
 };
 
 export const getALLEventCalander = async (month, year) => {
@@ -261,10 +270,10 @@ export const ContactFromData = async data => {
   }
 };
 
-export const getLeaderboard = async ({ page = 1, limit = 50 } = {}) => {
+export const getLeaderboard = async ({ page = 1, limit = 50, period } = {}) => {
   try {
     const response = await axiosInstance.get(
-      API_ROUTES.GET_LEADERBOARD(page, limit),
+      API_ROUTES.GET_LEADERBOARD(page, limit, period),
     );
     return response.data;
   } catch (error) {
@@ -288,9 +297,13 @@ export const getFriendsList = async (searchQuery = '') => {
   }
 };
 
-export const StudentGetData = async () => {
+export const StudentGetData = async ({ period } = {}) => {
   try {
-    return axiosInstance.get(API_ROUTES.STUDENT_FETCH);
+    return axiosInstance.get(API_ROUTES.STUDENT_FETCH, {
+      params: {
+        ...(period && { period }),
+      },
+    });
   } catch (error) {
     throw (
       error?.response?.data?.message ??

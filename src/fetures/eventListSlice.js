@@ -5,12 +5,19 @@ import { EventListStudent } from '../apis/service'; // adjust path as needed
 
 export const fetchEventList = createAsyncThunk(
   'eventList/fetchEventList',
-  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10, category } = {}, { rejectWithValue }) => {
     try {
-      const response = await EventListStudent({ page, limit });
-      console.log('slice full response:', response, 'page:', page);
+      const response = await EventListStudent({ page, limit, category });
+      console.log(
+        'slice full response:',
+        response,
+        'page:',
+        page,
+        'category:',
+        category,
+      );
       return {
-        events: response?.data ?? [], // the events array
+        events: response?.data ?? [],
         total: response?.total ?? 0,
         totalPages: response?.totalPages ?? 1,
         page,

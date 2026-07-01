@@ -137,15 +137,15 @@ const ProfileDetails = () => {
         >
           <AppText style={styles.buttonText}>Edit Profile</AppText>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.butoonStyle,
             { backgroundColor: '#B09FE9', marginTop: 20 },
           ]}
           onPress={handleContactFrom}
         >
-          <AppText style={styles.buttonText}>Contact From</AppText>
-        </TouchableOpacity>
+          <AppText style={styles.buttonText}>Contact Form</AppText>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={[
             styles.butoonStyle,

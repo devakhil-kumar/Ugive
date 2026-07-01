@@ -3,9 +3,9 @@ import { StudentGetData } from '../apis/api';
 
 export const fetchStudentProfile = createAsyncThunk(
   'student/fetchProfile',
-  async (_, { rejectWithValue }) => {
+  async ({ period } = {}, { rejectWithValue }) => {
     try {
-      const response = await StudentGetData();
+      const response = await StudentGetData({ period });
       console.log(response.data, 'response in student slice');
       return response.data;
     } catch (error) {
@@ -22,6 +22,7 @@ const initialState = {
   user: null,
   loading: false,
   error: null,
+  screenData: null,
 };
 
 const studentSlice = createSlice({
@@ -42,6 +43,7 @@ const studentSlice = createSlice({
       .addCase(fetchStudentProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
+        state.screenData = action.payload;
         state.error = null;
       })
 

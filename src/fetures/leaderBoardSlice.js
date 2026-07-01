@@ -3,10 +3,14 @@ import { getLeaderboard } from '../apis/api';
 
 export const fetchLeaderboard = createAsyncThunk(
   'leaderboard/fetch',
-  async ({ page = 1, limit = 50 } = {}, { rejectWithValue }) => {
+  async (
+    { page = 1, limit = 50, period = 'all' } = {},
+    { rejectWithValue },
+  ) => {
     try {
-      const data = await getLeaderboard({ page, limit });
-      return { ...data, page }; // carry page number through
+      const data = await getLeaderboard({ page, limit, period });
+      console.log(data, 'data in leaderboard slice');
+      return { ...data, page, period }; // Reducer me handling easy karne ke liye return data
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || 'Failed to load leaderboard',
@@ -30,6 +34,10 @@ const leaderboardSlice = createSlice({
     loading: false,
     loadingMore: false,
     error: null,
+    // Naye variables UI dates aur period tracking ke liye
+    startDate: null,
+    endDate: null,
+    currentPeriod: 'all',
   },
   reducers: {
     resetLeaderboard: state => {
@@ -42,8 +50,14 @@ const leaderboardSlice = createSlice({
     builder
       .addCase(fetchLeaderboard.pending, (state, action) => {
         const page = action.meta.arg?.page ?? 1;
+        const period = action.meta.arg?.period ?? 'all';
+
         if (page === 1) {
           state.loading = true;
+          // Agar user ne tab change kiya hai (period badla hai), toh old data clear kar do
+          if (state.currentPeriod !== period) {
+            state.data = [];
+          }
         } else {
           state.loadingMore = true;
         }
@@ -60,6 +74,9 @@ const leaderboardSlice = createSlice({
           totalEntries,
           totalPages,
           page,
+          period,
+          startDate, // Backend se aane wali start date
+          endDate, // Backend se aane wali end date
         } = action.payload;
 
         if (page === 1) {
@@ -69,6 +86,7 @@ const leaderboardSlice = createSlice({
           const fresh = data.filter(s => !existingIds.has(s.studentId));
           state.data = [...state.data, ...fresh];
         }
+
         state.myResult = myResult ?? state.myResult;
         state.college = college ?? state.college;
         state.university = university ?? state.university;
@@ -76,6 +94,12 @@ const leaderboardSlice = createSlice({
         state.totalEntries = totalEntries ?? state.totalEntries;
         state.totalPages = totalPages ?? state.totalPages;
         state.currentPage = page;
+
+        // Tab aur dates ko update karo
+        state.currentPeriod = period;
+        state.startDate = startDate ?? null;
+        state.endDate = endDate ?? null;
+
         state.loading = false;
         state.loadingMore = false;
       })

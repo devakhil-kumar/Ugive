@@ -14,8 +14,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import GradientScreen from '../../common/GradientScreen';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Feather from '@react-native-vector-icons/feather';
 import { fetchProfile } from '../../../fetures/profileSlice';
+import Icon from '@react-native-vector-icons/ionicons';
 
 // ── App store links ──
 const APP_LINKS = {
@@ -58,26 +58,12 @@ const Profile = () => {
     navigation.navigate('Leaderboard');
   };
 
-  const handleYourPoint = () => {
-    navigation.navigate('RewardsHome');
+  const handleContactFrom = () => {
+    navigation.navigate('ContactForm');
   };
 
   const handleProfileDetails = () => {
     navigation.navigate('ProfileDetails', { user: user });
-  };
-
-  // ── Share App — auto picks correct store link by platform ──
-  const handleShareApp = async () => {
-    const link = Platform.OS === 'ios' ? APP_LINKS.ios : APP_LINKS.android;
-    try {
-      await Share.share({
-        title: 'UGive App',
-        message: `Check out UGive — send heartfelt messages to anyone! Download here: ${link}`,
-        url: link, // iOS uses url field; Android uses message
-      });
-    } catch (e) {
-      console.log('Share error:', e);
-    }
   };
 
   return (
@@ -96,9 +82,9 @@ const Profile = () => {
               style={styles.backIconStyle}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleShareApp}>
-            <Feather name="share-2" color={'#fff'} size={30} />
-          </TouchableOpacity>
+          {/* <TouchableOpacity onPress={handleShareApp}>
+            <Icon name="share-outline" color={'#fff'} size={35} />
+          </TouchableOpacity> */}
         </View>
 
         <Image
@@ -132,18 +118,21 @@ const Profile = () => {
         >
           <AppText style={styles.buttonText}>Profile Info</AppText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.butoonStyle} onPress={handleYourPoint}>
-          <AppText style={styles.buttonText}>Your Points</AppText>
+        <TouchableOpacity
+          style={styles.butoonStyle}
+          onPress={handleContactFrom}
+        >
+          <AppText style={styles.buttonText}>Contact Form</AppText>
         </TouchableOpacity>
         <TouchableOpacity style={styles.butoonStyle} onPress={handleCardSent}>
           <AppText style={styles.buttonText}>Cards Sent</AppText>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.butoonStyle}
           onPress={handleLeaderBoard}
         >
-          <AppText style={styles.buttonText}>LeaderBorad</AppText>
-        </TouchableOpacity>
+          <AppText style={styles.buttonText}>Leaderboard</AppText>
+        </TouchableOpacity> */}
       </View>
     </GradientScreen>
   );

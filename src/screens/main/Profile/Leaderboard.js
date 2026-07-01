@@ -1,7 +1,6 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
@@ -10,7 +9,6 @@ import {
   Dimensions,
 } from 'react-native';
 import AppText from '../../../components/AppText';
-import AppTextInput from '../../../components/AppTextInput';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLeaderboard } from '../../../fetures/leaderBoardSlice';
@@ -19,15 +17,34 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
-// ─────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────
+const FILTER_PERIODS = [
+  { key: 'week', label: 'This Week' },
+  { key: 'semester', label: 'Semester' },
+  { key: 'all', label: 'All Time' },
+];
 
-// First letter avatar when profileImage is null
+// Helper to format dates beautifully (e.g., "Jul 1, 2026")
+const formatDate = dateString => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
+const getDisplayName = (fullName = '') => {
+  const parts = fullName.trim().split(' ').filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0];
+  const first = parts[0][0];
+  const last = parts[parts.length - 1][0];
+  return (first + last).toUpperCase();
+};
+
 const Avatar = ({ name, image, size = 44, fontSize = 18 }) => {
   const letter = (name || '?')[0].toUpperCase();
-
-  // Consistent color per first letter
   const COLORS = [
     '#E57373',
     '#F06292',
@@ -67,10 +84,6 @@ const Avatar = ({ name, image, size = 44, fontSize = 18 }) => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────
-// BADGE CONFIG FOR TOP 3
-// ─────────────────────────────────────────────────────────────
-
 const BADGE = {
   1: {
     emoji: '🥇',
@@ -98,21 +111,13 @@ const BADGE = {
   },
 };
 
-// ─────────────────────────────────────────────────────────────
-// TOP 3 PODIUM CARD
-// ─────────────────────────────────────────────────────────────
-
 const TopThreeCard = ({ item, rank }) => {
   const badge = BADGE[rank];
-
-  // 1st place is center & tallest
-  const isFirst = rank === 1;
-
   return (
     <View
       style={[
         styles.podiumCard,
-        isFirst && styles.podiumCardFirst,
+        rank === 1 && styles.podiumCardFirst,
         { borderColor: badge.color },
       ]}
     >
@@ -127,7 +132,7 @@ const TopThreeCard = ({ item, rank }) => {
         style={[styles.podiumName, { fontSize: badge.textSize }]}
         numberOfLines={1}
       >
-        {item.name}
+        {getDisplayName(item.name)}
       </AppText>
       <View style={[styles.podiumChip, { backgroundColor: badge.bg }]}>
         <AppText style={[styles.podiumCards, { color: badge.color }]}>
@@ -138,29 +143,21 @@ const TopThreeCard = ({ item, rank }) => {
   );
 };
 
-// ─────────────────────────────────────────────────────────────
-// RANK ROW — normal list items (rank 4+)
-// ─────────────────────────────────────────────────────────────
-
 const RankRow = ({ item }) => (
   <View style={[styles.rankRow, item.isCurrentUser && styles.rankRowSelf]}>
     <View style={styles.rankNumBox}>
       <AppText style={styles.rankNum}>#{item.rank}</AppText>
     </View>
-
     <Avatar
       name={item.name}
       image={item.profileImage}
       size={40}
       fontSize={16}
     />
-
     <AppText style={styles.rankName} numberOfLines={1}>
-      {item.name}
+      {getDisplayName(item.name)}
       {item.isCurrentUser && <AppText style={styles.youBadge}> (You)</AppText>}
     </AppText>
-
-    {/* CARDS COUNT */}
     <View style={styles.rankCardsBadge}>
       <AppText style={styles.rankCardsText}>{item.cardsSent}</AppText>
       <AppText style={styles.rankCardsLabel}> Cards</AppText>
@@ -168,25 +165,15 @@ const RankRow = ({ item }) => (
   </View>
 );
 
-// ─────────────────────────────────────────────────────────────
-// MY RESULT — sticky bottom card
-// ─────────────────────────────────────────────────────────────
-
 const MyResultCard = ({ myResult }) => {
   if (!myResult) return null;
-
   return (
     <View style={styles.myResultCard}>
-      {/* LEFT — rank */}
       <View style={styles.myResultRankBox}>
         <AppText style={styles.myResultRankLabel}>Your Rank</AppText>
         <AppText style={styles.myResultRank}>#{myResult.rank}</AppText>
       </View>
-
-      {/* DIVIDER */}
       <View style={styles.myResultDivider} />
-
-      {/* CENTER — avatar + name */}
       <Avatar
         name={myResult.name}
         image={myResult.profileImage}
@@ -195,30 +182,27 @@ const MyResultCard = ({ myResult }) => {
       />
       <View style={{ marginLeft: 10, flex: 1 }}>
         <AppText style={styles.myResultName} numberOfLines={1}>
-          {myResult.name}
+          {getDisplayName(myResult.name)}
         </AppText>
         <AppText style={styles.myResultSub}>
           {myResult.cardsSent} card{myResult.cardsSent !== 1 ? 's' : ''} sent
         </AppText>
       </View>
-
-      {/* RIGHT — trophy */}
       <AppText style={styles.myResultTrophy}>🏆</AppText>
     </View>
   );
 };
-
-// ─────────────────────────────────────────────────────────────
-// MAIN SCREEN
-// ─────────────────────────────────────────────────────────────
 
 const Leaderboard = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
 
+  const [selectedPeriod, setSelectedPeriod] = useState('all');
+
+  const leaderboardState = useSelector(state => state.leaderboard) ?? {};
   const {
-    data,
+    data = [],
     myResult,
     college,
     university,
@@ -228,35 +212,32 @@ const Leaderboard = () => {
     loading,
     loadingMore,
     error,
-  } = useSelector(state => state.leaderboard);
+    startDate,
+    endDate,
+  } = leaderboardState;
 
-  // Initial load
+  console.log(startDate, endDate, 'start and end date in leaderboard');
+
   useEffect(() => {
-    dispatch(fetchLeaderboard({ page: 1 }));
-  }, [dispatch]);
+    dispatch(fetchLeaderboard({ page: 1, period: selectedPeriod }));
+  }, [dispatch, selectedPeriod]);
 
-  // ── Top 3 separate from rest ──
   const top3 = data.filter(s => s.rank <= 3).sort((a, b) => a.rank - b.rank);
   const rest = data.filter(s => s.rank > 3);
 
-  // ── Pagination — load next page ──
   const handleLoadMore = useCallback(() => {
     if (loadingMore || currentPage >= totalPages) return;
-    dispatch(fetchLeaderboard({ page: currentPage + 1 }));
-  }, [loadingMore, currentPage, totalPages, dispatch]);
+    dispatch(
+      fetchLeaderboard({ page: currentPage + 1, period: selectedPeriod }),
+    );
+  }, [loadingMore, currentPage, totalPages, selectedPeriod, dispatch]);
 
-  // ── Pull to refresh ──
   const handleRefresh = useCallback(() => {
-    dispatch(fetchLeaderboard({ page: 1 }));
-  }, [dispatch]);
-
-  // ─────────────────────────────────────────────────────────
-  // LIST HEADER — Podium + College info
-  // ─────────────────────────────────────────────────────────
+    dispatch(fetchLeaderboard({ page: 1, period: selectedPeriod }));
+  }, [selectedPeriod, dispatch]);
 
   const ListHeader = () => (
     <View style={{ backgroundColor: '#fff' }}>
-      {/* COLLEGE / UNI INFO */}
       {college && (
         <View style={styles.collegeBox}>
           <AppText style={styles.collegeName}>{college.name}</AppText>
@@ -269,26 +250,20 @@ const Leaderboard = () => {
         </View>
       )}
 
-      {/* TOP 3 PODIUM */}
       {top3.length > 0 && (
         <View style={styles.podiumRow}>
-          {/* 2nd — left */}
           {top3[1] && <TopThreeCard item={top3[1]} rank={2} />}
-          {/* 1st — center, tallest */}
           {top3[0] && <TopThreeCard item={top3[0]} rank={1} />}
-          {/* 3rd — right */}
           {top3[2] && <TopThreeCard item={top3[2]} rank={3} />}
         </View>
       )}
 
-      {/* REST LIST LABEL */}
       {rest.length > 0 && (
         <AppText style={styles.restLabel}>All Rankings</AppText>
       )}
     </View>
   );
 
-  // ── Footer — load more / end ──
   const ListFooter = () => {
     if (loadingMore) {
       return (
@@ -309,29 +284,11 @@ const Leaderboard = () => {
     return null;
   };
 
-  // ─────────────────────────────────────────────────────────
-  // RENDER
-  // ─────────────────────────────────────────────────────────
-
   return (
     <GradientScreen colors={['#E9B243', '#B5D1EB']}>
-      <View
-        style={[
-          styles.container,
-          {
-            paddingBottom: insets.bottom,
-          },
-        ]}
-      >
-        {/* BACK BUTTON */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingRight: 28,
-            width: '85%',
-          }}
-        >
+      <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+        {/* REVERTED HEADER BACK TO ORIGINAL CLEAN LOOK */}
+        <View style={styles.headerRow}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backBtn}
@@ -341,14 +298,56 @@ const Leaderboard = () => {
               style={styles.backIconStyle}
             />
           </TouchableOpacity>
-
-          {/* TITLE */}
           <AppText style={styles.pageTitle}>Leaderboard 🏆</AppText>
         </View>
 
-        {/* CONTENT CARD */}
+        {/* TIMEFRAME FILTER TABS */}
+        <View style={styles.tabBarWrapper}>
+          {FILTER_PERIODS.map(period => {
+            const isTabActive = selectedPeriod === period.key;
+            return (
+              <TouchableOpacity
+                key={period.key}
+                style={[
+                  styles.filterTabButton,
+                  isTabActive && styles.filterTabButtonActive,
+                ]}
+                onPress={() => setSelectedPeriod(period.key)}
+                activeOpacity={0.8}
+              >
+                <AppText
+                  style={[
+                    styles.filterTabText,
+                    isTabActive && styles.filterTabTextActive,
+                  ]}
+                >
+                  {period.label}
+                </AppText>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* PROPER DESIGNED DATE CHIP ROW BELOW TABS */}
+        {!loading &&
+          (selectedPeriod === 'week' || selectedPeriod === 'semester') &&
+          startDate &&
+          endDate && (
+            <View style={styles.dateContainer}>
+              <Image
+                source={require('../../../assets/backIcon.png')} // Agar koi calendar/clock icon ho toh badal lena
+                style={styles.calendarIcon}
+                tintColor="#FFF"
+              />
+              <AppText style={styles.dateText}>
+                {formatDate(startDate)} – {formatDate(endDate)}
+              </AppText>
+            </View>
+          )}
+
+        {/* MAIN LIST CARD CONTAINER */}
         <View style={styles.contentCard}>
-          {loading ? (
+          {loading && data.length === 0 ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color="#6D56A5" />
               <AppText style={styles.loadingText}>Loading rankings...</AppText>
@@ -362,8 +361,8 @@ const Leaderboard = () => {
             </View>
           ) : (
             <FlatList
-              data={rest} // rank 4+ in list
-              keyExtractor={item => item.studentId}
+              data={rest}
+              keyExtractor={item => item.studentId || item._id}
               renderItem={({ item }) => <RankRow item={item} />}
               ListHeaderComponent={<ListHeader />}
               ListFooterComponent={<ListFooter />}
@@ -371,14 +370,12 @@ const Leaderboard = () => {
               onEndReachedThreshold={0.4}
               onRefresh={handleRefresh}
               refreshing={loading}
-              stickyHeaderIndices={[0]}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: 20 }}
             />
           )}
         </View>
 
-        {/* MY RESULT — sticky bottom */}
         <MyResultCard myResult={myResult} />
       </View>
     </GradientScreen>
@@ -387,30 +384,16 @@ const Leaderboard = () => {
 
 export default Leaderboard;
 
-// ─────────────────────────────────────────────────────────────
-// STYLES
-// ─────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 10,
+  container: { flex: 1, paddingHorizontal: 16, paddingTop: 10 },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 28,
+    width: '85%',
   },
-  backIconStyle: {
-    width: 30,
-    height: 30,
-  },
-
-  backBtn: {
-    marginBottom: 6,
-  },
-  backText: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-
+  backIconStyle: { width: 30, height: 30 },
+  backBtn: { marginBottom: 6 },
   pageTitle: {
     color: '#fff',
     fontSize: 22,
@@ -419,7 +402,61 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
 
-  // ── CONTENT CARD ──
+  tabBarWrapper: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 14,
+    gap: 4,
+  },
+  filterTabButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  filterTabButtonActive: {
+    backgroundColor: '#FFFFFF',
+  },
+  filterTabText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFFBA',
+  },
+  filterTabTextActive: {
+    color: '#6D56A5',
+    fontWeight: '800',
+  },
+
+  // New Styled Date Container
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginBottom: 12,
+    gap: 6,
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+  },
+  calendarIcon: {
+    width: 14,
+    height: 14,
+    opacity: 0.9,
+    transform: [{ rotate: '180deg' }], // Sirf example ke liye back icon ko twist kiya hai agar koi specific calendar icon na ho toh
+  },
+  dateText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.2,
+  },
+
   contentCard: {
     flex: 1,
     backgroundColor: '#fff',
@@ -427,34 +464,16 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 8,
   },
-
-  centered: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    marginTop: 12,
-    color: '#999',
-    fontSize: 14,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 14,
-  },
+  centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  loadingText: { marginTop: 12, color: '#999', fontSize: 14 },
+  errorText: { color: 'red', textAlign: 'center', marginBottom: 14 },
   retryBtn: {
     backgroundColor: '#6D56A5',
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 10,
   },
-  retryText: {
-    color: '#fff',
-    fontWeight: '700',
-  },
-
-  // ── COLLEGE BOX ──
+  retryText: { color: '#fff', fontWeight: '700' },
   collegeBox: {
     alignItems: 'center',
     marginBottom: 18,
@@ -462,24 +481,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  collegeName: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#222',
-  },
+  collegeName: { fontSize: 18, fontWeight: '800', color: '#222' },
   universityName: {
     fontSize: 13,
     color: '#6D56A5',
     marginTop: 3,
     fontWeight: '600',
   },
-  totalEntries: {
-    fontSize: 11,
-    color: '#999',
-    marginTop: 4,
-  },
-
-  // ── PODIUM ──
+  totalEntries: { fontSize: 11, color: '#999', marginTop: 4 },
   podiumRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
@@ -510,10 +519,7 @@ const styles = StyleSheet.create({
     elevation: 6,
     transform: [{ translateY: -12 }],
   },
-  badgeEmoji: {
-    fontSize: 26,
-    marginBottom: 8,
-  },
+  badgeEmoji: { fontSize: 26, marginBottom: 8 },
   podiumName: {
     fontWeight: '800',
     color: '#222',
@@ -526,12 +532,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 20,
   },
-  podiumCards: {
-    fontSize: 11,
-    fontWeight: '700',
-  },
-
-  // ── REST LABEL ──
+  podiumCards: { fontSize: 11, fontWeight: '700' },
   restLabel: {
     fontSize: 13,
     fontWeight: '700',
@@ -540,7 +541,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 10,
   },
-  // ── RANK ROW ──
   rankRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -553,30 +553,11 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#EFEFEF',
   },
-  rankRowSelf: {
-    backgroundColor: '#F2EDFF',
-    borderColor: '#6D56A5',
-  },
-  rankNumBox: {
-    width: 36,
-    alignItems: 'center',
-  },
-  rankNum: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#6D56A5',
-  },
-  rankName: {
-    flex: 1,
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#222',
-  },
-  youBadge: {
-    fontSize: 12,
-    color: '#6D56A5',
-    fontWeight: '600',
-  },
+  rankRowSelf: { backgroundColor: '#F2EDFF', borderColor: '#6D56A5' },
+  rankNumBox: { width: 36, alignItems: 'center' },
+  rankNum: { fontSize: 13, fontWeight: '800', color: '#6D56A5' },
+  rankName: { flex: 1, fontSize: 14, fontWeight: '700', color: '#222' },
+  youBadge: { fontSize: 12, color: '#6D56A5', fontWeight: '600' },
   rankCardsBadge: {
     flexDirection: 'row',
     alignItems: 'baseline',
@@ -585,26 +566,14 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 20,
   },
-  rankCardsText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#6D56A5',
-  },
-  rankCardsLabel: {
-    fontSize: 10,
-    color: '#6D56A5',
-    fontWeight: '600',
-  },
-
-  // ── FOOTER ──
+  rankCardsText: { fontSize: 12, fontWeight: '800', color: '#6D56A5' },
+  rankCardsLabel: { fontSize: 10, color: '#6D56A5', fontWeight: '600' },
   endText: {
     textAlign: 'center',
     color: '#BBB',
     fontSize: 12,
     marginVertical: 16,
   },
-
-  // ── MY RESULT CARD ──
   myResultCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -620,10 +589,7 @@ const styles = StyleSheet.create({
     elevation: 8,
     gap: 10,
   },
-  myResultRankBox: {
-    alignItems: 'center',
-    minWidth: 48,
-  },
+  myResultRankBox: { alignItems: 'center', minWidth: 48 },
   myResultRankLabel: {
     fontSize: 10,
     color: 'rgba(255,255,255,0.7)',
@@ -631,27 +597,13 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  myResultRank: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: '#F5C842',
-  },
+  myResultRank: { fontSize: 22, fontWeight: '900', color: '#F5C842' },
   myResultDivider: {
     width: 1,
     height: 40,
     backgroundColor: 'rgba(255,255,255,0.25)',
   },
-  myResultName: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '800',
-  },
-  myResultSub: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: 12,
-    marginTop: 2,
-  },
-  myResultTrophy: {
-    fontSize: 28,
-  },
+  myResultName: { color: '#fff', fontSize: 15, fontWeight: '800' },
+  myResultSub: { color: 'rgba(255,255,255,0.7)', fontSize: 12, marginTop: 2 },
+  myResultTrophy: { fontSize: 28 },
 });

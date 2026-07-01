@@ -53,7 +53,7 @@ const RSVP_OPTIONS = [
   },
 ];
 
-const EventCard = ({ item, onPress }) => {
+const EventCard = ({ item, onPress, onCountPress }) => {
   const dispatch = useDispatch();
 
   const startDate = formatDate(item.startTime);
@@ -131,12 +131,15 @@ const EventCard = ({ item, onPress }) => {
                 </View>
 
                 {/* Going count badge */}
-                <View style={styles.goingBadge}>
+                <TouchableOpacity
+                  style={styles.goingBadge}
+                  onPress={() => onCountPress(item.rsvpLists)}
+                >
                   <Icon name="users" size={11} color="#F3B11C" />
                   <AppText style={styles.goingCount}>
                     {item.goingCount ?? 0}
                   </AppText>
-                </View>
+                </TouchableOpacity>
               </View>
 
               <AppText style={styles.cardTitle} numberOfLines={1}>
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#6955A5',
     borderRadius: 16,
-    marginBottom: 16,
+    marginVertical: 16,
     flexDirection: 'row',
     alignItems: 'stretch',
     overflow: 'hidden',

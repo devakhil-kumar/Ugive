@@ -278,9 +278,13 @@ export const sendOtpSignup = async (email, name) => {
   }
 };
 
-export const EventListStudent = async ({ page = 1, limit = 10 } = {}) => {
+export const EventListStudent = async ({
+  page = 1,
+  limit = 10,
+  category,
+} = {}) => {
   try {
-    const response = await getAllEventList({ page, limit });
+    const response = await getAllEventList({ page, limit, category });
     console.log(response.data, 'response++++');
     return response.data;
   } catch (error) {
